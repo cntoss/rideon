@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:rideon/config/constant.dart';
+import 'package:rideon/screens/login/loginPage.dart';
+import 'package:rideon/screens/login/registerscreen.dart';
+import 'package:rideon/screens/widgets/appButton.dart';
+import 'package:rideon/screens/widgets/customButton.dart';
+
+class InitialLandingPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold( 
+     body: ListView(
+        children: [
+          Image.asset(
+            'assets/logo1.png',
+            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.height,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('Welcome to ride on', style: Constant.titleBig),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppButton().appButton(
+                      small: true,
+                        text: 'Sign In',
+                        onTap: () {
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                            ));
+                        },
+                        color: Colors.tealAccent),
+
+                         AppButton().appButton(
+                      small: true,
+                        text: 'Register',
+                        onTap: () {
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Registration(),
+                            ));
+                        },
+                        ),
+                   /*  CustomDialog().dialogButton(
+                        text: 'Register', onPressed: () {
+                           Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Registration(),
+                          ));
+                        }) */
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+          child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 12,
+        //color: Color(0xfff2ffc7),
+        decoration: BoxDecoration(
+          color: Color(0xfff2ffc7),
+        ),
+        // color: Colors.yellowAccent,
+        child: Center(
+          child: RichText(
+            text: TextSpan(style: TextStyle(color: Colors.black), children: [
+              TextSpan(
+                text: 'Or Drive with ',
+              ),
+              TextSpan(text: 'Ride on', style: TextStyle(color: Colors.blue))
+            ]),
+          ),
+        ),
+      )),
+    );
+  }
+}
