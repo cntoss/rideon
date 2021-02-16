@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class Constant{
-   static Color cardColor = Color(0xfff0e6d2);
-   static Color stackfoldBackground = Color(0xfff5ead7);
+class Constant {
+  //static Color cardColor = Color(0xfff0e6d2);
 
-  static String passwordValidationError ="Password must contain at least 6 characters.";
-  static String phoneValidationError ="Phone number must have exactly 10 digits ";
-  static String  defaultloginError =  'Woopsie! Login Failed, please retry in a minute or so.';
+  //static Color cardColor = Color(0xff05ae46);
 
+  static Color stackfoldBackground = Color(0xfff5ead7);
+
+  static String passwordValidationError =
+      "Password must contain at least 6 characters.";
+  static String phoneValidationError =
+      "Phone number must have exactly 10 digits ";
+  static String defaultloginError =
+      'Woopsie! Login Failed, please retry in a minute or so.';
 
   static Color lightPrimary = Color(0xffffffff);
   //static Color lightPrimary = Colors.red;
@@ -20,8 +25,12 @@ class Constant{
   static Color lightBG = Color(0xffffffff);
   static Color darkBG = Colors.black;
   static Color textColor = Color(0xfffafafa);
-  
-    static TextStyle title = const TextStyle(
+  static Color textFormColor = Color(0xff0acf8a);
+  static Color cardColor = Color(0xff5a965a);
+  static TextStyle errorStyle = TextStyle(color: Constant.textColor);
+  static TextStyle whiteText = TextStyle(color: Constant.textColor ,fontSize: 16);
+
+  static TextStyle title = const TextStyle(
       inherit: false,
       color: Color(0x8a000000),
       fontFamily: "Roboto",
@@ -37,7 +46,7 @@ class Constant{
       fontWeight: FontWeight.bold,
       decoration: TextDecoration.none);
 
- static TextStyle titleWhite = const TextStyle(
+  static TextStyle titleWhite = const TextStyle(
       inherit: false,
       color: Colors.white,
       fontFamily: "Roboto",
@@ -45,7 +54,7 @@ class Constant{
       fontWeight: FontWeight.w400,
       decoration: TextDecoration.none);
 
-static ThemeData lightTheme = ThemeData(
+  static ThemeData lightTheme = ThemeData(
     //fontFamily: GoogleFonts.roboto().fontFamily,
     backgroundColor: lightBG,
     primaryColor: lightPrimary,

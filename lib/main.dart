@@ -6,6 +6,7 @@ import 'package:rideon/screens/home/customNavigationButton.dart';
 import 'package:rideon/screens/home/homePage.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/forgotPassword.dart';
+import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/setting/settingScreen.dart';
 import 'package:rideon/screens/splashScreen.dart';
 import 'package:rideon/screens/widgets/appButton.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xFFffc8c8),
+        primaryColor: Color(0xFF3cc83c),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Color(0xff00B14F),
         buttonTheme: ButtonThemeData(
@@ -52,11 +53,11 @@ class MyApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ),
-      //home: HomePageWrapper(),
-      home: !LocalStorage.shouldSkipIntro
+      home: LoginPage(),
+     /*  home: !LocalStorage.shouldSkipIntro
                 ? SplashScreen()
                 : HomePageWrapper(),
-    );
+     */);
   }
 }
 
