@@ -27,7 +27,7 @@ class Constant {
   static Color textColor = Color(0xfffafafa);
   static Color textFormColor = Color(0xff0acf8a);
   static Color cardColor = Color(0xff5a965a);
-  static TextStyle errorStyle = TextStyle(color: Constant.textColor);
+  static TextStyle errorStyle = TextStyle(color: Colors.redAccent, fontSize: 16);
   static TextStyle whiteText = TextStyle(color: Constant.textColor ,fontSize: 16);
 
   static TextStyle title = const TextStyle(

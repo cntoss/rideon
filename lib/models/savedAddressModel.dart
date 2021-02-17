@@ -4,30 +4,50 @@
 
 import 'dart:convert';
 
-List<SavedAddressModel> savedAddressModelFromJson(String str) => List<SavedAddressModel>.from(json.decode(str).map((x) => SavedAddressModel.fromJson(x)));
+import 'package:hive/hive.dart';
 
-String savedAddressModelToJson(List<SavedAddressModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+part 'savedAddressModel.g.dart';
 
-class SavedAddressModel {
-    SavedAddressModel({
-        this.type,
-        this.location,
-        this.locationName,
-    });
+List<SavedAddressModel> savedAddressModelFromJson(String str) =>
+    List<SavedAddressModel>.from(
+        json.decode(str).map((x) => SavedAddressModel.fromJson(x)));
 
-    String type;
-    dynamic location;
-    String locationName;
+String savedAddressModelToJson(List<SavedAddressModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-    factory SavedAddressModel.fromJson(Map<String, dynamic> json) => SavedAddressModel(
+@HiveType(typeId: 1)
+class SavedAddressModel extends HiveObject {
+  SavedAddressModel({
+    this.id,
+    this.type,
+    this.location,
+    this.locationName,
+  });
+
+  @HiveField(0)
+  int id;
+
+  @HiveField(1)
+  String type;
+
+  @HiveField(2)
+  dynamic location;
+
+  @HiveField(3)
+  String locationName;
+
+  factory SavedAddressModel.fromJson(Map<String, dynamic> json) =>
+      SavedAddressModel(
+        id: json['id'],
         type: json["type"],
         location: json["location"],
         locationName: json["locationName"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
+        "id": id,
         "type": type,
         "location": location,
         "locationName": locationName,
-    };
+      };
 }

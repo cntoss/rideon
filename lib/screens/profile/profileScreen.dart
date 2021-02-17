@@ -4,6 +4,7 @@ import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/profile/chnagePasswordScreen.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/utils/extension.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   User _user;
   bool _enable = false;
   TextEditingController _phoneNumberCOntroller, _nameCotroler, _emailController;
-
+  Icon icon = Icon(Icons.edit_outlined);
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -36,16 +37,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text('Edit Profile'),
         actions: [
-          GestureDetector(
-            onTap: (){
-              setState(() {
-                _enable = !_enable;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(_enable ?'Save':'Edit', style: Theme.of(context).textTheme.headline6),
-            ))
+          TextButton.icon(
+              onPressed: () {
+                if (_enable) {}
+                if (_formKey.currentState.validate()) {
+                  _formKey.currentState.save();
+                  UserService().addUser(user: _user);
+                }
+                setState(() {
+                  _enable = !_enable;
+                  icon = _enable
+                      ? Icon(Icons.edit_rounded)
+                      : Icon(Icons.edit_outlined);
+                });
+              },
+              icon: icon,
+              label: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(_enable ? 'Save' : 'Edit',
+                    style: Theme.of(context).textTheme.headline6),
+              ))
         ],
       ),
       body: Container(
@@ -64,87 +75,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? Image.asset('assets/avatar.png')
                       : NetworkImage(_user.image) */
 
-               if(_enable) Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Icon(Icons.camera_alt_outlined),
-                )
+                if (_enable)
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Icon(Icons.camera_alt_outlined),
+                  )
               ]),
             ),
             CustomCard(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _nameCotroler,
-                    enabled: _enable,
-                    validator: (value) {
-                      if (value.isEmpty)
-                        return 'Enter Full Name';
-                      else if (value.length < 5 && !value.contains(' '))
-                        return "Enter Valid Name";
-                      else
-                        return null;
-                    },
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.person_rounded,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24)),
-                        errorStyle: TextStyle(color: Constant.textColor),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.green)),
-                        labelText: "Full Name",
-                        labelStyle: Constant.whiteText),
+                child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _nameCotroler,
+                      enabled: _enable,
+                      validator: (value) {
+                        if (value.isEmpty)
+                          return 'Enter Full Name';
+                        else if (value.length < 5 && !value.contains(' '))
+                          return "Enter Valid Name";
+                        else
+                          return null;
+                      },
+                      onSaved: (_) => _user.name = _nameCotroler.text,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.person_rounded,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24)),
+                          errorStyle: Constant.errorStyle,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide(color: Colors.green)),
+                          labelText: "Full Name",
+                          labelStyle: Constant.whiteText),
+                    ),
                   ),
-                ),
-                OpenContainer(
-                  closedElevation: 0,
-                  openColor: Theme.of(context).scaffoldBackgroundColor,
-                  closedColor: Constant.cardColor,
-                  openBuilder: (BuildContext context,
-                      void Function({Object returnValue}) action) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: _phoneNumberCOntroller,
-                          enabled: false,
-                          keyboardType: TextInputType.phone,
-                          maxLength: 10,
-                          validator: (s) {
-                            if (s.trim().length < 6)
-                              return Constant.phoneValidationError;
-                            else
-                              return null;
-                          },
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.phone_android,
-                                color: Colors.grey,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
-                              counterText: "",
-                              labelText: "Phone Number",
-                              labelStyle: Constant.whiteText),
-                        ),
-                      ),
-                    );
-                  },
-                  closedBuilder:
-                      (BuildContext context, void Function() action) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
+                  OpenContainer(
+                    closedElevation: 0,
+                    openColor: Theme.of(context).scaffoldBackgroundColor,
+                    closedColor: Constant.cardColor,
+                    openBuilder: (BuildContext context,
+                        void Function({Object returnValue}) action) {
+                      return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
@@ -153,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             keyboardType: TextInputType.phone,
                             maxLength: 10,
                             validator: (s) {
-                              if (s.trim().length < 6)
+                              if (s.trim().length < 10)
                                 return Constant.phoneValidationError;
                               else
                                 return null;
@@ -172,65 +152,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 labelStyle: Constant.whiteText),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _emailController,
-                    enabled: _enable,
-                    validator: (value) {
-                      if (value.isNotEmpty) {
-                        if (value.length < 5)
-                          return "Enter Valid Name";
-                        else
-                          return null;
-                      } else
-                        return null;
+                      );
                     },
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.mail_outline_outlined,
-                          color: Colors.grey,
+                    closedBuilder:
+                        (BuildContext context, void Function() action) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: _phoneNumberCOntroller,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.phone_android,
+                                    color: Colors.grey,
+                                  ),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(24)),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 12),
+                                  counterText: "",
+                                  labelText: "Phone Number",
+                                  labelStyle: Constant.whiteText),
+                            ),
+                          ),
                         ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24)),
-                        errorStyle: TextStyle(color: Constant.textColor),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.green)),
-                        labelText: "Email",
-                        hintText: "Enter valid email",
-                        labelStyle: Constant.whiteText),
+                      );
+                    },
                   ),
-                ),
-                OpenContainer(
-                  closedElevation: 0,
-                  openColor: Theme.of(context).scaffoldBackgroundColor,
-                  closedColor: Constant.cardColor,
-                  openBuilder: (BuildContext context,
-                      void Function({Object returnValue}) action) {
-                    return Center(child: ChnagePasswordScreen());
-                  },
-                  closedBuilder:
-                      (BuildContext context, void Function() action) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Change password?",
-                          style: TextStyle(
-                              color: Constant.textColor, fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _emailController,
+                      enabled: _enable,
+                      validator: (s) {
+                        return s.isValidEmail()
+                            ? null
+                            : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid email address.";
+                      },
+                      onSaved: (_) => _user.email = _emailController.text,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.mail_outline_outlined,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24)),
+                          errorStyle: Constant.errorStyle,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide(color: Colors.green)),
+                          labelText: "Email",
+                          hintText: "Enter valid email",
+                          labelStyle: Constant.whiteText),
+                    ),
+                  ),
+                  OpenContainer(
+                    closedElevation: 0,
+                    openColor: Theme.of(context).scaffoldBackgroundColor,
+                    closedColor: Constant.cardColor,
+                    openBuilder: (BuildContext context,
+                        void Function({Object returnValue}) action) {
+                      return Center(child: ChnagePasswordScreen());
+                    },
+                    closedBuilder:
+                        (BuildContext context, void Function() action) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Change password?",
+                            style: TextStyle(
+                                color: Constant.textColor, fontSize: 16),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ))
           ],
         ),

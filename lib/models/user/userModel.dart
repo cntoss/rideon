@@ -4,12 +4,44 @@
 
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+
+part 'userModel.g.dart';
+
+
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toJson());
 
-class User {
-    User({
+
+@HiveType(typeId: 0)
+class User  extends HiveObject{  
+
+    @HiveField(0)
+    int id;
+    
+    @HiveField(1)
+    String name;
+
+    @HiveField(2)
+    String phone;
+  
+    @HiveField(3)
+    String email;
+
+    @HiveField(4)
+    String gender;
+  
+    @HiveField(5)
+    String dob;
+  
+    @HiveField(6)
+    String image;
+  
+    @HiveField(7)
+    int paymentId;
+
+ User({
         this.id,
         this.name,
         this.phone,
@@ -19,15 +51,6 @@ class User {
         this.image,
         this.paymentId,
     });
-
-    int id;
-    String name;
-    String phone;
-    String email;
-    String gender;
-    String dob;
-    String image;
-    int paymentId;
 
     factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],

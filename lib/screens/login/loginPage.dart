@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                                 onTap: () async {
                                   FocusScope.of(context).unfocus();
                                   if (_formKey.currentState.validate()) {
-                                    _manager.login();
+                                    _manager.login(phone: _phoneNumberCOntroller.text, password: _phoneNumberCOntroller.text);
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(

@@ -4,7 +4,10 @@ import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/profile/profileScreen.dart';
 import 'package:rideon/screens/setting/savedAddress.dart';
+import 'package:rideon/services/helper/hiveService.dart';
+import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
+import 'package:rideon/services/utils/extension.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -13,26 +16,27 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   @override
-  User _user = User(
+  User _user = UserService().getUser();
+  /* 
+  User _user =  User(
       name: "Thomas Shelby ",
       phone: '9829326110',
       email: 'ad01santosh@gmail.com');
-
+ */
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Settings')),
       body: Container(
         padding: EdgeInsets.all(8),
-        child: Column(
+        child: ListView(
           children: [
             InkWell(
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen(user:_user))),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProfileScreen(user: _user))),
               child: CustomDOgTAg(
-                name: "Thomas Shelby ",
-                phone: '9829326110',
-                image: 'assets/user.png',
-                email: 'ad01santosh@gmail.com',
+                user: _user,
               ),
             ),
             InkWell(
@@ -185,15 +189,10 @@ class _SettingScreenState extends State<SettingScreen> {
 class CustomDOgTAg extends StatelessWidget {
   const CustomDOgTAg({
     Key key,
-    @required this.name,
-    @required this.phone,
-    @required this.image,
-    @required this.email,
+    @required this.user,
   }) : super(key: key);
-  final name;
-  final phone;
-  final image;
-  final email;
+
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -211,9 +210,9 @@ class CustomDOgTAg extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage(
-                  image,
-                ),
+                backgroundImage: user.image.isNullOrEmpty()
+                    ? AssetImage('assets/avatar.png')
+                    : NetworkImage(user.image),
                 radius: 30,
               ),
             ),
@@ -223,7 +222,11 @@ class CustomDOgTAg extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(name), Text(phone), Text(email)],
+                children: [
+                  Text(user.name),
+                  Text(user.phone),
+                  Text(user.email ?? '')
+                ],
               ),
             )
           ],

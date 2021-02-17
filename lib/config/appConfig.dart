@@ -9,3 +9,10 @@ class AppConfig {
    
   DateFormat dateWithTime = DateFormat('MMM dd, yyyy   hh:mm a');
  }
+ const hiveBoxName = 'rideOnBox';
+ 
+const hkEncryptionKey = "hkKey";
+const hkUser = 'user';
+const hkIsAppInitialized = 'isappinitialized';
+const hkIsWorkThrough = 'isWorkThrough';
+const hkAddressType = 'addressType';

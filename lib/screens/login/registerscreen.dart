@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
+import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/widgets/appButton.dart';
@@ -32,8 +33,12 @@ class _RegistrationState extends State<Registration> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _nameCotroler = TextEditingController(text: "");
     _phoneNumberCOntroller = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
+    _emailController = TextEditingController(text:"");
+    _econtact = TextEditingController(text:"");
+    _dateController =TextEditingController(text:"");
     _pwFocus = FocusNode();
   }
 
@@ -64,7 +69,7 @@ class _RegistrationState extends State<Registration> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _nameCotroler,
                           onFieldSubmitted: (v) {
@@ -97,7 +102,7 @@ class _RegistrationState extends State<Registration> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _phoneNumberCOntroller,
                           focusNode: _pwFocus,
@@ -128,7 +133,7 @@ class _RegistrationState extends State<Registration> {
                       ),
                       //date
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           focusNode: AlwaysDisabledFocusNode(),
                           onTap: () {
@@ -159,7 +164,7 @@ class _RegistrationState extends State<Registration> {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _econtact,
                           onFieldSubmitted: (v) {
@@ -189,7 +194,7 @@ class _RegistrationState extends State<Registration> {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _emailController,
                           validator: (value) {
@@ -202,21 +207,21 @@ class _RegistrationState extends State<Registration> {
                               return null;
                           },
                           decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.mail_outline_outlined,
-                                color: Colors.grey,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: TextStyle(color: Constant.textColor),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                  borderSide: BorderSide(color: Colors.green)),
-                              labelText: "Email",
-                              hintText: "Enter valid email",
-                              ),
+                            prefixIcon: Icon(
+                              Icons.mail_outline_outlined,
+                              color: Colors.grey,
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24)),
+                            errorStyle: TextStyle(color: Constant.textColor),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 12),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide(color: Colors.green)),
+                            labelText: "Email",
+                            hintText: "Enter valid email",
+                          ),
                         ),
                       ),
 
@@ -331,7 +336,15 @@ class _RegistrationState extends State<Registration> {
                                     onTap: () async {
                                       FocusScope.of(context).unfocus();
                                       if (_formKey.currentState.validate()) {
-                                        _manager.login();
+                                        _formKey.currentState.save();
+                                        _manager.register(User(
+                                            id: 1,
+                                            name: _nameCotroler.text,
+                                            phone: _phoneNumberCOntroller.text,
+                                            email: _emailController.text,
+                                            gender: 'male',
+                                            paymentId: null,
+                                            dob: _dateController.text));
                                         Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

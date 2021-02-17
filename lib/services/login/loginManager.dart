@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
+import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/login/loginPage.dart';
-import 'package:rideon/services/sharedPref.dart';
+
+import 'package:rideon/services/helper/userService.dart';
 
 enum LoginStates { loggedIn, loggedOut, loading, error }
 
@@ -15,7 +17,7 @@ class LoginManger {
 
   ValueNotifier<LoginStates> get currentState {
     LoginStates state;
-    if (LocalStorage.isLoggedIn)
+    if (UserService().isLogin)
       state = LoginStates.loggedIn;
     else
       state = LoginStates.loggedOut;
@@ -23,7 +25,7 @@ class LoginManger {
     return _notifier;
   }
 
-  login() async {
+  login({@required String phone, @required String password}) async {
     var result;
     _notifier.value = LoginStates.loading;
     await Future.delayed(Duration(seconds: 3), () {
@@ -31,7 +33,7 @@ class LoginManger {
       result = true;
     });
     if (result == null) {
-      LocalStorage.setLogin(setLoginTo: false);
+      UserService().setLogin(setLoginTo: false);
       //todo string lai const ma lagne
       _errorMessage = "Default Error Message";
       _notifier.value = LoginStates.error;
@@ -45,8 +47,40 @@ class LoginManger {
         _notifier.value = LoginStates.loggedOut;
       });
     } else {
-      LocalStorage.setLogin();
+      UserService().setLogin();
+      //UserService().addUser(user: user);//todo:login
       _notifier.value = LoginStates.loggedIn;
+    }
+  }
+
+  Future<bool> register(User user) async {
+    var result;
+    _notifier.value = LoginStates.loading;
+    await Future.delayed(Duration(seconds: 3), () {
+      // todo : hit login ko api
+      result = true;
+    });
+    if (result == null) {
+      UserService().setLogin(setLoginTo: false);
+      //todo string lai const ma lagne
+      _errorMessage = "Default Error Message";
+      _notifier.value = LoginStates.error;
+      Future.delayed(Duration(seconds: 3), () {
+        _notifier.value = LoginStates.loggedOut;
+      });
+      return false;
+    } else if (result is String) {
+      _errorMessage = result;
+      _notifier.value = LoginStates.error;
+      Future.delayed(Duration(seconds: 3), () {
+        _notifier.value = LoginStates.loggedOut;
+      });
+      return false;
+    } else {
+      UserService().setLogin();
+      UserService().addUser(user: user); //todo:login
+      _notifier.value = LoginStates.loggedIn;
+      return true;
     }
   }
 
@@ -60,7 +94,7 @@ class LoginManger {
       //todo error huda error dekhaune
       onError();
     } else {
-      LocalStorage.setLogin(setLoginTo: false);
+      UserService().setLogin(setLoginTo: false);
       //todo clear app data
       _notifier.value = LoginStates.loggedOut;
       Navigator.pushReplacement(
