@@ -36,9 +36,9 @@ class _RegistrationState extends State<Registration> {
     _nameCotroler = TextEditingController(text: "");
     _phoneNumberCOntroller = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
-    _emailController = TextEditingController(text:"");
-    _econtact = TextEditingController(text:"");
-    _dateController =TextEditingController(text:"");
+    _emailController = TextEditingController(text: "");
+    _econtact = TextEditingController(text: "");
+    _dateController = TextEditingController(text: "");
     _pwFocus = FocusNode();
   }
 
@@ -206,6 +206,7 @@ class _RegistrationState extends State<Registration> {
                             } else
                               return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
                               Icons.mail_outline_outlined,

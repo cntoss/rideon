@@ -15,7 +15,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  @override
+
   User _user = UserService().getUser();
   /* 
   User _user =  User(
@@ -36,7 +36,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   MaterialPageRoute(
                       builder: (context) => ProfileScreen(user: _user))),
               child: CustomDOgTAg(
-                user: _user,
+                user: _user ,
               ),
             ),
             InkWell(
@@ -72,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     Text(
                                       'Set Home',
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.blue),
+                                          fontSize: 14, color: Colors.white),
                                     )
                                   ],
                                 ),
@@ -93,7 +93,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     Text('Work'),
                                     Text('Set Home',
                                         style: TextStyle(
-                                            fontSize: 14, color: Colors.blue))
+                                            fontSize: 14, color: Colors.white))
                                   ],
                                 ),
                               )
@@ -223,8 +223,8 @@ class CustomDOgTAg extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(user.name),
-                  Text(user.phone),
+                  Text(user.name ??''),
+                  Text(user.phone ??''),
                   Text(user.email ?? '')
                 ],
               ),

@@ -67,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                         onFieldSubmitted: (v) {
                           _pwFocus.requestFocus();
                         },
+                        keyboardType: TextInputType.phone,
                         maxLength: 10,
                         validator: (s) {
                           if (s.trim().length < 6)
@@ -167,12 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                                   FocusScope.of(context).unfocus();
                                   if (_formKey.currentState.validate()) {
                                     _manager.login(phone: _phoneNumberCOntroller.text, password: _phoneNumberCOntroller.text);
-                                    Navigator.pushReplacement(
+                                         Navigator.pushReplacementNamed(context, '/home');
+
+                                   /*  Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               HomePageWrapper(),
-                                        ));
+                                        )); */
                                   }
                                 },
                               ),

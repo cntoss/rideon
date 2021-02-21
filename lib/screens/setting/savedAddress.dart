@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/savedAddressModel.dart';
-import 'package:rideon/screens/setting/addSavedAddress.dart';
+import 'package:rideon/screens/setting/addAddress.dart';
+import 'package:rideon/screens/setting/editSavedAddress.dart';
+import 'package:rideon/screens/widgets/circleIcon.dart';
+
+enum AddressType { home, work, other }
 
 class SavedAddressScreenScreen extends StatefulWidget {
   @override
@@ -10,13 +14,24 @@ class SavedAddressScreenScreen extends StatefulWidget {
 
 class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
   var _jsonString = [
-    {"type": "Home", "location": null, "locationName": "Pulchowk , Lalitpur"},
     {
+      "id": 1,
+      "type": "Home",
+      "location": null,
+      "locationName": "Pulchowk , Lalitpur"
+    },
+    {
+      "id": 2,
       "type": "Office",
       "location": null,
       "locationName": "Thapathali , Kathmandu"
     },
-    {"type": "May Favourite Resturents", "location": null, "locationName": null}
+    {
+      "id": 3,
+      "type": "Others",
+      "location": null,
+      "locationName": null
+    }
   ];
 
   List<SavedAddressModel> _saveAddress = List();
@@ -71,43 +86,46 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
                   )
                 ];
               },
+              onSelected: (value) {
+                switch (value) {
+                  case "edit":
+                    {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditavedAddress(address:_saveAddress[x]),
+                        ),
+                      );
+                    }
+                    break;
+                  case "user":
+                    {
+                      print('delete');
+                    }
+                    break;
+                }
+              },
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            size: 50,
+          ),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddSavedAddress(
+                  builder: (context) => AddAddress(
                         savedAddressModel: SavedAddressModel(
-                            type: '', location: null, locationName: ''),
+                            id: null,
+                            type: '',
+                            location: null,
+                            locationName: ''),
                         title: 'Add Location',
                       )))),
-    );
-  }
-}
-
-class CircularIcon extends StatelessWidget {
-  final Icon icon;
-  const CircularIcon({
-    this.icon,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Material(
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: icon,
-        ),
-        shape: CircleBorder(),
-        color: Colors.grey,
-        elevation: 1,
-      ),
     );
   }
 }

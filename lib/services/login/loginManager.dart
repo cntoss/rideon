@@ -86,7 +86,7 @@ class LoginManger {
 
   logout(Function() onError) async {
     var result;
-    await Future.delayed(Duration(seconds: 3), () {
+    await Future.delayed(Duration(seconds: 0), () {
       //todo hit logout ko api
       result = true;
     });

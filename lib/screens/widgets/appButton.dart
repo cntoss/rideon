@@ -17,7 +17,7 @@ Widget appButton(
         onTap();
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: small ? 20.0 : 60.0),
+        padding: EdgeInsets.symmetric(horizontal: small ? 20.0 : 60.0 , vertical: 8),
         child: Text(
           text,
           style: Constant.titleWhite.copyWith(fontSize: 20),

@@ -187,6 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                       enabled: _enable,
                       validator: (s) {
                         return s.isValidEmail()

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/screens/widgets/appButton.dart';
+import 'package:rideon/models/pooling/counterModel.dart';
+import '../pooling/carPoolingStart.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -28,12 +30,20 @@ class _HomePageState extends State<HomePage>
             Positioned(
               top: 8,
               right: 8,
-              child: AppButton().appButton(
-                color: Colors.blue,
-                small: false,
-                text: "Carpooling",
-                onTap: () {
-                  print('car pooling');
+              child: TextButton.icon(
+                icon: Icon(Icons.car_rental),
+                label: Text(
+                  "Carpooling",
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChangeNotifierProvider<PassengerCounter>(
+                                  create: (context) => PassengerCounter(),
+                                  child: CarPoolingFirst())));
                 },
               ),
             ),
@@ -42,7 +52,7 @@ class _HomePageState extends State<HomePage>
               width: width,
               child: Card(
                 child: Container(
-                  height: height/3 +10,
+                  height: height / 3 + 10,
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,10 +82,7 @@ class _HomePageState extends State<HomePage>
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Home'),
-                              Text('Pulchowk Lalitpur')
-                            ],
+                            children: [Text('Home'), Text('Pulchowk Lalitpur')],
                           )
                         ],
                       ),

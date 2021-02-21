@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rideon/common/theme.dart';
+import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
+import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/splashScreen.dart';
 import 'package:rideon/services/helper/hiveService.dart';
 import 'package:rideon/services/helper/userService.dart';
@@ -18,6 +21,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+       /*  ChangeNotifierProvider(
+          create: (context) => PassengerCounter(),
+        ), */
         Provider(
           create: (_) => LoginManger(),
         )
@@ -33,15 +39,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: AppConfig.navigatorKey,
-      title: 'Flutter Demo',
+      title: 'Ride On',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Color(0xFF3cc83c),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Color(0xff00B14F),
-      ),
+      theme: appTheme,
       //home: LoginPage(),
-      home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
+      //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
+
+      //initialRoute: UserService().isLogin ? '/home' : '/',
+      initialRoute: '/home',
+      routes: {
+        //'/': (context) => SplashScreen(),
+        '/': (context) => HomePageWrapper(),
+        '/login': (context) => LoginPage(),
+        '/home': (context) => HomePageWrapper(),
+      },
     );
   }
 }
