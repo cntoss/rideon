@@ -8,6 +8,8 @@ class AppConfig {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(); //date diplay style
    
   DateFormat dateWithTime = DateFormat('MMM dd, yyyy   hh:mm a');
+  DateFormat dateWithoutTime = DateFormat('MMM dd, yyyy');
+
  }
  const hiveBoxName = 'rideOnBox';
  
@@ -16,3 +18,4 @@ const hkUser = 'user';
 const hkIsAppInitialized = 'isappinitialized';
 const hkIsWorkThrough = 'isWorkThrough';
 const hkAddressType = 'addressType';
+const googleAPIKey = 'AIzaSyDEpDXwtBUf2Yb4eooum8IFoBecu-ioooc';

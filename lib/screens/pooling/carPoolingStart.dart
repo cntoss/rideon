@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
-import 'package:rideon/services/utils/extension.dart';
+import 'package:rideon/models/pooling/sharingModel.dart';
+import 'package:rideon/screens/pooling/passengerScreen.dart';
+import 'package:rideon/screens/pooling/shareSearching.dart';
 
 class CarPoolingFirst extends StatefulWidget {
   @override
@@ -19,16 +21,20 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
 
   DateTime _selectedDate;
   TextEditingController _dateController = TextEditingController();
-  TextEditingController _passenger = TextEditingController();
 
   List<bool> _isFilled = [true, true, false];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var passenger = context.read<PassengerCounter>();
+    passenger.value = 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var passenger = Provider.of<PassengerCounter>(context);
-
-
-    return  Scaffold(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: Container(
@@ -41,10 +47,6 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                   keyboardType: TextInputType.streetAddress,
                   controller: _fromAddress,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.mail_outline_outlined,
-                        color: Colors.grey,
-                      ),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24)),
                       errorStyle: Constant.errorStyle,
@@ -57,6 +59,13 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                 ),
               ),
             ),
+            IconButton(
+                padding: EdgeInsets.only(bottom: 5),
+                icon: Icon(
+                  Icons.swap_vert_sharp,
+                  size: 40,
+                ),
+                onPressed: () {}),
             Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -64,10 +73,6 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                   keyboardType: TextInputType.streetAddress,
                   controller: _toAddress,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.mail_outline_outlined,
-                      color: Colors.grey,
-                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24)),
                     errorStyle: Constant.errorStyle,
@@ -90,55 +95,55 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                   onPressed: () => _selectDate(context),
                 ),
                 OpenContainer(
-                  closedElevation: 0,
-                  openColor: Theme.of(context).scaffoldBackgroundColor,
-                  closedColor: Theme.of(context).scaffoldBackgroundColor,
-                  openBuilder: (BuildContext context,
-                      void Function({Object returnValue}) action) {
-                    return Center(
-                        child: PassengerScreen(
-                      controller: _passenger,
-                    ));
-                  },
-                  closedBuilder:
-                      (BuildContext context, void Function() action) {
-                    return Padding(
-                        padding: const EdgeInsets.only(right: 30.0),
-                        child: Text(
-                            passenger.value == 0
-                                ? 'Passenger'
-                                : passenger.value.toString(),
-                            style: TextStyle(
-                                fontSize: 20,
-                                wordSpacing: 2,
-                                color: Colors.white,
-                                letterSpacing: 2),
-                          ),
-                        );
-                        /* child: Consumer<PassengerCounter>(
-                          builder: (context, passenger, child) => Text(
-                            passenger.value == 0
-                                ? 'Passenger'
-                                : passenger.value.toString(),
-                            style: TextStyle(
-                                fontSize: 20,
-                                wordSpacing: 2,
-                                color: Colors.white,
-                                letterSpacing: 2),
-                          ),
-                        ));
-  */                 },
-                ),
+                    closedElevation: 0,
+                    openColor: Theme.of(context).scaffoldBackgroundColor,
+                    closedColor: Theme.of(context).scaffoldBackgroundColor,
+                    openBuilder: (BuildContext context,
+                        void Function({Object returnValue}) action) {
+                      return Center(child: PassengerScreen());
+                    },
+                    closedBuilder:
+                        (BuildContext context, void Function() action) {
+                      return Padding(
+                          padding: const EdgeInsets.only(right: 30.0),
+                          child: Consumer<PassengerCounter>(
+                            builder: (context, passenger, child) => Text(
+                              passenger.value == 0
+                                  ? 'Passenger'
+                                  : passenger.value.toString(),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  wordSpacing: 2,
+                                  color: Colors.white,
+                                  letterSpacing: 2),
+                            ),
+                          ));
+                    }),
               ],
             ),
             Consumer<PassengerCounter>(
-                builder: (context, passenger, child) =>
-                    !_isFilled.contains(false) && passenger.value != 0
-                        ? ElevatedButton(
-                            child: Text('Search'),
-                            onPressed: () {},
-                          )
-                        : Container())
+                builder: (context, passenger, child) => !_isFilled
+                            .contains(false) &&
+                        passenger.value != 0
+                    ? ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 8),
+                          child: Text('Search'),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CarShareSearching(
+                                      SharingModel(
+                                          fromLocation: "HatKhola, Biratnagar",
+                                          toLocation: "DarbarMargh Kathmandu",
+                                          passenger: passenger.value,
+                                          date: _selectedDate))));
+                        },
+                      )
+                    : Container())
           ]),
         ),
       ),
@@ -177,114 +182,5 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
         _isFilled[2] = true;
       });
     }
-  }
-}
-
-class PassengerScreen extends StatefulWidget {
-  final TextEditingController controller;
-  PassengerScreen({this.controller});
-  @override
-  _PassengerScreenState createState() => _PassengerScreenState();
-}
-
-class _PassengerScreenState extends State<PassengerScreen> {
-  int countPassenger;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    countPassenger = widget.controller.text.isNullOrEmpty()
-        ? 1
-        : int.parse(widget.controller.text);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-        var passenger = Provider.of<PassengerCounter>(context);
-
-    return  WillPopScope(
-      onWillPop: () async {
-       // var passenger = context.read<PassengerCounter>();
-        if (passenger.value == 0) {
-          passenger.increment();
-        }
-        return true;
-      },
-      child: Scaffold(
-        body: Container(
-            margin: EdgeInsets.only(
-                left: 50,
-                top: MediaQuery.of(context).size.height / 3,
-                right: 50),
-            child: Column(
-              children: [
-                Text(
-                  'Select Number of seats to book',
-                  style: Constant.titleWhite.copyWith(fontSize: 22),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                          icon: countPassenger > 1
-                              ? Icon(Icons.remove_circle_outline_outlined)
-                              : Icon(Icons.remove_circle),
-                          iconSize: 50,
-                          color: countPassenger > 1
-                              ? Colors.blueGrey
-                              : Colors.black38,
-                          onPressed: () {
-                           // var passenger = context.read<PassengerCounter>();
-                            if (passenger.value > 1) {
-                              passenger.decrement();
-                            }
-                          }),
-                      /* Consumer<PassengerCounter>(
-                          builder: (context, passenger, child) => Text(
-                                passenger.value == 0
-                                    ? '1'
-                                    : passenger.value.toString(),
-                                style: Constant.titleWhite,
-                              )), */
-                              Text(
-                                passenger.value == 0
-                                    ? '1'
-                                    : passenger.value.toString(),
-                                style: Constant.titleWhite,
-                              ),
-                      IconButton(
-                          icon: countPassenger > 7
-                              ? Icon(Icons.add_circle_rounded)
-                              : Icon(Icons.add_circle_outline),
-                          iconSize: 50,
-                          color: countPassenger < 8
-                              ? Colors.blueGrey
-                              : Colors.black38,
-                          onPressed: () {
-                           // var passenger = context.read<PassengerCounter>();
-                            if (passenger.value < 8) {
-                              passenger.increment();
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                    onPressed: () => _back(), child: Text('Continue'))
-              ],
-            )),
-      ),
-    );
-  }
-
-  _back() {
-    setState(() {
-      widget.controller.text = countPassenger.toString();
-    });
-    Navigator.pop(context);
   }
 }

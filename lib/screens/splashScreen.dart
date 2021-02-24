@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rideon/screens/login/initialLandingPage.dart';
+import 'package:rideon/services/helper/userService.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -13,7 +15,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(Duration(seconds: 3)).then((value) {
-
+SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    UserService().setIsWorkThrough();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

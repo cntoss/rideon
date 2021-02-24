@@ -4,6 +4,7 @@ import 'package:rideon/common/theme.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginPage.dart';
+import 'package:rideon/screens/login/loginwrapper.dart';
 import 'package:rideon/screens/splashScreen.dart';
 import 'package:rideon/services/helper/hiveService.dart';
 import 'package:rideon/services/helper/userService.dart';
@@ -21,9 +22,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-       /*  ChangeNotifierProvider(
+        ChangeNotifierProvider(
           create: (context) => PassengerCounter(),
-        ), */
+        ),
         Provider(
           create: (_) => LoginManger(),
         )
@@ -45,12 +46,12 @@ class MyApp extends StatelessWidget {
       //home: LoginPage(),
       //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
-      //initialRoute: UserService().isLogin ? '/home' : '/',
-      initialRoute: '/home',
+      initialRoute: UserService().isWorkThrough ? '/login' : '/',
+      //initialRoute: '/home',
       routes: {
-        //'/': (context) => SplashScreen(),
+       // '/': (context) => SplashScreen(),
         '/': (context) => HomePageWrapper(),
-        '/login': (context) => LoginPage(),
+        '/login': (context) => LoginWrapper(),
         '/home': (context) => HomePageWrapper(),
       },
     );
