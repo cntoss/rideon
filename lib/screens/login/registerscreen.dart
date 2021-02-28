@@ -31,7 +31,6 @@ class _RegistrationState extends State<Registration> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _nameCotroler = TextEditingController(text: "");
     _phoneNumberCOntroller = TextEditingController(text: "");
@@ -46,7 +45,6 @@ class _RegistrationState extends State<Registration> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _phoneNumberCOntroller.dispose();
     _passwordCOntroller.dispose();

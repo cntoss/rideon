@@ -3,7 +3,6 @@ import 'package:rideon/config/constant.dart';
 import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/login/registerscreen.dart';
 import 'package:rideon/screens/widgets/appButton.dart';
-import 'package:rideon/screens/widgets/customButton.dart';
 
 class InitialLandingPage extends StatelessWidget {
   @override

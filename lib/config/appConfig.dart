@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 /// Declare globals that are used frequently in application
@@ -15,7 +16,13 @@ class AppConfig {
  
 const hkEncryptionKey = "hkKey";
 const hkUser = 'user';
-const hkIsAppInitialized = 'isappinitialized';
+const hkIsLoging = 'isLogin';
 const hkIsWorkThrough = 'isWorkThrough';
 const hkAddressType = 'addressType';
-const googleAPIKey = 'AIzaSyDEpDXwtBUf2Yb4eooum8IFoBecu-ioooc';
+
+const googleAPIKey = 'AIzaSyA8yyji0eV-0jkNXg-yFhIRXUa5bIChX78';
+const double CAMERA_ZOOM = 16;
+const double CAMERA_TILT = 80;
+const double CAMERA_BEARING = 30;
+const LatLng SOURCE_LOCATION = LatLng(27.6844713, 85.3254059);
+const LatLng DEST_LOCATION = LatLng(27.6431663, 85.2664908);

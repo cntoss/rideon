@@ -11,7 +11,7 @@ class LoginWrapper extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: loginManager.currentState,
       builder: (BuildContext context,LoginStates currentState, Widget child) {
-      return  currentState==LoginStates.loggedIn ?HomePageWrapper(): LoginPage() ;
+      return  currentState==LoginStates.loggedIn ? HomePageWrapper(): LoginPage() ;
       },
     );
   }

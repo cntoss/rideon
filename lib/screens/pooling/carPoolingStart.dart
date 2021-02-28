@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,7 +24,6 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     var passenger = context.read<PassengerCounter>();
     passenger.value = 0;

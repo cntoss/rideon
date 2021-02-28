@@ -4,7 +4,6 @@ import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/profile/profileScreen.dart';
 import 'package:rideon/screens/setting/savedAddress.dart';
-import 'package:rideon/services/helper/hiveService.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
 import 'package:rideon/services/utils/extension.dart';
@@ -135,7 +134,7 @@ class _SettingScreenState extends State<SettingScreen> {
               title: 'Privacy Policy',
             )),
             customCard(
-                child: GestureDetector(
+                child: InkWell(
               onTap: () {
                 Provider.of<LoginManger>(context, listen: false)
                     .logout(() => print("error logout"));

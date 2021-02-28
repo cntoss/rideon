@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/models/driverModel.dart';
@@ -23,7 +21,7 @@ class _CarShareSearchingState extends State<CarShareSearching> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     _fetchSearchResult();
   }
 
@@ -140,7 +138,7 @@ class _SharingResultState extends State<SharingResult> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    //var width = MediaQuery.of(context).size.width;
     return CustomCard(
         color: Color(0xff05a74b),
         child: Stack(

@@ -3,11 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:rideon/common/theme.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
-import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/login/loginwrapper.dart';
 import 'package:rideon/screens/splashScreen.dart';
 import 'package:rideon/services/helper/hiveService.dart';
-import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
 import 'package:rideon/services/theme/theme_provider.dart';
 import 'package:rideon/services/utils/uiModifiers.dart';
@@ -46,11 +44,11 @@ class MyApp extends StatelessWidget {
       //home: LoginPage(),
       //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
-      initialRoute: UserService().isWorkThrough ? '/login' : '/',
-      //initialRoute: '/home',
+     // initialRoute: UserService().isWorkThrough ? '/login' : '/',
+      initialRoute: '/login',
       routes: {
-       // '/': (context) => SplashScreen(),
-        '/': (context) => HomePageWrapper(),
+        // '/': (context) => SplashScreen(),
+        '/slash': (context) => SplashScreen(),
         '/login': (context) => LoginWrapper(),
         '/home': (context) => HomePageWrapper(),
       },

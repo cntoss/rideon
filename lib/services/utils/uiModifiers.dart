@@ -22,7 +22,6 @@ class WidgetToSliverBuilder extends StatefulWidget
   _WidgetToSliverBuilderState createState() => _WidgetToSliverBuilderState();
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size(width, AppBar().preferredSize.height + 24.0);
 }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 class AppButton{
 

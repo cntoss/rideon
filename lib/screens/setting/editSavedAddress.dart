@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/savedAddressModel.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
-import 'package:rideon/screens/widgets/circleIcon.dart';
 
 class EditavedAddress extends StatefulWidget {
   EditavedAddress({this.address, Key key}) : super(key: key);
@@ -20,7 +19,7 @@ class _EditavedAddressState extends State<EditavedAddress> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
+    //var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(title: Text("Save Address"),

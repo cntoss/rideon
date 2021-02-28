@@ -11,10 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  animations: ^1.0.0
   cupertino_icons: ^1.0.0
+  dio: ^3.0.10
   intl: ^0.16.1
   provider: ^4.3.3
-  animations: ^1.0.0
   hive: ^1.4.4+1
   hive_flutter: ^0.3.0+2
   flutter_secure_storage: ^3.3.5
@@ -22,7 +23,6 @@ dependencies:
   location: ^3.0.0
   flutter_polyline_points: ^0.2.4
   google_maps_place_picker: ^1.0.1
-
 
 dev_dependencies:
   flutter_test:

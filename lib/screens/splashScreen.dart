@@ -27,8 +27,8 @@ SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    //var height = MediaQuery.of(context).size.height;
+    //var width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xffFFEE58),
       body: Container(

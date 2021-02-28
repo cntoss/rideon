@@ -1,22 +1,17 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/models/pooling/counterModel.dart';
+import 'package:rideon/models/googleModel/locationModel.dart';
+import 'package:rideon/screens/home/loactionSetScreen.dart';
+import 'package:rideon/services/google/geocodingService.dart';
 import '../pooling/carPoolingStart.dart';
+import 'package:rideon/models/googleModel/GeocodingModel.dart';
 
-const double CAMERA_ZOOM = 16;
-const double CAMERA_TILT = 80;
-const double CAMERA_BEARING = 30;
-const LatLng SOURCE_LOCATION = LatLng(27.6844713, 85.3254059);
-const LatLng DEST_LOCATION = LatLng(27.6431663, 85.2664908);
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,25 +22,26 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   LocationData currentLocation;
-// a reference to the destination location
-  LocationData destinationLocation;
-// wrapper around the location API
   Location location;
-
+//current location all info
+  LocationDetail locationDetail = LocationDetail();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     location = new Location();
     setInitialLocation();
   }
 
   void setInitialLocation() async {
-    currentLocation = await location.getLocation();
-    destinationLocation = LocationData.fromMap({
-      "latitude": DEST_LOCATION.latitude,
-      "longitude": DEST_LOCATION.longitude
-    });
+    currentLocation = await location.getLocation(); 
+    locationDetail = await GeocodingService().getPlaceDetailFromLocation(
+        LocationModel(
+            lat: currentLocation.latitude, lng: currentLocation.longitude));
+    /*  final coordinates = new Coordinates(currentLocation.latitude, currentLocation.longitude);
+   var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+   var first = addresses.first;
+  print("${first.featureName} : ${first.addressLine}"); */
+    print(locationDetail.toJson());
   }
 
   @override
@@ -113,21 +109,10 @@ class _HomePageState extends State<HomePage>
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
+                                     Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => PlacePicker(
-                                        apiKey:
-                                            googleAPIKey, // Put YOUR OWN KEY here.
-                                        onPlacePicked: (result) {
-                                          print(result.addressComponents);
-                                          Navigator.of(context).pop();
-                                        },
-                                        initialPosition: LatLng(
-                                            currentLocation.latitude,
-                                            currentLocation.latitude),
-                                        useCurrentLocation: true,
-                                      ),
+                                      builder: (context) => LocationSetScreen(locationDetail),
                                     ),
                                   );
                                 },

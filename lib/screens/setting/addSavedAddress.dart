@@ -18,7 +18,6 @@ class _AddSavedAddressState extends State<AddSavedAddress> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _typeController =
         TextEditingController(text: widget.savedAddressModel.locationName);

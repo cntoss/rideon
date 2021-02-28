@@ -9,10 +9,7 @@ class PassengerScreen extends StatefulWidget {
 }
 
 class _PassengerScreenState extends State<PassengerScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-  }
+  
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/models/user/userModel.dart';
-import 'package:rideon/screens/login/loginPage.dart';
-
 import 'package:rideon/services/helper/userService.dart';
 
 enum LoginStates { loggedIn, loggedOut, loading, error }
@@ -47,7 +43,7 @@ class LoginManger {
         _notifier.value = LoginStates.loggedOut;
       });
     } else {
-      UserService().setLogin();
+      UserService().setLogin(setLoginTo: true);
       //UserService().addUser(user: user);//todo:login
       _notifier.value = LoginStates.loggedIn;
     }
@@ -77,7 +73,7 @@ class LoginManger {
       });
       return false;
     } else {
-      UserService().setLogin();
+      UserService().setLogin(setLoginTo: true);
       UserService().addUser(user: user); //todo:login
       _notifier.value = LoginStates.loggedIn;
       return true;
@@ -86,7 +82,7 @@ class LoginManger {
 
   logout(Function() onError) async {
     var result;
-    await Future.delayed(Duration(seconds: 0), () {
+    await Future.delayed(Duration(seconds: 1), () {
       //todo hit logout ko api
       result = true;
     });
@@ -94,14 +90,9 @@ class LoginManger {
       //todo error huda error dekhaune
       onError();
     } else {
-      UserService().setLogin(setLoginTo: false);
       //todo clear app data
       _notifier.value = LoginStates.loggedOut;
-      Navigator.pushReplacement(
-          AppConfig.navigatorKey.currentContext,
-          MaterialPageRoute(
-            builder: (context) => LoginPage(),
-          ));
+      UserService().removeUser();
     }
   }
 }

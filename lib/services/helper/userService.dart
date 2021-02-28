@@ -15,11 +15,12 @@ class UserService {
   }
 
   void removeUser() {
+    setLogin(setLoginTo: false);
     Navigator.pushAndRemoveUntil(
         AppConfig.navigatorKey.currentState.overlay.context,
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
         (Route<dynamic> route) => false);
-    setLogin(setLoginTo: false);
+
     print('Removing User');
     _box.delete(hkUser);
   }
@@ -36,13 +37,13 @@ class UserService {
     return _box.get(hkUser, defaultValue: User(id: null));
   }
 
-  void setLogin({bool setLoginTo = true}) {
-    _box.put(hkIsAppInitialized, setLoginTo);
+  void setLogin({bool setLoginTo = false}) {
+    _box.put(hkIsLoging, setLoginTo);
   }
 
-  bool get isLogin => _box.get(hkIsAppInitialized, defaultValue: false);
+  bool get isLogin => _box.get(hkIsLoging, defaultValue: false);
 
-  void setIsWorkThrough({bool setWorkThrough = true}) {
+  void setIsWorkThrough({bool setWorkThrough = false}) {
     _box.put(hkIsWorkThrough, setWorkThrough);
   }
 

@@ -35,9 +35,9 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
   ];
 
   List<SavedAddressModel> _saveAddress = List();
+  
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     for (var x in _jsonString) _saveAddress.add(SavedAddressModel.fromJson(x));
   }

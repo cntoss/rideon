@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/forgotPassword.dart';
 import 'package:rideon/screens/login/registerscreen.dart';
 import 'package:rideon/screens/widgets/appButton.dart';
@@ -22,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _phoneNumberCOntroller = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
@@ -31,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _phoneNumberCOntroller.dispose();
     _passwordCOntroller.dispose();
@@ -57,133 +54,148 @@ class _LoginPageState extends State<LoginPage> {
             Form(
               key: _formKey,
               child: CustomCard(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: TextFormField(
-                        controller: _phoneNumberCOntroller,
-                        onFieldSubmitted: (v) {
-                          _pwFocus.requestFocus();
-                        },
-                        keyboardType: TextInputType.phone,
-                        maxLength: 10,
-                        validator: (s) {
-                          if (s.trim().length < 6)
-                            return Constant.phoneValidationError;
-                          else
-                            return null;
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.person,
-                            color: Colors.grey,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: TextFormField(
+                          controller: _phoneNumberCOntroller,
+                          onFieldSubmitted: (v) {
+                            _pwFocus.requestFocus();
+                          },
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          validator: (s) {
+                            if (s.trim().length < 6)
+                              return Constant.phoneValidationError;
+                            else
+                              return null;
+                          },
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24)),
+                            errorStyle: Constant.errorStyle,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide(color: Colors.green)),
+                            counterText: '',
+                            hintText: "Phone Number",
                           ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24)),
-                          errorStyle: Constant.errorStyle,
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide(color: Colors.green)),
-                          counterText: '',
-                          hintText: "Phone Number",
                         ),
                       ),
-                    ),
-                    _PasswordFieldWidget(
-                        controller: _passwordCOntroller, node: _pwFocus),
-                    OpenContainer(
-                      closedElevation: 0,
-                      openColor: Theme.of(context).scaffoldBackgroundColor,
-                      closedColor: Constant.cardColor,
-                      openBuilder: (BuildContext context,
-                          void Function({Object returnValue}) action) {
-                        return Center(child: ForgotPassword());
-                      },
-                      closedBuilder:
-                          (BuildContext context, void Function() action) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "Forgot password?",
-                              style: TextStyle(
-                                  color: Constant.textColor, fontSize: 16),
+                      _PasswordFieldWidget(
+                          controller: _passwordCOntroller, node: _pwFocus),
+                      OpenContainer(
+                        closedElevation: 0,
+                        openColor: Theme.of(context).scaffoldBackgroundColor,
+                        closedColor: Constant.cardColor,
+                        openBuilder: (BuildContext context,
+                            void Function({Object returnValue}) action) {
+                          return Center(child: ForgotPassword());
+                        },
+                        closedBuilder:
+                            (BuildContext context, void Function() action) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                "Forgot password?",
+                                style: TextStyle(
+                                    color: Constant.textColor, fontSize: 16),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                          );
+                        },
+                      ),
+                      ValueListenableBuilder<LoginStates>(
+                        valueListenable: _manager.currentState,
+                        builder: (con, val, _) {
+                          if (val == LoginStates.error)
+                            showLoginFailMessage(context, _manager);
+                          return AnimatedSwitcher(
+                            child: val == LoginStates.loading
+                                ? SizedBox(
+                                    key: ValueKey("1"),
+                                    height: 50,
+                                    child: Center(
+                                        child: CircularProgressIndicator()))
+                                : SizedBox(
+                                    /* width:
+                                          MediaQuery.of(context).size.width * .554,*/
+                                    key: ValueKey("2"),
+                                    height: 50,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Registration(),
+                                                ));
+                                          },
+                                          child: RichText(
+                                            text: TextSpan(
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                                children: [
+                                                  TextSpan(
+                                                    text: 'Not account? ',
+                                                  ),
+                                                  TextSpan(
+                                                      text: 'sign up',
+                                                      style: TextStyle(
+                                                          color: Constant
+                                                              .textColor))
+                                                ]),
+                                          ),
+                                        ),
+                                        AppButton().appButton(
+                                          small: true,
+                                          text: "Login",
+                                          onTap: () async {
+                                            FocusScope.of(context).unfocus();
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              _manager.login(
+                                                  phone: _phoneNumberCOntroller
+                                                      .text,
+                                                  password:
+                                                      _phoneNumberCOntroller
+                                                          .text);
+                                              Navigator.pushReplacementNamed(
+                                                  context, '/home');
+
+                                              /*  Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                HomePageWrapper(),
+                                          )); */
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    )),
+                            duration: Duration(milliseconds: 400),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            ValueListenableBuilder<LoginStates>(
-              valueListenable: _manager.currentState,
-              builder: (con, val, _) {
-                if (val == LoginStates.error)
-                  showLoginFailMessage(context, _manager);
-                return AnimatedSwitcher(
-                  child: val == LoginStates.loading
-                      ? SizedBox(
-                          key: ValueKey("1"),
-                          height: 50,
-                          child: Center(child: CircularProgressIndicator()))
-                      : SizedBox(
-                          /* width:
-                                        MediaQuery.of(context).size.width * .554,*/
-                          key: ValueKey("2"),
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Registration(),
-                                      ));
-                                },
-                                child: RichText(
-                                  text: TextSpan(
-                                      style: TextStyle(color: Colors.black),
-                                      children: [
-                                        TextSpan(
-                                          text: 'Not account? ',
-                                        ),
-                                        TextSpan(
-                                            text: 'sign up',
-                                            style: TextStyle(
-                                                color: Constant.textColor))
-                                      ]),
-                                ),
-                              ),
-                              AppButton().appButton(
-                                small: true,
-                                text: "Login",
-                                onTap: () async {
-                                  FocusScope.of(context).unfocus();
-                                  if (_formKey.currentState.validate()) {
-                                    _manager.login(phone: _phoneNumberCOntroller.text, password: _phoneNumberCOntroller.text);
-                                         Navigator.pushReplacementNamed(context, '/home');
-
-                                   /*  Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              HomePageWrapper(),
-                                        )); */
-                                  }
-                                },
-                              ),
-                            ],
-                          )),
-                  duration: Duration(milliseconds: 400),
-                );
-              },
             ),
           ],
         ),
