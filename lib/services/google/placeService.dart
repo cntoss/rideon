@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:rideon/config/appConfig.dart';
 import 'package:dio/dio.dart';
-import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 
 class Suggestion {

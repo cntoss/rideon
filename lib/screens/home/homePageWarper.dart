@@ -38,9 +38,9 @@ class _HomePageWrapperState extends State<HomePageWrapper>
   }
 
   pagePositionListner() {
-    op.value != (_pageController.page + .5).toInt()
-        ? op.value = (_pageController.page + 0.5).toInt()
-        : null;
+    if(op.value != (_pageController.page + .5).toInt())
+         op.value = (_pageController.page + 0.5).toInt();
+        
     print(currentpage);
     setState(() {
       currentpage = op.value;

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -46,7 +48,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
     CameraPosition _initialCameraPosition = CameraPosition(
@@ -72,6 +73,14 @@ class _HomePageState extends State<HomePage>
             compassEnabled: true,
             tiltGesturesEnabled: false,
             initialCameraPosition: _initialCameraPosition,
+            gestureRecognizers: Set()
+        ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
+        ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
+        ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
+        ..add(Factory<HorizontalDragGestureRecognizer>(
+            () => HorizontalDragGestureRecognizer()))
+        ..add(Factory<VerticalDragGestureRecognizer>(
+            () => VerticalDragGestureRecognizer())),
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
@@ -194,7 +203,6 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 

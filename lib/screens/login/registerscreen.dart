@@ -23,7 +23,6 @@ class _RegistrationState extends State<Registration> {
       _econtact,
       _emailController;
   String gender;
-  bool _isAccepted;
   final _formKey = GlobalKey<FormState>();
   FocusNode _pwFocus;
   DateTime _selectedDate;

@@ -13,16 +13,21 @@ class PinInformation {
   String locationName;
   Color labelColor;
 
-  PinInformation({this.pinPath, this.avatarPath, this.location, this.locationName, this.labelColor});
+  PinInformation(
+      {this.pinPath,
+      this.avatarPath,
+      this.location,
+      this.locationName,
+      this.labelColor});
 }
-
 
 class RouteScreen extends StatefulWidget {
   RouteScreen({this.sourceDetail, this.destinationDetail});
   final LocationDetail sourceDetail;
   final LocationDetail destinationDetail;
   @override
-  State<StatefulWidget> createState() => RouteScreenState(this.sourceDetail, this.destinationDetail);
+  State<StatefulWidget> createState() =>
+      RouteScreenState(this.sourceDetail, this.destinationDetail);
 }
 
 class RouteScreenState extends State<RouteScreen> {
@@ -40,7 +45,7 @@ class RouteScreenState extends State<RouteScreen> {
   BitmapDescriptor destinationIcon;
 // the user's initial location and current location
 // as it moves
-  LocationData currentLocation ;
+  LocationData currentLocation;
 // a reference to the destination location
   LocationData destinationLocation;
 // wrapper around the location API
@@ -61,7 +66,10 @@ class RouteScreenState extends State<RouteScreen> {
     // create an instance of Location
     location = new Location();
     polylinePoints = PolylinePoints();
-    currentLocation = LocationData.fromMap({"latitude": sourceDetail.geometry.location.lat,"longitude": sourceDetail.geometry.location.lng});
+    currentLocation = LocationData.fromMap({
+      "latitude": sourceDetail.geometry.location.lat,
+      "longitude": sourceDetail.geometry.location.lng
+    });
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
     location.onLocationChanged.listen((LocationData cLoc) {
@@ -75,8 +83,7 @@ class RouteScreenState extends State<RouteScreen> {
     setSourceAndDestinationIcons();
     // set the initial location
     setInitialLocation();
-        _getPolyline();
-
+    _getPolyline();
   }
 
   void setSourceAndDestinationIcons() async {
@@ -103,11 +110,11 @@ class RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: CAMERA_ZOOM,
-          tilt: CAMERA_TILT,
-          bearing: CAMERA_BEARING);
-    
+        target: LatLng(currentLocation.latitude, currentLocation.longitude),
+        zoom: CAMERA_ZOOM,
+        tilt: CAMERA_TILT,
+        bearing: CAMERA_BEARING);
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -116,14 +123,16 @@ class RouteScreenState extends State<RouteScreen> {
               compassEnabled: true,
               tiltGesturesEnabled: false,
               markers: _markers,
-            polylines: Set<Polyline>.of(polylines.values),
+              polylines: Set<Polyline>.of(polylines.values),
               mapType: MapType.normal,
               initialCameraPosition: initialCameraPosition,
               onTap: (LatLng loc) {
-                pinPillPosition = -100;
+                setState(() {
+                  pinPillPosition = -100;
+                });
               },
               onMapCreated: (GoogleMapController controller) {
-                controller.setMapStyle(Utils.mapStyles);
+                //controller.setMapStyle(Utils.mapStyles);
                 _controller.complete(controller);
                 // my map has completed being created;
                 // i'm ready to show the pins on the map
@@ -186,21 +195,22 @@ class RouteScreenState extends State<RouteScreen> {
     // for more info follow this tutorial
   }
 
-
- _addPolyLine() {
+  _addPolyLine() {
     PolylineId id = PolylineId("poly");
     Polyline polyline = Polyline(
-        polylineId: id, color: Colors.red, points: polylineCoordinates);
+      
+        polylineId: id, color: Colors.blue, points: polylineCoordinates);
     polylines[id] = polyline;
+    
     setState(() {});
   }
 
   _getPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        googleAPIKey,
-        PointLatLng(currentLocation.latitude, currentLocation.longitude),
-        PointLatLng(destinationLocation.longitude, destinationLocation.longitude),
-        travelMode: TravelMode.driving,     
+      googleAPIKey,
+      PointLatLng(currentLocation.latitude, currentLocation.longitude),
+      PointLatLng(destinationLocation.latitude, destinationLocation.longitude),
+      travelMode: TravelMode.driving,
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
@@ -210,15 +220,13 @@ class RouteScreenState extends State<RouteScreen> {
     _addPolyLine();
   }
 
-  
-
   void updatePinOnMap() async {
     // create a new CameraPosition instance
     // every time the location changes, so the camera
     // follows the pin as it moves with an animation
     CameraPosition cPosition = CameraPosition(
       zoom: CAMERA_ZOOM,
-      tilt: CAMERA_TILT,
+      tilt: 0,
       bearing: CAMERA_BEARING,
       target: LatLng(currentLocation.latitude, currentLocation.longitude),
     );
@@ -250,236 +258,79 @@ class RouteScreenState extends State<RouteScreen> {
   }
 }
 
-class Utils {
-  static String mapStyles = '''[
-  {
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.icon",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.stroke",
-    "stylers": [
-      {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.land_parcel",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#bdbdbd"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#ffffff"
-      }
-    ]
-  },
-  {
-    "featureType": "road.arterial",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dadada"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "featureType": "road.local",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#c9c9c9"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  }
-]''';
-}
-
-
-
 class MapPinPillComponent extends StatefulWidget {
+  final double pinPillPosition;
+  final PinInformation currentlySelectedPin;
 
- final double pinPillPosition;
- final PinInformation currentlySelectedPin;
-
-  MapPinPillComponent({ this.pinPillPosition, this.currentlySelectedPin});
+  MapPinPillComponent({this.pinPillPosition, this.currentlySelectedPin});
 
   @override
   State<StatefulWidget> createState() => MapPinPillComponentState();
 }
 
 class MapPinPillComponentState extends State<MapPinPillComponent> {
-
   @override
   Widget build(BuildContext context) {
-
     return AnimatedPositioned(
-        bottom: widget.pinPillPosition,
-        right: 0,
-        left: 0,
-        duration: Duration(milliseconds: 200),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              margin: EdgeInsets.all(20),
-              height: 70,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(blurRadius: 20, offset: Offset.zero, color: Colors.grey.withOpacity(0.5))
-                ]
+      bottom: widget.pinPillPosition,
+      right: 0,
+      left: 0,
+      duration: Duration(milliseconds: 200),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.all(20),
+          height: 70,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    blurRadius: 20,
+                    offset: Offset.zero,
+                    color: Colors.grey.withOpacity(0.5))
+              ]),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 50,
+                height: 50,
+                margin: EdgeInsets.only(left: 10),
+                child: ClipOval(
+                    child: Image.asset(widget.currentlySelectedPin.avatarPath,
+                        fit: BoxFit.cover)),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: 50, height: 50,
-                    margin: EdgeInsets.only(left: 10),
-                    child: ClipOval(child: Image.asset(widget.currentlySelectedPin.avatarPath, fit: BoxFit.cover )),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(widget.currentlySelectedPin.locationName,
+                          style: TextStyle(
+                              color: widget.currentlySelectedPin.labelColor)),
+                      Text(
+                          'Latitude: ${widget.currentlySelectedPin.location.latitude.toString()}',
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text(
+                          'Longitude: ${widget.currentlySelectedPin.location.longitude.toString()}',
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    ],
                   ),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(widget.currentlySelectedPin.locationName, style: TextStyle(color: widget.currentlySelectedPin.labelColor)),
-                          Text('Latitude: ${widget.currentlySelectedPin.location.latitude.toString()}', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                          Text('Longitude: ${widget.currentlySelectedPin.location.longitude.toString()}', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Image.asset(widget.currentlySelectedPin.pinPath, width: 50, height: 50),
-                  )
-                ],
+                ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Image.asset(widget.currentlySelectedPin.pinPath,
+                    width: 50, height: 50),
+              )
+            ],
           ),
-        );
+        ),
+      ),
+    );
   }
-
 }

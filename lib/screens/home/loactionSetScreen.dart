@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:rideon/config/appConfig.dart';
+import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/screens/maps/routeScreen.dart';
 import 'package:rideon/screens/widgets/animatedPin.dart';
@@ -78,15 +78,13 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                         child: TextField(
                           controller: _fromController,
                           onChanged: (x) async {
-                            if (!_fromCLear && x.trim().length > 1)
+                            setState(() {
+                              query = x;
+                            });
+                            if (!_fromCLear &&
+                                _fromController.text.trim().length > 1)
                               setState(() {
                                 _fromCLear = true;
-                                query = x;
-                              });
-                            else if (_fromCLear && x.trim().length < 1)
-                              setState(() {
-                                _fromCLear = false;
-                                query = '';
                               });
                             currentLocation = CurrentLocation.fromLocation;
                           },
@@ -95,7 +93,15 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                           decoration: InputDecoration(
                               hintText: "From Address",
                               border: InputBorder.none,
-                              suffixIcon: _fromCLear ? Icon(Icons.clear) : Container(),
+                              suffixIcon: IconButton(
+                                icon:
+                                    _fromCLear ? Icon(Icons.clear) : Icon(null),
+                                onPressed: () => setState(() {
+                                  query = '';
+                                  _fromController.clear();
+                                  _fromCLear = false;
+                                }),
+                              ),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 8)
                               /*  focusedBorder: OutlineInputBorder(
@@ -129,23 +135,27 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: TextField(
                           controller: _toController,
-                          onChanged: (x) async {
-                           if (!_toClear && x.trim().length > 1)
+                          onChanged: (x) {
+                            setState(() {
+                              query = x;
+                            });
+                            if (!_toClear && x.trim().length > 1)
                               setState(() {
                                 _toClear = true;
-                                query = x;
-                              });
-                            else if (_toClear && x.trim().length < 1)
-                              setState(() {
-                                _toClear = false;
-                                query = '';
                               });
                             currentLocation = CurrentLocation.toLocation;
                           },
                           maxLines: 2,
                           decoration: InputDecoration(
                             hintText: "Your destination?",
-                            suffixIcon: _toClear ? Icon(Icons.clear) : Container(),
+                            suffixIcon: IconButton(
+                              icon: _fromCLear ? Icon(Icons.clear) : Icon(null),
+                              onPressed: () => setState(() {
+                                query = '';
+                                _toController.clear();
+                                _toClear = false;
+                              }),
+                            ),
                             border: InputBorder.none,
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 8.0),
@@ -169,15 +179,12 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) => ListTile(
                                     contentPadding: EdgeInsets.all(0),
-                                    leading: MaterialButton(
-                                      onPressed: () {},
+                                    leading: Material(
                                       color: Colors.grey,
-                                      textColor: Colors.white,
                                       child: Icon(
                                         Icons.location_on,
                                         size: 20,
                                       ),
-                                      padding: EdgeInsets.all(0),
                                       shape: CircleBorder(),
                                     ),
                                     title: Transform.translate(
@@ -238,14 +245,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             MaterialPageRoute(
                               builder: (context) => PlacePicker(
                                 apiKey: googleAPIKey,
-                                usePlaceDetailSearch: false,
-                                autocompleteTypes: [],
-                                // autocompleteRadius: 10,
-                                /* onPlacePicked: (result) {
-                                  print(result);
-                                  print(result.addressComponents);
-                                  Navigator.of(context).pop();
-                                }, */
+                                //searchBarHeight: 0,
+                                usePlaceDetailSearch: true,
                                 initialPosition: SOURCE_LOCATION,
                                 useCurrentLocation: true,
                                 pinBuilder: (context, state) {
@@ -314,8 +315,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                       : FloatingCard(
                                           bottomPosition:
                                               0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                          leftPosition: 0.0,
-                                          rightPosition: 0.0,
+                                          leftPosition: 10.0,
+                                          rightPosition: 10.0,
                                           width: 500,
                                           borderRadius:
                                               BorderRadius.circular(12.0),
@@ -324,24 +325,70 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                               ? Center(
                                                   child:
                                                       CircularProgressIndicator())
-                                              : ElevatedButton(
-                                                  child: Text(selectedPlace
-                                                      .formattedAddress),
-                                                  onPressed: () {
-                                                    if (currentLocation ==
-                                                                null &&
+                                              : Column(
+                                                  children: [
+                                                    ElevatedButton(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                              '${selectedPlace.name} ${selectedPlace.formattedAddress}'),
+                                                        ),
+                                                        onPressed: () {}),
+                                                    ElevatedButton(
+                                                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Constant.cardColor)),
+                                                      child: Container(
+                                                       
+                                                        //padding: const EdgeInsets.all(8.0),
+                                                        width: MediaQuery.of(context).size.width,
+                                                        child: Center(child: Text('Select')),
+                                                      ),
+                                                      onPressed: () {
+                                                        if (currentLocation ==
+                                                                    null &&
+                                                                fromLocationModel
+                                                                        .formattedAddress ==
+                                                                    null ||
+                                                            currentLocation ==
+                                                                CurrentLocation
+                                                                    .fromLocation)
+                                                          setState(() {
+                                                            _fromController
+                                                                    .text =
+                                                                selectedPlace
+                                                                    .formattedAddress;
+                                                            fromLocationModel = LocationDetail(
+                                                                formattedAddress:
+                                                                    selectedPlace
+                                                                        .formattedAddress,
+                                                                placeId:
+                                                                    selectedPlace
+                                                                        .placeId,
+                                                                geometry:
+                                                                    Geometry());
+
                                                             fromLocationModel
-                                                                    .formattedAddress ==
-                                                                null ||
-                                                        currentLocation ==
-                                                            CurrentLocation
-                                                                .fromLocation)
-                                                      setState(() {
-                                                        _fromController.text =
-                                                            selectedPlace
-                                                                .formattedAddress;
-                                                        fromLocationModel =
-                                                            LocationDetail(
+                                                                    .geometry
+                                                                    .location =
+                                                                LocationModel(
+                                                                    lat: selectedPlace
+                                                                        .geometry
+                                                                        .location
+                                                                        .lat,
+                                                                    lng: selectedPlace
+                                                                        .geometry
+                                                                        .location
+                                                                        .lng);
+
+                                                            query = '';
+                                                          });
+                                                        else
+                                                          setState(() {
+                                                            _toController.text =
+                                                                selectedPlace
+                                                                    .name;
+                                                            toLocationModel = LocationDetail(
                                                                 formattedAddress:
                                                                     selectedPlace
                                                                         .formattedAddress,
@@ -351,54 +398,26 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                                                 geometry:
                                                                     Geometry());
 
-                                                        fromLocationModel
-                                                                .geometry
-                                                                .location =
-                                                            LocationModel(
-                                                                lat: selectedPlace
+                                                            toLocationModel
                                                                     .geometry
-                                                                    .location
-                                                                    .lat,
-                                                                lng: selectedPlace
-                                                                    .geometry
-                                                                    .location
-                                                                    .lng);
+                                                                    .location =
+                                                                LocationModel(
+                                                                    lat: selectedPlace
+                                                                        .geometry
+                                                                        .location
+                                                                        .lat,
+                                                                    lng: selectedPlace
+                                                                        .geometry
+                                                                        .location
+                                                                        .lng);
+                                                            query = '';
+                                                          });
 
-                                                        query = '';
-                                                      });
-                                                    else
-                                                      setState(() {
-                                                        _toController.text =
-                                                            selectedPlace
-                                                                .formattedAddress;
-                                                        toLocationModel =
-                                                            LocationDetail(
-                                                                formattedAddress:
-                                                                    selectedPlace
-                                                                        .formattedAddress,
-                                                                placeId:
-                                                                    selectedPlace
-                                                                        .placeId,
-                                                                geometry:
-                                                                    Geometry());
-
-                                                        toLocationModel.geometry
-                                                                .location =
-                                                            LocationModel(
-                                                                lat: selectedPlace
-                                                                    .geometry
-                                                                    .location
-                                                                    .lat,
-                                                                lng: selectedPlace
-                                                                    .geometry
-                                                                    .location
-                                                                    .lng);
-                                                        query = '';
-                                                      });
-
-                                                    Navigator.pop(context);
-                                                    _navigateToProceed();
-                                                  },
+                                                        Navigator.pop(context);
+                                                        _navigateToProceed();
+                                                      },
+                                                    )
+                                                  ],
                                                 ),
                                         );
                                 },

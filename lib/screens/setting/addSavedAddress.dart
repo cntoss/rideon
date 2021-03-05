@@ -13,7 +13,7 @@ class AddSavedAddress extends StatefulWidget {
 }
 
 class _AddSavedAddressState extends State<AddSavedAddress> {
-  TextEditingController _typeController;
+  /* TextEditingController _typeController;
   TextEditingController _locationNameController;
 
   @override
@@ -23,7 +23,7 @@ class _AddSavedAddressState extends State<AddSavedAddress> {
         TextEditingController(text: widget.savedAddressModel.locationName);
     _locationNameController =
         TextEditingController(text: widget.savedAddressModel.locationName);
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {

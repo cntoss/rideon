@@ -24,7 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _phoneNumberCOntroller = TextEditingController(text: _user.phone);
     _emailController = TextEditingController(text: _user.email ?? '');

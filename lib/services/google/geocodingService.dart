@@ -8,8 +8,8 @@ class GeocodingService {
 
   Future<LocationDetail> getPlaceDetailFromLocation(LocationModel locationModel) async {
     final request =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationModel.lat},${locationModel.lng}&key=$googleAPIKey';
-    final response = await Dio().get(request);
+        '=${locationModel.lat},${locationModel.lng}&key=$googleAPIKey';
+    final response = await Dio().get(request);https://maps.googleapis.com/maps/api/geocode/json?latlng
 
     if (response.statusCode == 200) {
       var responseDate = response.data; 

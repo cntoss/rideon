@@ -21,8 +21,8 @@ const hkIsWorkThrough = 'isWorkThrough';
 const hkAddressType = 'addressType';
 
 const googleAPIKey = 'AIzaSyA8yyji0eV-0jkNXg-yFhIRXUa5bIChX78';
-const double CAMERA_ZOOM = 16;
-const double CAMERA_TILT = 80;
-const double CAMERA_BEARING = 30;
+const double CAMERA_ZOOM = 14;
+const double CAMERA_TILT = 20;//80
+const double CAMERA_BEARING = 30;//30
 const LatLng SOURCE_LOCATION = LatLng(27.6844713, 85.3254059);
 const LatLng DEST_LOCATION = LatLng(27.6431663, 85.2664908);

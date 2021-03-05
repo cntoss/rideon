@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/savedAddressModel.dart';
 import 'package:rideon/screens/setting/addSavedAddress.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
@@ -17,18 +16,17 @@ class _AddAddressState extends State<AddAddress> {
   _AddAddressState(this._address);
   SavedAddressModel _address;
 
-  TextEditingController _typeController;
+  /* TextEditingController _typeController;
   TextEditingController _locationNameController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _typeController =
         TextEditingController(text: widget.savedAddressModel.locationName);
     _locationNameController =
         TextEditingController(text: widget.savedAddressModel.locationName);
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
