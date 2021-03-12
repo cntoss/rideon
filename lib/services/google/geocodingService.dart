@@ -3,21 +3,19 @@ import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/config/appConfig.dart';
 
-
 class GeocodingService {
-
-  Future<LocationDetail> getPlaceDetailFromLocation(LocationModel locationModel) async {
+  Future<LocationDetail> getPlaceDetailFromLocation(
+      LocationModel locationModel) async {
     final request =
-        '=${locationModel.lat},${locationModel.lng}&key=$googleAPIKey';
-    final response = await Dio().get(request);https://maps.googleapis.com/maps/api/geocode/json?latlng
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationModel.lat},${locationModel.lng}&key=$googleAPIKey';
+    final response = await Dio().get(request);
 
     if (response.statusCode == 200) {
-      var responseDate = response.data; 
+      var responseDate = response.data;
       final result = GeocodingModel.fromJson(responseDate);
       print(result);
       if (result.status == 'OK') {
-               return result.results[0];
-        
+        return result.results[0];
       }
       throw Exception(responseDate['error_message']);
     } else {

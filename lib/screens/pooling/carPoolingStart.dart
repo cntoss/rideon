@@ -2,7 +2,9 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
+import 'package:rideon/maps/src/place_search.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/passengerScreen.dart';
@@ -40,19 +42,43 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
             Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.streetAddress,
-                  controller: _fromAddress,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24)),
-                      errorStyle: Constant.errorStyle,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide(color: Colors.green)),
-                      hintText: "Leaving Form",
-                      labelStyle: Constant.whiteText),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PlaceSearch(
+                                apiKey: googleAPIKey,
+                                //searchBarHeight: 0,
+                                usePlaceDetailSearch: true,
+                                initialPosition: SOURCE_LOCATION,
+                                useCurrentLocation: true,
+                                onPlacePicked: (r) {
+                                  setState(() {
+                                    if (r.name.split(' ')[0] ==
+                                        r.formattedAddress.split(' ')[0]) {
+                                      _fromAddress.text = r.formattedAddress;
+                                    } else {
+                                      _fromAddress.text =
+                                          r.name +' '+ r.formattedAddress;
+                                    }
+                                  });
+                                })));
+                  },
+                  child: TextFormField(
+                    enabled: false,
+                    maxLines: 3,
+                    minLines: 1,
+                    keyboardType: TextInputType.streetAddress,
+                    controller: _fromAddress,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        hintText: "Leaving Form",
+                        labelStyle: Constant.whiteText),
+                  ),
                 ),
               ),
             ),

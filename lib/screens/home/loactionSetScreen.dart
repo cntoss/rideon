@@ -89,7 +89,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             currentLocation = CurrentLocation.fromLocation;
                           },
                           textAlign: TextAlign.start,
-                          maxLines: 2,
+                          maxLines: 3,
+                          minLines: 1,
                           decoration: InputDecoration(
                               hintText: "From Address",
                               border: InputBorder.none,
@@ -102,8 +103,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                   _fromCLear = false;
                                 }),
                               ),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 8)
+                              contentPadding: EdgeInsets.all(8)
                               /*  focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.green)),
@@ -145,7 +145,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               });
                             currentLocation = CurrentLocation.toLocation;
                           },
-                          maxLines: 2,
+                          maxLines: 3,
+                          minLines: 1,
                           decoration: InputDecoration(
                             hintText: "Your destination?",
                             suffixIcon: IconButton(
@@ -157,8 +158,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               }),
                             ),
                             border: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 8.0),
+                            contentPadding: EdgeInsets.all(8.0),
                           ),
                         ),
                       ),
@@ -337,12 +337,20 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                                         ),
                                                         onPressed: () {}),
                                                     ElevatedButton(
-                                                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Constant.cardColor)),
+                                                      style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(Constant
+                                                                      .cardColor)),
                                                       child: Container(
-                                                       
                                                         //padding: const EdgeInsets.all(8.0),
-                                                        width: MediaQuery.of(context).size.width,
-                                                        child: Center(child: Text('Select')),
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        child: Center(
+                                                            child:
+                                                                Text('Select')),
                                                       ),
                                                       onPressed: () {
                                                         if (currentLocation ==
@@ -358,28 +366,10 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                                                     .text =
                                                                 selectedPlace
                                                                     .formattedAddress;
-                                                            fromLocationModel = LocationDetail(
-                                                                formattedAddress:
-                                                                    selectedPlace
-                                                                        .formattedAddress,
-                                                                placeId:
-                                                                    selectedPlace
-                                                                        .placeId,
-                                                                geometry:
-                                                                    Geometry());
-
-                                                            fromLocationModel
-                                                                    .geometry
-                                                                    .location =
-                                                                LocationModel(
-                                                                    lat: selectedPlace
-                                                                        .geometry
-                                                                        .location
-                                                                        .lat,
-                                                                    lng: selectedPlace
-                                                                        .geometry
-                                                                        .location
-                                                                        .lng);
+                                                            fromLocationModel =
+                                                                LocationDetail
+                                                                    .fromPickResult(
+                                                                        selectedPlace);
 
                                                             query = '';
                                                           });
@@ -388,28 +378,11 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                                             _toController.text =
                                                                 selectedPlace
                                                                     .name;
-                                                            toLocationModel = LocationDetail(
-                                                                formattedAddress:
-                                                                    selectedPlace
-                                                                        .formattedAddress,
-                                                                placeId:
-                                                                    selectedPlace
-                                                                        .placeId,
-                                                                geometry:
-                                                                    Geometry());
+                                                            toLocationModel =
+                                                                LocationDetail
+                                                                    .fromPickResult(
+                                                                        selectedPlace);
 
-                                                            toLocationModel
-                                                                    .geometry
-                                                                    .location =
-                                                                LocationModel(
-                                                                    lat: selectedPlace
-                                                                        .geometry
-                                                                        .location
-                                                                        .lat,
-                                                                    lng: selectedPlace
-                                                                        .geometry
-                                                                        .location
-                                                                        .lng);
                                                             query = '';
                                                           });
 

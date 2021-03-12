@@ -5,7 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rideon/config/appConfig.dart';
-import 'package:rideon/models/savedAddressModel.dart';
+import 'package:rideon/models/savedAddress/addressType.dart';
+import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/models/user/userModel.dart';
 
 class HiveService {
@@ -36,6 +37,8 @@ class HiveService {
   void _registerTypeAdapters() {
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(SavedAddressModelAdapter());
+    Hive.registerAdapter(AddressTypeAdapter());
+    Hive.registerAdapter(LnModelAdapter());
   
   }
 

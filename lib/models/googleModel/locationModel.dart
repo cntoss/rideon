@@ -35,4 +35,11 @@ class LocationModel {
         "lat": lat,
         "lng": lng,
       };
+
+    factory LocationModel.fromGeomerty(lat, lng) {
+    return LocationModel(
+      lat: lat,
+      lng: lng,
+    );
+  }
 }

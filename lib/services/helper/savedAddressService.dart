@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rideon/config/appConfig.dart';
-import 'package:rideon/models/savedAddressModel.dart';
+import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/services/helper/hiveService.dart';
 
-class AddressTypeService {
+class SavedAddressService {
   Box _box = HiveService().getHiveBox();
 
   void saveAddress({@required SavedAddressModel savedAddressModel}) {

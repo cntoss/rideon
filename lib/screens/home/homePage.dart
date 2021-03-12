@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
-import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/screens/home/loactionSetScreen.dart';
+import 'package:rideon/screens/home/static_map.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import '../pooling/carPoolingStart.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
@@ -23,23 +21,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
-  LocationData currentLocation;
-  Location location;
-//current location all info
+  Position currentLocation;
   LocationDetail locationDetail = LocationDetail();
   @override
   void initState() {
     super.initState();
-    location = new Location();
     setInitialLocation();
   }
 
   void setInitialLocation() async {
-    currentLocation = await location.getLocation(); 
+    currentLocation = await Geolocator.getCurrentPosition(); 
     locationDetail = await GeocodingService().getPlaceDetailFromLocation(
         LocationModel(
             lat: currentLocation.latitude, lng: currentLocation.longitude));
-    /*  final coordinates = new Coordinates(currentLocation.latitude, currentLocation.longitude);
+  /* final coordinates = new Coordinates(currentLocation.latitude, currentLocation.longitude);
    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
    var first = addresses.first;
   print("${first.featureName} : ${first.addressLine}"); */
@@ -50,8 +45,8 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    CameraPosition _initialCameraPosition = CameraPosition(
-        zoom: CAMERA_ZOOM,
+   /*  CameraPosition _initialCameraPosition = CameraPosition(
+        zoom: CAMERA_ZOOM_HOME,
         tilt: CAMERA_TILT,
         bearing: CAMERA_BEARING,
         target: SOURCE_LOCATION);
@@ -61,13 +56,14 @@ class _HomePageState extends State<HomePage>
           zoom: CAMERA_ZOOM,
           tilt: CAMERA_TILT,
           bearing: CAMERA_BEARING);
-    }
+    } */
 
     super.build(context);
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
+          StaticMap(),
+     /*      GoogleMap(
             mapType: MapType.normal,
             myLocationEnabled: true,
             compassEnabled: true,
@@ -85,7 +81,7 @@ class _HomePageState extends State<HomePage>
               _controller.complete(controller);
             },
           ),
-          Positioned(
+      */     Positioned(
             top: 33,
             right: 8,
             child: TextButton.icon(

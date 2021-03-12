@@ -3,8 +3,9 @@
 //     final geocodingModel = geocodingModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:rideon/maps/google_maps_place_picker.dart';
+import 'package:rideon/maps/web_service/places.dart';
 
-import 'package:rideon/models/googleModel/locationModel.dart';
 
 GeocodingModel geocodingModelFromJson(String str) =>
     GeocodingModel.fromJson(json.decode(str));
@@ -66,6 +67,14 @@ class LocationDetail {
     this.placeId,
     this.types,
     this.plusCode,
+    this.adrAddress,
+    this.id,
+    this.reference,
+    this.icon,
+    this.name,
+    this.scope,
+    this.vicinity,
+    this.utcOffset,
   });
 
   List<AddressComponent> addressComponents;
@@ -74,6 +83,16 @@ class LocationDetail {
   String placeId;
   List<String> types;
   PlusCode plusCode;
+
+ // Below results will not be fetched if 'usePlaceDetailSearch' is set to false (Defaults to false).
+  final String adrAddress;
+  final String id;
+  final String reference;
+  final String icon;
+  final String name;
+  final String scope;
+  final String vicinity;
+  final num utcOffset;
 
   factory LocationDetail.fromJson(Map<String, dynamic> json) => LocationDetail(
         addressComponents: List<AddressComponent>.from(
@@ -90,6 +109,43 @@ class LocationDetail {
             : PlusCode.fromJson(json["plus_code"]),
       );
 
+ factory LocationDetail.fromPlaceDetailResult(PlaceDetails result) {
+    return LocationDetail(
+      placeId: result.placeId,
+      geometry: result.geometry,
+      formattedAddress: result.formattedAddress,
+      types: result.types,
+      addressComponents: result.addressComponents,
+      adrAddress: result.adrAddress,
+      id: result.id,
+      reference: result.reference,
+      icon: result.icon,
+      name: result.name,
+      scope: result.scope,
+      vicinity: result.vicinity,
+      utcOffset: result.utcOffset,
+    );
+  }
+
+factory LocationDetail.fromPickResult(PickResult result) {
+    return LocationDetail(
+      placeId: result.placeId,
+      geometry: result.geometry,
+      formattedAddress: result.formattedAddress,
+      types: result.types,
+      addressComponents: result.addressComponents,
+      adrAddress: result.adrAddress,
+      id: result.id,
+      reference: result.reference,
+      icon: result.icon,
+      name: result.name,
+      scope: result.scope,
+      vicinity: result.vicinity,
+      utcOffset: result.utcOffset,
+    );
+  }
+
+
   Map<String, dynamic> toJson() => {
         "address_components":
             List<dynamic>.from(addressComponents.map((x) => x.toJson())),
@@ -98,79 +154,5 @@ class LocationDetail {
         "place_id": placeId,
         "types": List<dynamic>.from(types.map((x) => x)),
         "plus_code": plusCode == null ? null : plusCode.toJson(),
-      };
-}
-
-class AddressComponent {
-  AddressComponent({
-    this.longName,
-    this.shortName,
-    this.types,
-  });
-
-  String longName;
-  String shortName;
-  List<String> types;
-
-  factory AddressComponent.fromJson(Map<String, dynamic> json) =>
-      AddressComponent(
-        longName: json["long_name"],
-        shortName: json["short_name"],
-        types: List<String>.from(json["types"].map((x) => x)),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "long_name": longName,
-        "short_name": shortName,
-        "types": List<dynamic>.from(types.map((x) => x)),
-      };
-}
-
-class Geometry {
-  Geometry({
-    this.bounds,
-    this.location,
-    this.locationType,
-    this.viewport,
-  });
-
-  LocationModel location;
-  String locationType;
-  Viewport viewport;
-  Viewport bounds;
-
-  factory Geometry.fromJson(Map<String, dynamic> json) => Geometry(
-        location: LocationModel.fromJson(json["location"]),
-        locationType: json["location_type"],
-        viewport: Viewport.fromJson(json["viewport"]),
-        bounds:
-            json["bounds"] == null ? null : Viewport.fromJson(json["bounds"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "location": location.toJson(),
-        "location_type": locationType,
-        "viewport": viewport.toJson(),
-        "bounds": bounds == null ? null : bounds.toJson(),
-      };
-}
-
-class Viewport {
-  Viewport({
-    this.northeast,
-    this.southwest,
-  });
-
-  LocationModel northeast;
-  LocationModel southwest;
-
-  factory Viewport.fromJson(Map<String, dynamic> json) => Viewport(
-        northeast: LocationModel.fromJson(json["northeast"]),
-        southwest: LocationModel.fromJson(json["southwest"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "northeast": northeast.toJson(),
-        "southwest": southwest.toJson(),
       };
 }

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/profile/profileScreen.dart';
-import 'package:rideon/screens/setting/savedAddress.dart';
+import 'package:rideon/screens/setting/addressListScreen.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
 import 'package:rideon/services/utils/extension.dart';
