@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
+import 'package:rideon/maps/src/utils/uuid.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/widgets/animatedPin.dart';
@@ -8,7 +9,7 @@ import 'package:rideon/screens/widgets/customCard.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
 
 class AddAddress extends StatefulWidget {
-  AddAddress({this.address, this.title, Key key}) : super(key: key);
+  AddAddress({this.address, this.title});
   final SavedAddressModel address;
   final String title;
   @override
@@ -18,22 +19,29 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   _AddAddressState(this.address);
   SavedAddressModel address;
-  bool _isReadyToSave = false;
   TextEditingController _addressName;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _detail = TextEditingController();
-  Icon icon = Icon(Icons.edit_outlined);
+  TextEditingController _detail;
   @override
   void initState() {
     super.initState();
     address.type = address.type ?? AddressType.Other;
     _addressName = TextEditingController(text: address.locationName ?? '');
+    _detail = TextEditingController(text: address.detail ?? '');
+  }
+
+  _addAddress() {
+    if (address.id != null)
+      SavedAddressService().editAddress(savedAddressModel: address);
+    else {
+      address.id = Uuid().generateV4();
+      SavedAddressService().saveAddress(savedAddressModel: address);
+    }
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    //var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? 'Save Address'),
@@ -41,17 +49,14 @@ class _AddAddressState extends State<AddAddress> {
           TextButton.icon(
               onPressed: () {
                 if (address.type == AddressType.Other) {
+                  //to check _details is null or not
                   _formKey.currentState.save();
                   if (_formKey.currentState.validate()) {
                     address.detail = _detail.text;
-                    SavedAddressService()
-                        .saveAddress(savedAddressModel: address);
-                    Navigator.pop(context);
+                    _addAddress();
                   }
-                } else {
-                  SavedAddressService().saveAddress(savedAddressModel: address);
-                  Navigator.pop(context);
-                }
+                } else
+                  _addAddress();
               },
               icon: Icon(Icons.done),
               label: Padding(
@@ -66,147 +71,44 @@ class _AddAddressState extends State<AddAddress> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomCard(
-                child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  IconButton(
-                      icon: Icon(Icons.location_on),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlacePicker(
-                                useCurrentLocation: true,
-                                pinBuilder: (context, state) {
-                                  if (state == PinState.Idle) {
-                                    return Stack(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Icon(Icons.push_pin,
-                                                  size: 36,
-                                                  color: Colors.green),
-                                              SizedBox(height: 42),
-                                            ],
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Container(
-                                            width: 5,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return Stack(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              AnimatedPin(
-                                                  child: Icon(Icons.push_pin,
-                                                      size: 36,
-                                                      color: Colors.green)),
-                                              SizedBox(height: 42),
-                                            ],
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Container(
-                                            width: 5,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                },
-                                selectedPlaceWidgetBuilder: (_, selectedPlace,
-                                    state, isSearchBarFocused) {
-                                  return isSearchBarFocused
-                                      ? Container()
-                                      // Use FloatingCard or just create your own Widget.
-                                      : FloatingCard(
-                                          bottomPosition:
-                                              0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                          leftPosition: 10.0,
-                                          rightPosition: 10.0,
-                                          width: 500,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                          child: state ==
-                                                  SearchingState.Searching
-                                              ? Center(
-                                                  child:
-                                                      CircularProgressIndicator())
-                                              : Column(
-                                                  children: [
-                                                    ElevatedButton(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                              '${selectedPlace.name} ${selectedPlace.formattedAddress}'),
-                                                        ),
-                                                        onPressed: () {}),
-                                                    ElevatedButton(
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all(Constant
-                                                                      .cardColor)),
-                                                      child: Container(
-                                                        //padding: const EdgeInsets.all(8.0),
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: Center(
-                                                            child:
-                                                                Text('Select')),
-                                                      ),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          address = SavedAddressModel
-                                                              .fromPickResult(
-                                                                  selectedPlace);
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                    )
-                                                  ],
-                                                ),
-                                        );
-                                },
-                              ),
-                            ));
-                      }),
-                  Flexible(
-                    child: Text(
-                      address.locationName ?? '',
-                      maxLines: 3,
-                    ),
-                  )
-                ],
-              ),
-            )),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Constant.cardColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.location_on),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlacePicker(
+                                  useCurrentLocation: true,
+                                  onPlacePicked: (result) {
+                                    setState(() {
+                                      SavedAddressModel newAddress =
+                                          SavedAddressModel.fromPickResult(
+                                              result);
+                                      newAddress.detail = address.detail;
+                                      newAddress.type = address.type;
+                                      newAddress.id = address.id;
+                                      address = newAddress;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ));
+                        }),
+                    Flexible(
+                      child: Text(
+                        address.locationName ?? '',
+                        maxLines: 3,
+                      ),
+                    )
+                  ],
+                )),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
@@ -283,9 +185,6 @@ class _AddAddressState extends State<AddAddress> {
                     },
                     onChanged: (_) {
                       address.locationName = _addressName.text;
-                      setState(() {
-                        _isReadyToSave = true;
-                      });
                     },
                     decoration: InputDecoration(
                         errorStyle: Constant.errorStyle,

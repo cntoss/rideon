@@ -18,10 +18,8 @@ class StaticMap extends StatefulWidget {
 }
 
 class _StaticMapState extends State<StaticMap> {
-  GlobalKey appBarKey = GlobalKey();
   Future<PlaceProvider> _futureProvider;
   PlaceProvider provider;
-  Completer<GoogleMapController> _controller = Completer();
  final LatLng initialPosition = SOURCE_LOCATION;
   bool useCurrentLocation = true;
 
@@ -144,14 +142,9 @@ class _StaticMapState extends State<StaticMap> {
       tiltGesturesEnabled: false,
       initialCameraPosition: _initialCameraPosition,
       gestureRecognizers: Set()
-        ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-        ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
-        ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-        ..add(Factory<HorizontalDragGestureRecognizer>(
-            () => HorizontalDragGestureRecognizer()))
-        ..add(Factory<VerticalDragGestureRecognizer>(
-            () => VerticalDragGestureRecognizer())),
-     /*  onMapCreated: (GoogleMapController controller) {
+         ..add(Factory<EagerGestureRecognizer>(
+                  () => EagerGestureRecognizer())),
+          /*  onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
       }, */
     );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/common/theme.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
@@ -15,6 +17,10 @@ import 'config/appConfig.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ///todo: remove if status bar is default transparent
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // transparent status bar
+  ));
   await HiveService().initHive();
   runApp(
     MultiProvider(
@@ -32,8 +38,19 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+ 
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,7 +61,7 @@ class MyApp extends StatelessWidget {
       //home: LoginPage(),
       //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
-     // initialRoute: UserService().isWorkThrough ? '/login' : '/',
+      // initialRoute: UserService().isWorkThrough ? '/login' : '/',
       initialRoute: '/login',
       routes: {
         // '/': (context) => SplashScreen(),

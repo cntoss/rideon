@@ -17,7 +17,7 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SavedAddressModel(
-      id: fields[0] as int,
+      id: fields[0] as String,
       type: fields[1] as AddressType,
       placeId: fields[2] as String,
       location: fields[3] as LnModel,

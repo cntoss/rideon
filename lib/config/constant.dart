@@ -96,4 +96,7 @@ class Constant {
 //      ),
     ),
   );
+
+  static  ButtonStyle buttonStyle = TextButton.styleFrom(
+        textStyle: TextStyle(fontSize: 14, letterSpacing: 1, wordSpacing: 1));
 }

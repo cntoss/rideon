@@ -1,17 +1,26 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
+import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
+import 'package:rideon/models/savedAddress/addressType.dart';
+import 'package:rideon/models/savedAddress/savedAddressModel.dart';
+import 'package:rideon/route/navigateToRoute.dart';
 import 'package:rideon/screens/home/loactionSetScreen.dart';
 import 'package:rideon/screens/home/static_map.dart';
+import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/google/geocodingService.dart';
+import 'package:rideon/services/helper/savedAddressService.dart';
 import '../pooling/carPoolingStart.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,181 +29,211 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  Completer<GoogleMapController> _controller = Completer();
   Position currentLocation;
   LocationDetail locationDetail = LocationDetail();
+  SavedAddressModel _homeAddress =
+      SavedAddressService().getSingleAddress(AddressType.Home);
+  SavedAddressModel _workAddress =
+      SavedAddressService().getSingleAddress(AddressType.Work);
+
   @override
   void initState() {
     super.initState();
     setInitialLocation();
+    getLocationUpdates();
   }
 
   void setInitialLocation() async {
-    currentLocation = await Geolocator.getCurrentPosition(); 
+    currentLocation = await Geolocator.getCurrentPosition();
     locationDetail = await GeocodingService().getPlaceDetailFromLocation(
         LocationModel(
             lat: currentLocation.latitude, lng: currentLocation.longitude));
-  /* final coordinates = new Coordinates(currentLocation.latitude, currentLocation.longitude);
-   var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-   var first = addresses.first;
-  print("${first.featureName} : ${first.addressLine}"); */
     print(locationDetail.toJson());
+  }
+
+/* StreamSubscription<Position> positionStream = Geolocator
+                                .getPositionStream(desiredAccuracy: LocationAccuracy.high, 
+                      distanceFilter: 10)
+                                .listen((Position position) {
+    print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + 
+       position.longitude.toString());
+       
+}) */
+
+  void getLocationUpdates() {
+    StreamSubscription<Position> positionStream;
+    positionStream = Geolocator.getPositionStream(
+            desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
+        .listen((Position position) {
+      setState(() {
+        currentLocation = position;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-   /*  CameraPosition _initialCameraPosition = CameraPosition(
-        zoom: CAMERA_ZOOM_HOME,
+    CameraPosition _initialCameraPosition = CameraPosition(
+        target: currentLocation == null ?SOURCE_LOCATION: LatLng(currentLocation.latitude ?? SOURCE_LOCATION.latitude,
+            currentLocation.longitude ?? SOURCE_LOCATION.longitude),
+        zoom: CAMERA_ZOOM,
         tilt: CAMERA_TILT,
-        bearing: CAMERA_BEARING,
-        target: SOURCE_LOCATION);
-    if (currentLocation != null) {
-      _initialCameraPosition = CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: CAMERA_ZOOM,
-          tilt: CAMERA_TILT,
-          bearing: CAMERA_BEARING);
-    } */
+        bearing: CAMERA_BEARING);
 
     super.build(context);
-    return Scaffold(
-      body: Stack(
-        children: [
-          StaticMap(),
-     /*      GoogleMap(
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            compassEnabled: true,
-            tiltGesturesEnabled: false,
-            initialCameraPosition: _initialCameraPosition,
-            gestureRecognizers: Set()
-        ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-        ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
-        ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-        ..add(Factory<HorizontalDragGestureRecognizer>(
-            () => HorizontalDragGestureRecognizer()))
-        ..add(Factory<VerticalDragGestureRecognizer>(
-            () => VerticalDragGestureRecognizer())),
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
+    return Stack(
+      children: <Widget>[
+        /* StreamBuilder(
+           stream: positionStream,
+          builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Loader();
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.done) {}
+
+                  return */
+        GoogleMap(
+          mapType: MapType.normal,
+          myLocationEnabled: true,
+          compassEnabled: true,
+          tiltGesturesEnabled: false,
+          initialCameraPosition: _initialCameraPosition,
+          gestureRecognizers: Set()
+            ..add(Factory<EagerGestureRecognizer>(
+                () => EagerGestureRecognizer())),
+        ),
+        //StaticMap(),
+        Positioned(
+          top: 33,
+          right: 8,
+          child: TextButton.icon(
+            icon: Icon(Icons.car_rental, color: Colors.blue),
+            label: Text(
+              "Carpooling",
+              style: TextStyle(color: Colors.blue),
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CarPoolingFirst()));
             },
           ),
-      */     Positioned(
-            top: 33,
-            right: 8,
-            child: TextButton.icon(
-              icon: Icon(Icons.car_rental, color: Colors.blue),
-              label: Text(
-                "Carpooling",
-                style: TextStyle(color: Colors.blue),
-              ),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CarPoolingFirst()));
-              },
-            ),
-          ),
-          DraggableScrollableSheet(
-              initialChildSize: 0.1,
-              minChildSize: 0.05,
-              maxChildSize: 0.32,
-              expand: true,
-              builder: (context, scrollController) {
-                return SingleChildScrollView(
-                    controller: scrollController,
-                    child: Stack(
-                      children: [
-                        RoundedBar(),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 25.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                     Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LocationSetScreen(locationDetail),
-                                    ),
-                                  );
-                                },
-                                child: Card(
-                                  color: Color(0xfff0e1ee),
-                                  child: Container(
-                                    width: width,
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Where to go? ',
-                                      style: Constant.title,
-                                    ),
+        ),
+        DraggableScrollableSheet(
+            initialChildSize: 0.1,
+            minChildSize: 0.05,
+            maxChildSize: 0.24,
+            expand: true,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Stack(
+                    children: [
+                      RoundedBar(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        LocationSetScreen(locationDetail),
                                   ),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  MaterialButton(
-                                    onPressed: () {},
-                                    color: Colors.grey,
-                                    textColor: Colors.white,
-                                    child: Icon(
-                                      Icons.home,
-                                      size: 20,
-                                    ),
-                                    padding: EdgeInsets.all(0),
-                                    shape: CircleBorder(),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Home'),
-                                      Text('Pulchowk Lalitpur')
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50.0),
-                                child: SizedBox(
-                                  height: 1,
+                                );
+                              },
+                              child: Card(
+                                color: Color(0xfff0e1ee),
+                                child: Container(
                                   width: width,
-                                  child: Container(
-                                    color: Colors.grey,
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Where to go? ',
+                                    style: Constant.title,
                                   ),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  MaterialButton(
-                                    onPressed: () {},
-                                    color: Colors.grey,
-                                    textColor: Colors.white,
-                                    child: Icon(
-                                      Icons.star,
-                                      size: 20,
-                                    ),
-                                    padding: EdgeInsets.all(0),
-                                    shape: CircleBorder(),
+                            ),
+                            TextButton.icon(
+                                icon: CircularIcon(icon: Icon(Icons.home)),
+                                onPressed: () => NavigateToRoute()
+                                    .navigateFromHome(
+                                        source: locationDetail,
+                                        type: AddressType.Home,
+                                        address: _homeAddress),
+                                style: Constant.buttonStyle,
+                                label: _homeAddress != null
+                                    ? Flexible(
+                                        child: Text(
+                                          _homeAddress.locationName ??
+                                              'Set Home',
+                                        ),
+                                      )
+                                    : Text('Set Home')),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0),
+                              child: SizedBox(
+                                height: 1,
+                                width: width,
+                                child: Container(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            TextButton.icon(
+                                icon: CircularIcon(
+                                  icon: Icon(Icons.work_outline_sharp),
+                                ),
+                                onPressed: () => NavigateToRoute()
+                                    .navigateFromHome(
+                                        source: locationDetail,
+                                        type: AddressType.Work,
+                                        address: _workAddress)
+                                    .then((value) => setState(() {})),
+                                style: Constant.buttonStyle,
+                                label: _workAddress != null
+                                    ? Flexible(
+                                        child: Text(
+                                          _workAddress.locationName ??
+                                              'Set Office',
+                                        ),
+                                      )
+                                    : Text('Set Office')),
+                            /*   Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {},
+                                  color: Colors.grey,
+                                  textColor: Colors.white,
+                                  child: Icon(
+                                    Icons.home,
+                                    size: 20,
                                   ),
-                                  Column(
-                                    children: [
-                                      Text('Choose a saved place'),
-                                      //Text('Pulchowk Lalitpur')
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
+                                  padding: EdgeInsets.all(0),
+                                  shape: CircleBorder(),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Home'),
+                                    Text('Pulchowk Lalitpur')
+                                  ],
+                                )
+                              ],
+                            ), */
+                          ],
                         ),
-                      ],
-                    ));
-              })
-        ],
-      ),
+                      ),
+                    ],
+                  ));
+            })
+      ],
     );
   }
 

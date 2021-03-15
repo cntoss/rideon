@@ -30,7 +30,7 @@ class SavedAddressModel extends HiveObject {
   });
 
   @HiveField(0)
-  int id;
+  String id;
 
   @HiveField(1)
   AddressType type;
@@ -58,7 +58,7 @@ class SavedAddressModel extends HiveObject {
 factory SavedAddressModel.fromPickResult(PickResult result) {
     return SavedAddressModel(
       placeId: result.placeId,
-      location: LnModel.fromGeomerty(result.geometry.location.lat,result.geometry.location.lat),
+      location: LnModel.fromGeomerty(result.geometry.location.lat,result.geometry.location.lng),
       locationName: result.formattedAddress,
       //types: result.types,
       //adrAddress: result.adrAddress,
