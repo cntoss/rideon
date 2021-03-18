@@ -4,8 +4,6 @@ import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/src/utils/uuid.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/screens/widgets/animatedPin.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
 
 class AddAddress extends StatefulWidget {

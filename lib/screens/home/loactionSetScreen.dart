@@ -5,7 +5,6 @@ import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/screens/maps/routeScreen.dart';
 import 'package:rideon/screens/widgets/animatedPin.dart';
 import 'package:rideon/services/google/placeService.dart';
-import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/config/constant.dart';
 
 enum CurrentLocation { fromLocation, toLocation }

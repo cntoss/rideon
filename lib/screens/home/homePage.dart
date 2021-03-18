@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -9,13 +7,11 @@ import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/route/navigateToRoute.dart';
 import 'package:rideon/screens/home/loactionSetScreen.dart';
-import 'package:rideon/screens/home/static_map.dart';
 import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
@@ -61,8 +57,7 @@ class _HomePageState extends State<HomePage>
 }) */
 
   void getLocationUpdates() {
-    StreamSubscription<Position> positionStream;
-    positionStream = Geolocator.getPositionStream(
+    Geolocator.getPositionStream(
             desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
         .listen((Position position) {
       setState(() {

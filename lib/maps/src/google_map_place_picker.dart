@@ -15,7 +15,6 @@ import 'package:rideon/maps/src/place_picker.dart';
 import 'package:rideon/maps/web_service/geocoding.dart';
 import 'package:rideon/maps/web_service/places.dart';
 import 'package:provider/provider.dart';
-import 'package:rideon/services/theme/theme_provider.dart';
 import 'package:tuple/tuple.dart';
 
 typedef SelectedPlaceWidgetBuilder = Widget Function(
@@ -111,7 +110,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
       return;
     }
 
-    if (true) {
+    if (usePlaceDetailSearch) {
       final PlacesDetailsResponse detailResponse =
           await provider.places.getDetailsByPlaceId(
         response.results[0].placeId,

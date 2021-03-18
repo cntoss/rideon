@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rideon/screens/history/historyScreen.dart';
+import 'package:rideon/screens/service/serviceScreen.dart';
 import 'package:rideon/screens/home/customNavigationButton.dart';
 import 'package:rideon/screens/home/homePage.dart';
 import 'package:rideon/screens/setting/settingScreen.dart';
@@ -51,7 +51,7 @@ class _HomePageWrapperState extends State<HomePageWrapper>
                   selectedItemColor: Colors.white,
                   navItems: {
                     "Home": Icons.home,
-                    "History": Icons.history,
+                    "Services": Icons.book_online_rounded,
                     "Setting": Icons.settings,
                   },
                   onTabChange: (page) {

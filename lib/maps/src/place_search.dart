@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/providers/place_provider.dart';
 import 'package:rideon/maps/src/autocomplete_search.dart';
@@ -18,7 +19,7 @@ import 'dart:io' show Platform;
 class PlaceSearch extends StatefulWidget {
   PlaceSearch({
     Key key,
-    @required this.apiKey,
+    this.apiKey = googleAPIKey,
     this.onPlacePicked,
     @required this.initialPosition,
     this.useCurrentLocation,

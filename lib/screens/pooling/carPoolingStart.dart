@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/maps/src/place_search.dart';
+import 'package:rideon/maps/google_maps_place_picker.dart';
+import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/passengerScreen.dart';
@@ -16,8 +17,10 @@ class CarPoolingFirst extends StatefulWidget {
 }
 
 class _CarPoolingFirstState extends State<CarPoolingFirst> {
-  TextEditingController _fromAddress = TextEditingController(text: '');
-  TextEditingController _toAddress = TextEditingController(text: '');
+  LocationDetail _fromAddress = LocationDetail();
+  LocationDetail _toAddress = LocationDetail();
+  TextEditingController _fromController;
+  TextEditingController _toController;
 
   DateTime _selectedDate;
   TextEditingController _dateController = TextEditingController();
@@ -29,6 +32,10 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
     super.initState();
     var passenger = context.read<PassengerCounter>();
     passenger.value = 0;
+    _fromController =
+        TextEditingController(text: _fromAddress.formattedAddress ?? '');
+    _toController =
+        TextEditingController(text: _toAddress.formattedAddress ?? '');
   }
 
   @override
@@ -47,21 +54,16 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PlaceSearch(
-                                apiKey: googleAPIKey,
-                                //searchBarHeight: 0,
+                            builder: (context) => PlacePicker(
                                 usePlaceDetailSearch: true,
                                 initialPosition: SOURCE_LOCATION,
                                 useCurrentLocation: true,
                                 onPlacePicked: (r) {
+                                  Navigator.pop(context);
                                   setState(() {
-                                    if (r.name.split(' ')[0] ==
-                                        r.formattedAddress.split(' ')[0]) {
-                                      _fromAddress.text = r.formattedAddress;
-                                    } else {
-                                      _fromAddress.text =
-                                          r.name +' '+ r.formattedAddress;
-                                    }
+                                    _fromController.text = r.formattedAddress;
+                                    _fromAddress =
+                                        LocationDetail.fromPickResult(r);
                                   });
                                 })));
                   },
@@ -70,7 +72,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                     maxLines: 3,
                     minLines: 1,
                     keyboardType: TextInputType.streetAddress,
-                    controller: _fromAddress,
+                    controller: _fromController,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)),
@@ -88,22 +90,48 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                   Icons.swap_vert_sharp,
                   size: 40,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  LocationDetail _temp = _toAddress;
+                  _toAddress = _fromAddress;
+                  _fromAddress = _temp;
+                  setState(() {
+                    _fromController.text = _fromAddress.formattedAddress;
+                    _toController.text = _toAddress.formattedAddress;
+                  });
+                }),
             Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.streetAddress,
-                  controller: _toAddress,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24)),
-                    errorStyle: Constant.errorStyle,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(color: Colors.green)),
-                    hintText: "Going to",
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PlacePicker(
+                                usePlaceDetailSearch: true,
+                                initialPosition: SOURCE_LOCATION,
+                                useCurrentLocation: true,
+                                onPlacePicked: (r) {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _toController.text = r.formattedAddress;
+                                    _toAddress =
+                                        LocationDetail.fromPickResult(r);
+                                  });
+                                })));
+                  },
+                  child: TextFormField(
+                    enabled: false,
+                    maxLines: 3,
+                    minLines: 1,
+                    controller: _toController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        hintText: "Going to",
+                        labelStyle: Constant.whiteText),
                   ),
                 ),
               ),

@@ -15,7 +15,7 @@ class CustomBottomNavigation extends StatefulWidget {
   const CustomBottomNavigation(
       {Key key,
       @required this.navItems,
-      this.bgColor = Colors.white,
+      this.bgColor = Colors.greenAccent,
       this.selectorColor = Colors.white,
       this.selectedItemColor = Colors.green,
       this.unselectedItemColor = Colors.grey,

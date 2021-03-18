@@ -27,8 +27,10 @@ class Constant {
   static Color textColor = Color(0xfffafafa);
   static Color textFormColor = Color(0xff0acf8a);
   static Color cardColor = Color(0xff5a965a);
-  static TextStyle errorStyle = TextStyle(color: Colors.redAccent, fontSize: 16);
-  static TextStyle whiteText = TextStyle(color: Constant.textColor ,fontSize: 16);
+  static TextStyle errorStyle =
+      TextStyle(color: Colors.redAccent, fontSize: 16);
+  static TextStyle whiteText =
+      TextStyle(color: Constant.textColor, fontSize: 16);
 
   static TextStyle title = const TextStyle(
       inherit: false,
@@ -45,6 +47,10 @@ class Constant {
       fontSize: 28.0,
       fontWeight: FontWeight.bold,
       decoration: TextDecoration.none);
+
+  static OutlineInputBorder inputBorder = OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.black12),
+      borderRadius: BorderRadius.circular(10));
 
   static TextStyle titleWhite = const TextStyle(
       inherit: false,
@@ -97,6 +103,6 @@ class Constant {
     ),
   );
 
-  static  ButtonStyle buttonStyle = TextButton.styleFrom(
-        textStyle: TextStyle(fontSize: 14, letterSpacing: 1, wordSpacing: 1));
+  static ButtonStyle buttonStyle = TextButton.styleFrom(
+      textStyle: TextStyle(fontSize: 14, letterSpacing: 1, wordSpacing: 1));
 }
