@@ -177,7 +177,7 @@ class _AddAddressState extends State<AddAddress> {
                     controller: _detail,
                     validator: (value) {
                       if (value.isEmpty)
-                        return 'Enter Full Name';
+                        return 'Enter Address Name';
                       else
                         return null;
                     },

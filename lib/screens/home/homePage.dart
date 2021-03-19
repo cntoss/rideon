@@ -1,21 +1,17 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/route/navigateToRoute.dart';
 import 'package:rideon/screens/home/loactionSetScreen.dart';
+import 'package:rideon/screens/home/static_map.dart';
 import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
-import '../pooling/carPoolingStart.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,39 +20,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
-  Position currentLocation;
-  LocationDetail locationDetail = LocationDetail();
-  SavedAddressModel _homeAddress =
-      SavedAddressService().getSingleAddress(AddressType.Home);
-  SavedAddressModel _workAddress =
-      SavedAddressService().getSingleAddress(AddressType.Work);
-
-  @override
-  void initState() {
-    super.initState();
-    setInitialLocation();
-    getLocationUpdates();
-  }
-
-  void setInitialLocation() async {
-    currentLocation = await Geolocator.getCurrentPosition();
-    locationDetail = await GeocodingService().getPlaceDetailFromLocation(
-        LocationModel(
-            lat: currentLocation.latitude, lng: currentLocation.longitude));
-    print(locationDetail.toJson());
-  }
-
-/* StreamSubscription<Position> positionStream = Geolocator
-                                .getPositionStream(desiredAccuracy: LocationAccuracy.high, 
-                      distanceFilter: 10)
-                                .listen((Position position) {
-    print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + 
-       position.longitude.toString());
-       
-}) */
-
-  void getLocationUpdates() {
+   {
+  Position currentLocation ;
+   LocationDetail locationDetail = LocationDetail();
+  SavedAddressModel _homeAddress ;
+    
+  SavedAddressModel _workAddress ;
+     
+  
+  /* void getLocationUpdates() {
     Geolocator.getPositionStream(
             desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
         .listen((Position position) {
@@ -64,59 +36,31 @@ class _HomePageState extends State<HomePage>
         currentLocation = position;
       });
     });
+  } */
+
+@override
+  void initState() {
+    super.initState();
+    _homeAddress =
+      SavedAddressService().getSingleAddress(AddressType.Home);
+   _workAddress =
+      SavedAddressService().getSingleAddress(AddressType.Work);
+    _getLocationDetail();
+  }
+
+  _getLocationDetail() async {
+     currentLocation = await Geolocator.getCurrentPosition(); 
+    locationDetail = await GeocodingService().getPlaceDetailFromLocation(
+        LocationModel(
+            lat: currentLocation.latitude, lng: currentLocation.longitude));
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-
-    CameraPosition _initialCameraPosition = CameraPosition(
-        target: currentLocation == null ?SOURCE_LOCATION: LatLng(currentLocation.latitude ?? SOURCE_LOCATION.latitude,
-            currentLocation.longitude ?? SOURCE_LOCATION.longitude),
-        zoom: CAMERA_ZOOM,
-        tilt: CAMERA_TILT,
-        bearing: CAMERA_BEARING);
-
-    super.build(context);
     return Stack(
-      children: <Widget>[
-        /* StreamBuilder(
-           stream: positionStream,
-          builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Loader();
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.done) {}
-
-                  return */
-        GoogleMap(
-          mapType: MapType.normal,
-          myLocationEnabled: true,
-          compassEnabled: true,
-          tiltGesturesEnabled: false,
-          initialCameraPosition: _initialCameraPosition,
-          gestureRecognizers: Set()
-            ..add(Factory<EagerGestureRecognizer>(
-                () => EagerGestureRecognizer())),
-        ),
-        //StaticMap(),
-        Positioned(
-          top: 33,
-          right: 8,
-          child: TextButton.icon(
-            icon: Icon(Icons.car_rental, color: Colors.blue),
-            label: Text(
-              "Carpooling",
-              style: TextStyle(color: Colors.blue),
-            ),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CarPoolingFirst()));
-            },
-          ),
-        ),
+      children: <Widget>[       
+        StaticMap(),       
         DraggableScrollableSheet(
             initialChildSize: 0.1,
             minChildSize: 0.05,
@@ -200,28 +144,7 @@ class _HomePageState extends State<HomePage>
                                         ),
                                       )
                                     : Text('Set Office')),
-                            /*   Row(
-                              children: [
-                                MaterialButton(
-                                  onPressed: () {},
-                                  color: Colors.grey,
-                                  textColor: Colors.white,
-                                  child: Icon(
-                                    Icons.home,
-                                    size: 20,
-                                  ),
-                                  padding: EdgeInsets.all(0),
-                                  shape: CircleBorder(),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Home'),
-                                    Text('Pulchowk Lalitpur')
-                                  ],
-                                )
-                              ],
-                            ), */
+                            
                           ],
                         ),
                       ),
@@ -231,9 +154,6 @@ class _HomePageState extends State<HomePage>
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class RoundedBar extends StatelessWidget implements PreferredSizeWidget {

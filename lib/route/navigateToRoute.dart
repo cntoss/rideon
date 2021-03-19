@@ -23,7 +23,7 @@ class NavigateToRoute {
       {@required LocationDetail source,
       @required SavedAddressModel address,
       @required AddressType type}) {
-    if (address != null)
+    if (address.location == null)
       return navigateToAdd(type: type);
     else {
       LocationDetail destination = LocationDetail(

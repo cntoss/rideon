@@ -22,6 +22,7 @@ class _StaticMapState extends State<StaticMap> {
   PlaceProvider provider;
  final LatLng initialPosition = SOURCE_LOCATION;
   bool useCurrentLocation = true;
+  Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
@@ -144,9 +145,9 @@ class _StaticMapState extends State<StaticMap> {
       gestureRecognizers: Set()
          ..add(Factory<EagerGestureRecognizer>(
                   () => EagerGestureRecognizer())),
-          /*  onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      }, */
+        //    onMapCreated: (GoogleMapController controller) {
+        // _controller.complete(controller);
+      //},
     );
   }
 }
