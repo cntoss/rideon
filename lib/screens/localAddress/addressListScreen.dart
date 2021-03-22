@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/screens/setting/addAddress.dart';
+import 'package:rideon/screens/localAddress/addAddress.dart';
 import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
 
@@ -38,14 +37,15 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
                   CircularIcon(icon: Icon(Icons.star)),
               ],
             ),
-            title:  (_saveAddress[x].detail ?? '') != '' ? Text(
-              _saveAddress[x].detail,
-              style: TextStyle(fontSize: 18),
-            ): Container(),
+            title: (_saveAddress[x].detail ?? '') != ''
+                ? Text(
+                    _saveAddress[x].detail,
+                    style: TextStyle(fontSize: 18),
+                  )
+                : Container(),
             subtitle: Text(
               _saveAddress[x].locationName ??
                   'Set ${_saveAddress[x].type} location',
-              style: TextStyle(fontSize: 14, color: Constant.textColor),
             ),
             trailing: PopupMenuButton(
               itemBuilder: (context) {

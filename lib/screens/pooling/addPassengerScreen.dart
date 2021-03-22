@@ -3,12 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 
-class PassengerScreen extends StatefulWidget {
+class AddPassengerScreen extends StatefulWidget {
   @override
-  _PassengerScreenState createState() => _PassengerScreenState();
+  _AddPassengerScreenState createState() => _AddPassengerScreenState();
 }
 
-class _PassengerScreenState extends State<PassengerScreen> {
+class _AddPassengerScreenState extends State<AddPassengerScreen> {
   
 
   @override

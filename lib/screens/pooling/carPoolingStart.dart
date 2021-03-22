@@ -8,8 +8,8 @@ import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
-import 'package:rideon/screens/pooling/passengerScreen.dart';
-import 'package:rideon/screens/pooling/shareSearching.dart';
+import 'package:rideon/screens/pooling/addPassengerScreen.dart';
+import 'carShareSearching.dart';
 
 class CarPoolingFirst extends StatefulWidget {
   @override
@@ -41,11 +41,11 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title:Text('FInd a ride')),
       body: Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: Container(
           child: Column(children: [
-            Text('Find a ride', style: TextStyle(fontSize: 30)),
             Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -151,7 +151,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                     closedColor: Theme.of(context).scaffoldBackgroundColor,
                     openBuilder: (BuildContext context,
                         void Function({Object returnValue}) action) {
-                      return Center(child: PassengerScreen());
+                      return Center(child: AddPassengerScreen());
                     },
                     closedBuilder:
                         (BuildContext context, void Function() action) {
@@ -188,8 +188,8 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                               MaterialPageRoute(
                                   builder: (context) => CarShareSearching(
                                       SharingModel(
-                                          fromLocation: "HatKhola, Biratnagar",
-                                          toLocation: "DarbarMargh Kathmandu",
+                                        fromLocation: _fromAddress,
+                                          toLocation: _toAddress,
                                           passenger: passenger.value,
                                           date: _selectedDate))));
                         },

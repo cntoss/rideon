@@ -241,6 +241,7 @@ class _RegistrationState extends State<Registration> {
                           new Radio(
                               value: Gender.male,
                               groupValue: _gender,
+                              activeColor: Colors.black,
                               onChanged: (x) {
                                 setState(() {
                                   _gender = x;
@@ -252,6 +253,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           new Radio(
                               value: Gender.female,
+                              activeColor: Colors.black,
                               groupValue: _gender,
                               onChanged: (x) {
                                 setState(() {
@@ -266,6 +268,7 @@ class _RegistrationState extends State<Registration> {
                           ),
                           new Radio(
                             value: Gender.other,
+                            activeColor: Colors.black,
                             groupValue: _gender,
                             onChanged: (x) {
                               setState(() {

@@ -5,13 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
-import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/route/navigateToRoute.dart';
-import 'package:rideon/screens/home/loactionSetScreen.dart';
-import 'package:rideon/screens/home/static_map.dart';
-import 'package:rideon/screens/widgets/circleIcon.dart';
+import 'package:rideon/screens/home/rideCreateScreen.dart';
+import 'package:rideon/screens/localAddress/savedAddressView.dart';
+import 'package:rideon/screens/packageDelivery/parcelScreen.dart';
+import 'package:rideon/screens/pooling/carPoolingStart.dart';
 import 'package:rideon/services/google/geocodingService.dart';
-import 'package:rideon/services/helper/savedAddressService.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,52 +17,115 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-   {
-  Position currentLocation ;
-   LocationDetail locationDetail = LocationDetail();
-  SavedAddressModel _homeAddress ;
-    
-  SavedAddressModel _workAddress ;
-     
-  
-  /* void getLocationUpdates() {
-    Geolocator.getPositionStream(
-            desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
-        .listen((Position position) {
-      setState(() {
-        currentLocation = position;
-      });
-    });
-  } */
-
-@override
+class _HomePageState extends State<HomePage> {
+  Position currentLocation;
+  LocationDetail locationDetail = LocationDetail();
+  bool _initialized = false;
+  @override
   void initState() {
     super.initState();
-    _homeAddress =
-      SavedAddressService().getSingleAddress(AddressType.Home);
-   _workAddress =
-      SavedAddressService().getSingleAddress(AddressType.Work);
     _getLocationDetail();
   }
 
   _getLocationDetail() async {
-     currentLocation = await Geolocator.getCurrentPosition(); 
+    currentLocation = await Geolocator.getCurrentPosition();
     locationDetail = await GeocodingService().getPlaceDetailFromLocation(
         LocationModel(
             lat: currentLocation.latitude, lng: currentLocation.longitude));
+    setState(() {
+      _initialized = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
     return Stack(
-      children: <Widget>[       
-        StaticMap(),       
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 0.6,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CarPoolingFirst()));
+                },
+                child: Container(
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(12.0),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Carpooling',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                        Image.asset('assets/carpooling.png'),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Easy way to share rides'),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ParcelScreen()));
+                },
+                child: Container(
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(12.0),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Package Transfer',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/gift.png',
+                          height: height / 4.5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Real time stuffs delivery'),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         DraggableScrollableSheet(
-            initialChildSize: 0.1,
-            minChildSize: 0.05,
-            maxChildSize: 0.24,
+            initialChildSize: 0.318,
+            minChildSize: 0.318, //make 0.05 if scrollable
+            maxChildSize: 0.318,
             expand: true,
             builder: (context, scrollController) {
               return SingleChildScrollView(
@@ -73,7 +134,7 @@ class _HomePageState extends State<HomePage>
                     children: [
                       RoundedBar(),
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 22.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -99,22 +160,10 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                             ),
-                            TextButton.icon(
-                                icon: CircularIcon(icon: Icon(Icons.home)),
-                                onPressed: () => NavigateToRoute()
-                                    .navigateFromHome(
-                                        source: locationDetail,
-                                        type: AddressType.Home,
-                                        address: _homeAddress),
-                                style: Constant.buttonStyle,
-                                label: _homeAddress != null
-                                    ? Flexible(
-                                        child: Text(
-                                          _homeAddress.locationName ??
-                                              'Set Home',
-                                        ),
-                                      )
-                                    : Text('Set Home')),
+                            !_initialized
+                                ? SavedAddressView(AddressType.Home)
+                                : SavedAddressView(AddressType.Home,
+                                    source: locationDetail),
                             Padding(
                               padding: const EdgeInsets.only(left: 50.0),
                               child: SizedBox(
@@ -125,27 +174,11 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                             ),
-                            TextButton.icon(
-                                icon: CircularIcon(
-                                  icon: Icon(Icons.work_outline_sharp),
-                                ),
-                                onPressed: () => NavigateToRoute()
-                                    .navigateFromHome(
-                                        source: locationDetail,
-                                        type: AddressType.Work,
-                                        address: _workAddress)
-                                    .then((value) => setState(() {})),
-                                style: Constant.buttonStyle,
-                                label: _workAddress != null
-                                    ? Flexible(
-                                        child: Text(
-                                          _workAddress.locationName ??
-                                              'Set Office',
-                                        ),
-                                      )
-                                    : Text('Set Office')),
-                            
-                          ],
+                         !_initialized
+                                ? SavedAddressView(AddressType.Work)
+                                : SavedAddressView(AddressType.Work,
+                                    source: locationDetail),
+                           ],
                         ),
                       ),
                     ],
@@ -188,5 +221,5 @@ class RoundedBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(180.0);
+  Size get preferredSize => const Size.fromHeight(192.0);
 }

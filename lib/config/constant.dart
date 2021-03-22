@@ -24,7 +24,7 @@ class Constant {
   static Color darkAccent = Color(0xff11998e);
   static Color lightBG = Color(0xffffffff);
   static Color darkBG = Colors.black;
-  static Color textColor = Color(0xfffafafa);
+  static Color textColor = Colors.black87;
   static Color textFormColor = Color(0xff0acf8a);
   static Color cardColor = Color(0xff5a965a);
   static TextStyle errorStyle =

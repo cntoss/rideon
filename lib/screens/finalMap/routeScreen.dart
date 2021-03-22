@@ -2,23 +2,13 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
+import 'package:rideon/maps/web_service/distance.dart' as distance;
+import 'package:rideon/models/driverModel.dart';
 import 'dart:async';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:geolocator/geolocator.dart';
-class PinInformation {
-  String pinPath;
-  String avatarPath;
-  LatLng location;
-  String locationName;
-  Color labelColor;
-
-  PinInformation(
-      {this.pinPath,
-      this.avatarPath,
-      this.location,
-      this.locationName,
-      this.labelColor});
-}
+import 'package:rideon/models/route/pininformation.dart';
+import 'package:rideon/services/helper/zoomCalculate.dart';
 
 class RouteScreen extends StatefulWidget {
   RouteScreen({this.sourceDetail, this.destinationDetail});
@@ -69,7 +59,7 @@ class RouteScreenState extends State<RouteScreen> {
     });
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
-   /*  location.onLocationChanged.listen((LocationData cLoc) {
+    /*  location.onLocationChanged.listen((LocationData cLoc) {
       // cLoc contains the lat and long of the
       // current user's position in real time,
       // so we're holding on to it
@@ -107,8 +97,18 @@ class RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
-        target: LatLng(currentLocation.latitude, currentLocation.longitude),
-        zoom: CAMERA_ZOOM,
+        target: LatLng(
+            (sourceDetail.geometry.location.lat +
+                    destinationDetail.geometry.location.lat) /
+                2,
+            (sourceDetail.geometry.location.lng +
+                    destinationDetail.geometry.location.lng) /
+                2),
+        zoom: ZoomCalculate().getZoom(
+            sourceDetail.geometry.location.lat,
+            sourceDetail.geometry.location.lng,
+            destinationDetail.geometry.location.lat,
+            destinationDetail.geometry.location.lng),
         tilt: CAMERA_TILT,
         bearing: CAMERA_BEARING);
 
@@ -117,7 +117,7 @@ class RouteScreenState extends State<RouteScreen> {
         children: <Widget>[
           GoogleMap(
               myLocationEnabled: true,
-              compassEnabled: true,
+              compassEnabled: false,
               tiltGesturesEnabled: false,
               markers: _markers,
               polylines: Set<Polyline>.of(polylines.values),
@@ -135,9 +135,30 @@ class RouteScreenState extends State<RouteScreen> {
                 // i'm ready to show the pins on the map
                 showPinsOnMap();
               }),
-          MapPinPillComponent(
-              pinPillPosition: pinPillPosition,
-              currentlySelectedPin: currentlySelectedPin)
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 20,
+            child: IconButton(
+              color: Colors.grey,
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+                size: 30,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          FutureBuilder(
+            future: getDistance(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return CircularProgressIndicator();
+              } else
+                return MapPinPillComponent(
+                  distance: snapshot.data,
+                );
+            },
+          )
         ],
       ),
     );
@@ -197,7 +218,7 @@ class RouteScreenState extends State<RouteScreen> {
     Polyline polyline = Polyline(
         polylineId: id, color: Colors.blue, points: polylineCoordinates);
     polylines[id] = polyline;
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -224,7 +245,7 @@ class RouteScreenState extends State<RouteScreen> {
       target: LatLng(currentLocation.latitude, currentLocation.longitude),
     );
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));    
+    controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
     setState(() {
       // updated position
       var pinPosition =
@@ -232,7 +253,6 @@ class RouteScreenState extends State<RouteScreen> {
 
       sourcePinInfo.location = pinPosition;
 
-      
       _markers.removeWhere((m) => m.markerId.value == 'sourcePin');
       _markers.add(Marker(
           markerId: MarkerId('sourcePin'),
@@ -246,79 +266,103 @@ class RouteScreenState extends State<RouteScreen> {
           icon: sourceIcon));
     });
   }
+
+  Future<String> getDistance() async {
+    var distanceResponse =
+        await distance.GoogleDistanceMatrix(apiKey: googleAPIKey)
+            .distanceWithLocation([sourceDetail.geometry.location],
+                [destinationDetail.geometry.location]);
+    if (distanceResponse != null)
+      return distanceResponse.results.first.elements.first.distance.text;
+    else
+      return '';
+  }
 }
 
 class MapPinPillComponent extends StatefulWidget {
-  final double pinPillPosition;
-  final PinInformation currentlySelectedPin;
-
-  MapPinPillComponent({this.pinPillPosition, this.currentlySelectedPin});
+  final String distance;
+  MapPinPillComponent({this.distance});
 
   @override
-  State<StatefulWidget> createState() => MapPinPillComponentState();
+  _MapPinPillComponentState createState() => _MapPinPillComponentState();
 }
 
-class MapPinPillComponentState extends State<MapPinPillComponent> {
+class _MapPinPillComponentState extends State<MapPinPillComponent> {
+  TranportType transportType = TranportType.Bike;
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      bottom: widget.pinPillPosition,
-      right: 0,
-      left: 0,
-      duration: Duration(milliseconds: 200),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          margin: EdgeInsets.all(20),
-          height: 70,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    blurRadius: 20,
-                    offset: Offset.zero,
-                    color: Colors.grey.withOpacity(0.5))
-              ]),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 50,
-                height: 50,
-                margin: EdgeInsets.only(left: 10),
-                child: ClipOval(
-                    child: Image.asset(widget.currentlySelectedPin.avatarPath,
-                        fit: BoxFit.cover)),
-              ),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(left: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(widget.currentlySelectedPin.locationName,
-                          style: TextStyle(
-                              color: widget.currentlySelectedPin.labelColor)),
-                      Text(
-                          'Latitude: ${widget.currentlySelectedPin.location.latitude.toString()}',
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      Text(
-                          'Longitude: ${widget.currentlySelectedPin.location.longitude.toString()}',
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    ],
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: EdgeInsets.all(8),
+        //height: boxHeight / 3,
+        decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  blurRadius: 20,
+                  offset: Offset.zero,
+                  color: Colors.grey.withOpacity(0.5))
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      transportType = TranportType.Bike;
+                    });
+                  },
+                  child: Card(
+                    color: transportType == TranportType.Bike
+                        ? Colors.green
+                        : Theme.of(context).scaffoldBackgroundColor,
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        Image.asset('assets/bike.png'),
+                        Text('Bike'),
+                        Text(widget.distance ?? '')
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(15),
-                child: Image.asset(widget.currentlySelectedPin.pinPath,
-                    width: 50, height: 50),
-              )
-            ],
-          ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      transportType = TranportType.Car;
+                    });
+                  },
+                  child: Card(
+                    color: transportType == TranportType.Car
+                        ? Colors.green
+                        : Theme.of(context).scaffoldBackgroundColor,
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/car.png',
+                          height: 100,
+                          width: 200,
+                        ),
+                        Text('Car'),
+                        Text(widget.distance ?? '')
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+            ElevatedButton(
+              onPressed: () => {},
+              child: Text('Send Pick Request'),
+            )
+          ],
         ),
       ),
     );

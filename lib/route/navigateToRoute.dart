@@ -5,8 +5,8 @@ import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/screens/maps/routeScreen.dart';
-import 'package:rideon/screens/setting/addAddress.dart';
+import 'package:rideon/screens/finalMap/routeScreen.dart';
+import 'package:rideon/screens/localAddress/addAddress.dart';
 
 class NavigateToRoute {
   navigateToRoute(

@@ -195,7 +195,7 @@ class GoogleDistanceMatrix extends GoogleWebService {
 class DistanceResponse extends GoogleResponseStatus {
   final List<String> originAddress;
   final List<String> destinationAddress;
-  final List<Row> results;
+  final List<DataRow> results;
 
   DistanceResponse(
     String status,
@@ -215,19 +215,19 @@ class DistanceResponse extends GoogleResponseStatus {
       (json['destination_addresses'] as List)?.cast<String>(),
       json['rows']
           ?.map((row) {
-            return Row.fromJson(row);
+            return DataRow.fromJson(row);
           })
           ?.toList()
-          ?.cast<Row>());
+          ?.cast<DataRow>());
 }
 
-class Row {
+class DataRow {
   final List<Element> elements;
 
-  Row(this.elements);
+  DataRow(this.elements);
 
-  factory Row.fromJson(Map json) => json != null
-      ? Row(json['elements']
+  factory DataRow.fromJson(Map json) => json != null
+      ? DataRow(json['elements']
           ?.map((element) {
             return Element.fromJson(element);
           })

@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.symmetric(horizontal: 18.0),
           children: [
             Image.asset(
-              'assets/logo1.png',
+              'assets/logo.png',
               height: MediaQuery.of(context).size.height / 3,
               width: MediaQuery.of(context).size.height,
             ),

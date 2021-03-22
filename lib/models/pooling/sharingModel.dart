@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:rideon/models/googleModel/GeocodingModel.dart';
+
 List<SharingModel> sharingModelFromJson(String str) => List<SharingModel>.from(json.decode(str).map((x) => SharingModel.fromJson(x)));
 
 String sharingModelToJson(List<SharingModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -12,9 +14,7 @@ class SharingModel {
     SharingModel({
         this.id,
         this.fromLocation,
-        this.fromLocationId,
         this.toLocation,
-        this.toLocationId,
         this.passenger,
         this.cost,
         this.date,
@@ -24,10 +24,8 @@ class SharingModel {
     });
 
     int id;
-    String fromLocation;
-    int fromLocationId;
-    String toLocation;
-    int toLocationId;
+    LocationDetail fromLocation;
+    LocationDetail toLocation;
     int passenger;
     int cost;
     DateTime date;
@@ -38,9 +36,7 @@ class SharingModel {
     factory SharingModel.fromJson(Map<String, dynamic> json) => SharingModel(
         id: json["id"],
         fromLocation: json["fromLocation"],
-        fromLocationId: json["fromLocationId"],
         toLocation: json["toLocation"],
-        toLocationId: json["toLocationId"],
         passenger: json["passenger"],
         cost: json["cost"],
         date: json["date"],
@@ -52,9 +48,7 @@ class SharingModel {
     Map<String, dynamic> toJson() => {
         "id": id,
         "fromLocation": fromLocation,
-        "fromLocationId": fromLocationId,
         "toLocation": toLocation,
-        "toLocationId": toLocationId,
         "passenger": passenger,
         "cost": cost,
         "date": date,

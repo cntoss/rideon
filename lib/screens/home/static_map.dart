@@ -22,7 +22,6 @@ class _StaticMapState extends State<StaticMap> {
   PlaceProvider provider;
  final LatLng initialPosition = SOURCE_LOCATION;
   bool useCurrentLocation = true;
-  Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {

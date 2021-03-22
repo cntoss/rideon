@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
-import 'package:rideon/screens/maps/routeScreen.dart';
+import 'package:rideon/screens/finalMap/routeScreen.dart';
 import 'package:rideon/screens/widgets/animatedPin.dart';
 import 'package:rideon/services/google/placeService.dart';
 import 'package:rideon/config/constant.dart';
@@ -87,11 +87,11 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               });
                             currentLocation = CurrentLocation.fromLocation;
                           },
-                          textAlign: TextAlign.start,
+                          textAlign: TextAlign.start,                      
                           maxLines: 3,
                           minLines: 1,
                           decoration: InputDecoration(
-                              hintText: "From Address",
+                              hintText: "From Address",                          
                               border: InputBorder.none,
                               suffixIcon: IconButton(
                                 icon:
@@ -102,13 +102,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                   _fromCLear = false;
                                 }),
                               ),
-                              contentPadding: EdgeInsets.all(8)
-                              /*  focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.green)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.green)), */
+                              contentPadding: EdgeInsets.all(8)                             
                               ),
                         ),
                       ),

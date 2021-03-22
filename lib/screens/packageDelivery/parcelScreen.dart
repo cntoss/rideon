@@ -3,7 +3,9 @@ import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/web_service/distance.dart';
+import 'package:rideon/models/driverModel.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
+import 'package:rideon/screens/finalMap/packageDeliveryRouteScreen.dart';
 import 'package:rideon/screens/widgets/loader.dart';
 
 class ParcelScreen extends StatefulWidget {
@@ -20,12 +22,13 @@ class _ParcelScreenState extends State<ParcelScreen> {
   TextEditingController _toController;
   TextEditingController _fromController;
 
-  TextEditingController _body = TextEditingController();
+  TextEditingController _note = TextEditingController();
   TextEditingController _name = TextEditingController();
   TextEditingController _phone = TextEditingController();
 
   TextStyle textTitle = TextStyle();
   bool _isLoading = false;
+
   bool _showConfirmation = false;
   DistanceResponse distanceResponse;
   @override
@@ -39,21 +42,24 @@ class _ParcelScreenState extends State<ParcelScreen> {
 
   @override
   Widget build(BuildContext context) {
+    EdgeInsets padding = EdgeInsets.symmetric(vertical: 8);
+    TextStyle _textStyle = TextStyle(fontSize: 16);
     return Scaffold(
+      appBar: AppBar(title: Text('Request Delivery')),
       resizeToAvoidBottomPadding: true,
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
               child: Card(
                 elevation: 0,
                 color: Constant.cardColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: !_showConfirmation
                         ? Form(
                             key: _formKey,
@@ -63,7 +69,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 Text("Pickup Location"),
                                 Container(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     child: InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -121,7 +128,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 Text("Drop Location"),
                                 Container(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     child: InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -179,11 +187,12 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 ),
                                 Text("Receiver Name"),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: TextFormField(
                                     controller: _name,
                                     onFieldSubmitted: (v) {
-                                      // _bodyFocus.requestFocus();
+                                      // _noteFocus.requestFocus();
                                     },
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
@@ -205,12 +214,13 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 ),
                                 Text("Receiver Contact No", style: textTitle),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: TextFormField(
                                     controller: _phone,
                                     keyboardType: TextInputType.phone,
                                     onFieldSubmitted: (v) {
-                                      //  _bodyFocus.requestFocus();
+                                      //  _noteFocus.requestFocus();
                                     },
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
@@ -222,6 +232,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Contact no must not be empty';
+                                      }else if(value.length<7){
+                                        return 'Enter valid contact no.';
                                       } else {
                                         return null;
                                       }
@@ -230,28 +242,29 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 ),
                                 Text('Notes', style: textTitle),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: TextFormField(
                                     maxLines: null,
                                     minLines: 3,
-                                    // focusNode: _bodyFocus,
+                                    // focusNode: _noteFocus,
                                     keyboardType: TextInputType.multiline,
-                                    controller: _body,
+                                    controller: _note,
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
                                       counterText: "",
-                                      labelText: 'Delivery details...',
+                                      labelText: 'Delivery details',
                                       enabledBorder: Constant.inputBorder,
                                       // focusedBorder: Constant.inputBorder,
-                                      errorStyle: TextStyle(fontSize: 15),
+                                      //errorStyle: TextStyle(fontSize: 15),
                                     ),
-                                    validator: (value) {
+                                    /* validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Note must not be empty';
                                       } else {
                                         return null;
                                       }
-                                    },
+                                    }, */
                                   ),
                                 ),
                                 Center(
@@ -279,10 +292,75 @@ class _ParcelScreenState extends State<ParcelScreen> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                                Text("Delivery Information"),
-                                Text(
-                                    "Estimated Distance ${distanceResponse.results.first.elements.first.distance}"),
-                                Text("Estimated Price"),
+                                Text("Delivery Information", style: _textStyle),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: padding,
+                                      child: Text("Package fit inside showcase",
+                                          style: _textStyle),
+                                    ),
+                                    Checkbox(value: true, onChanged: null),
+                                  ],
+                                ),
+
+                                //Text('Block'),
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                          text: 'Estimated Price!   ',
+                                          style: _textStyle),
+                                      TextSpan(
+                                        text: 'Rs ##.##',
+                                        style: _textStyle.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: padding,
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: 'Estimated Distance   ',
+                                            style: _textStyle),
+                                        TextSpan(
+                                          text: '${distanceResponse.results.first.elements.first.distance.text}',
+                                          style: _textStyle.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                /*  Text(
+                                    "Estimated Distance ${distanceResponse.results.first.elements.first.distance.text}"),
+                               */
+
+                                Center(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12)),
+                                        color: Theme.of(context).primaryColor,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text('Request a driver',
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 255, 255, 255),
+                                                fontSize: 18,
+                                              )),
+                                        ),
+                                        onPressed: _confirmToDelivery),
+                                  ),
+                                )
                               ])),
               ),
             ),
@@ -305,5 +383,28 @@ class _ParcelScreenState extends State<ParcelScreen> {
         });
       }
     }
+  }
+
+  //
+  _confirmToDelivery() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = true;
+      });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PackageDeliveryRouteScreen(
+                  sourceDetail: _fromAddress,
+                  destinationDetail: _toAddress,
+                  driverDetail: DriverModel(
+                      displayName: "Baby Driver",
+                      rating: 3.5,
+                      vehicle: Vehicle(
+                          name: "White BMW",vehicleid: 'Bagmati B AA 7706', type: TranportType.Car)))));
+    });
   }
 }

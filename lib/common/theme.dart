@@ -4,7 +4,7 @@ final appTheme = ThemeData(
   primarySwatch: Colors.green,
   primaryColor: Color(0xFF3cc83c),
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: Color(0xff00B14F),
+  scaffoldBackgroundColor: Color(0xff8cfaa0),
   focusColor: Colors.teal,
   textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
