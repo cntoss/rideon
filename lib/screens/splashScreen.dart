@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 3)).then((value) {
+   Future.delayed(Duration(seconds: 1)).then((value) {
 SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     UserService().setIsWorkThrough();
       Navigator.pushReplacement(
@@ -21,7 +21,7 @@ SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
           MaterialPageRoute(
             builder: (context) => InitialLandingPage(),
           ));
-    });
+   });
   }
 
   @override
@@ -29,12 +29,12 @@ SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     //var height = MediaQuery.of(context).size.height;
     //var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Color(0xffFFEE58),
       body: Container(
         child: Image.asset(
-          "assets/logo.gif",
-          height: MediaQuery.of(context).size.height * 2,
+          "assets/rideon.png",
+          height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
+          fit: BoxFit.fill,
         ),
       ),
       /* body: Center(

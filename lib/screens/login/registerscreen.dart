@@ -85,16 +85,6 @@ class _RegistrationState extends State<Registration> {
                                 Icons.person_rounded,
                                 color: Colors.grey,
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: TextStyle(color: Constant.textColor),
-                              /*   errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)), */
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                  borderSide: BorderSide(color: Colors.green)),
                               labelText: "Full Name"),
                         ),
                       ),
@@ -119,11 +109,6 @@ class _RegistrationState extends State<Registration> {
                                 Icons.phone_android,
                                 color: Colors.grey,
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: TextStyle(color: Constant.textColor),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
                               counterText: "",
                               labelText: "Phone Number"),
                         ),
@@ -151,12 +136,7 @@ class _RegistrationState extends State<Registration> {
                                 Icons.date_range_outlined,
                                 color: Colors.grey,
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: TextStyle(color: Constant.textColor),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
-                              labelText: "Date of Birth"),
+                             labelText: "Date of Birth"),
                         ),
                       ),
 
@@ -180,11 +160,6 @@ class _RegistrationState extends State<Registration> {
                                 Icons.contact_phone,
                                 color: Colors.grey,
                               ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: TextStyle(color: Constant.textColor),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 12),
                               counterText: "",
                               labelText: "Emergency Contact"),
                         ),
@@ -209,14 +184,6 @@ class _RegistrationState extends State<Registration> {
                               Icons.mail_outline_outlined,
                               color: Colors.grey,
                             ),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24)),
-                            errorStyle: TextStyle(color: Constant.textColor),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 12),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide(color: Colors.green)),
                             labelText: "Email",
                             hintText: "Enter valid email",
                           ),
@@ -338,20 +305,23 @@ class _RegistrationState extends State<Registration> {
                                       FocusScope.of(context).unfocus();
                                       if (_formKey.currentState.validate()) {
                                         _formKey.currentState.save();
-                                        _manager.register(User(
-                                            id: 1,
-                                            name: _nameCotroler.text,
-                                            phone: _phoneNumberCOntroller.text,
-                                            email: _emailController.text,
-                                            gender: 'male',
-                                            paymentId: null,
-                                            dob: _dateController.text));
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePageWrapper(),
-                                            ));
+                                        _manager
+                                            .register(User(
+                                                id: 1,
+                                                name: _nameCotroler.text,
+                                                phone:
+                                                    _phoneNumberCOntroller.text,
+                                                email: _emailController.text,
+                                                gender: 'male',
+                                                paymentId: null,
+                                                dob: _dateController.text))
+                                            .then((value) =>
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomePageWrapper(),
+                                                    )));
                                       }
                                     },
                                   ),
@@ -378,18 +348,20 @@ class _RegistrationState extends State<Registration> {
     DateTime newSelectedDate = await showDatePicker(
         context: context,
         initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2040),
+        firstDate: DateTime(1910),
+        lastDate: DateTime.now(),
         builder: (BuildContext context, Widget child) {
           return Theme(
             data: ThemeData.dark().copyWith(
               colorScheme: ColorScheme.dark(
-                primary: Colors.tealAccent,
+              //primary: Colors.tealAccent,
                 onPrimary: Colors.white,
-                surface: Colors.teal,
-                onSurface: Colors.yellow,
+                surface: Colors.redAccent,
+                onSurface: Colors.black45,
+              
               ),
-              dialogBackgroundColor: Colors.green[500],
+              textTheme: TextTheme(bodyText2: TextStyle(color:Colors.blue)),
+              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             child: child,
           );

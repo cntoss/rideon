@@ -151,12 +151,19 @@ class RouteScreenState extends State<RouteScreen> {
           FutureBuilder(
             future: getDistance(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
-              } else
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null)
                 return MapPinPillComponent(
                   distance: snapshot.data,
                 );
+              else
+                return Center(
+                    child: Text(
+                  'Unable to find route',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                ));
             },
           )
         ],
@@ -190,6 +197,8 @@ class RouteScreenState extends State<RouteScreen> {
     // add the initial source location pin
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
+        infoWindow: InfoWindow(
+            title: sourceDetail.formattedAddress, snippet: 'Rideon map'),
         position: pinPosition,
         onTap: () {
           setState(() {
@@ -292,6 +301,7 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -323,12 +333,19 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                         ? Colors.green
                         : Theme.of(context).scaffoldBackgroundColor,
                     elevation: 2,
-                    child: Column(
-                      children: [
-                        Image.asset('assets/bike.png'),
-                        Text('Bike'),
-                        Text(widget.distance ?? '')
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/bike.png',
+                            height: 100,
+                            width: width / 2.5,
+                          ),
+                          Text('Bike'),
+                          Text(widget.distance ?? '')
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -343,16 +360,19 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                         ? Colors.green
                         : Theme.of(context).scaffoldBackgroundColor,
                     elevation: 2,
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/car.png',
-                          height: 100,
-                          width: 200,
-                        ),
-                        Text('Car'),
-                        Text(widget.distance ?? '')
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/car.png',
+                            height: 100,
+                            width: width / 2.5,
+                          ),
+                          Text('Car'),
+                          Text(widget.distance ?? '')
+                        ],
+                      ),
                     ),
                   ),
                 )

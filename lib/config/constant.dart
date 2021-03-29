@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Constant {
-  //static Color cardColor = Color(0xfff0e6d2);
-
-  //static Color cardColor = Color(0xff05ae46);
-
   static Color stackfoldBackground = Color(0xfff5ead7);
 
   static String passwordValidationError =
@@ -15,7 +12,6 @@ class Constant {
       'Woopsie! Login Failed, please retry in a minute or so.';
 
   static Color lightPrimary = Color(0xffffffff);
-  //static Color lightPrimary = Colors.red;
   static Color darkPrimary = Colors.black;
   static List<Color> get tileGradient =>
       [lightAccent, lightAccentComplimentary];
@@ -24,12 +20,14 @@ class Constant {
   static Color darkAccent = Color(0xff11998e);
   static Color lightBG = Color(0xffffffff);
   static Color darkBG = Colors.black;
-  static Color textColor = Colors.black87;
-  static Color textFormColor = Color(0xff0acf8a);
-  static Color cardColor = Color(0xff5a965a);
+  static Color textColor = Colors.black45;
+  static Color textFormColor = Color(0xffffcf2d8);
+  static Color cardColor = Color(0xfffefaf0);
   static TextStyle errorStyle =
       TextStyle(color: Colors.redAccent, fontSize: 16);
   static TextStyle whiteText =
+      TextStyle(color: Constant.textColor, fontSize: 16);
+  static TextStyle normalText =
       TextStyle(color: Constant.textColor, fontSize: 16);
 
   static TextStyle title = const TextStyle(
@@ -54,12 +52,15 @@ class Constant {
 
   static TextStyle titleWhite = const TextStyle(
       inherit: false,
-      color: Colors.white,
+      color: Colors.black,
       fontFamily: "Roboto",
       fontSize: 28.0,
       fontWeight: FontWeight.w400,
       decoration: TextDecoration.none);
 
+  static TextStyle bottonStyle =
+      const TextStyle(inherit: false, color: Colors.black, fontSize: 16);
+  static EdgeInsetsGeometry bottonPadding = EdgeInsets.all(12.0);
   static ThemeData lightTheme = ThemeData(
     //fontFamily: GoogleFonts.roboto().fontFamily,
     backgroundColor: lightBG,

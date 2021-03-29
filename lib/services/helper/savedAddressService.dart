@@ -37,6 +37,16 @@ class SavedAddressService {
     return _list;
   }
 
+   List<SavedAddressModel> getOtherAddress() {
+    List<SavedAddressModel> _list = List<SavedAddressModel>();
+    List<dynamic> result = _box.get(
+      hkAddressType,
+      defaultValue: List<SavedAddressModel>(),
+    );
+    _list = result.cast();
+    return _list.where((e) => e.type == AddressType.Other).toList();
+  }
+
   SavedAddressModel getSingleAddress(AddressType type) {
     List<SavedAddressModel> _list = List<SavedAddressModel>();
     List<dynamic> result = _box.get(

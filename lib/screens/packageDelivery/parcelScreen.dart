@@ -111,11 +111,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                           }
                                         },
                                         decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 5),
                                           hintText: "Pickup Location",
-                                          disabledBorder: Constant.inputBorder,
-                                          labelStyle: Constant.whiteText,
                                           errorStyle: TextStyle(
                                             color: Theme.of(context)
                                                 .errorColor, // or any other color
@@ -171,11 +167,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                           }
                                         },
                                         decoration: InputDecoration(
-                                          disabledBorder: Constant.inputBorder,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 5),
                                           hintText: "Dropof Location",
-                                          labelStyle: Constant.whiteText,
                                           errorStyle: TextStyle(
                                             color: Theme.of(context)
                                                 .errorColor, // or any other color
@@ -196,12 +188,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     },
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 5),
                                       hintText: 'Name',
-                                      enabledBorder: Constant.inputBorder,
                                       //focusedBorder: Constant.inputBorder,
-                                      labelStyle: Constant.whiteText,
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -225,14 +213,11 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
                                         hintText: 'Contact No.',
-                                        enabledBorder: Constant.inputBorder,
-                                        //focusedBorder: Constant.inputBorder,
-                                        errorStyle: TextStyle(fontSize: 15),
-                                        labelStyle: Constant.whiteText),
+                                       ),
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Contact no must not be empty';
-                                      }else if(value.length<7){
+                                      } else if (value.length < 7) {
                                         return 'Enter valid contact no.';
                                       } else {
                                         return null;
@@ -254,7 +239,6 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     decoration: InputDecoration(
                                       counterText: "",
                                       labelText: 'Delivery details',
-                                      enabledBorder: Constant.inputBorder,
                                       // focusedBorder: Constant.inputBorder,
                                       //errorStyle: TextStyle(fontSize: 15),
                                     ),
@@ -267,25 +251,15 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     }, */
                                   ),
                                 ),
-                                Center(
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)),
-                                        color: Theme.of(context).primaryColor,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('Continue',
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                fontSize: 18,
-                                              )),
-                                        ),
-                                        onPressed: _continueToDelivery),
-                                  ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ElevatedButton(
+                                      child: Padding(
+                                        padding: Constant.bottonPadding,
+                                        child: Text('Continue',
+                                            style: Constant.bottonStyle),
+                                      ),
+                                      onPressed: _continueToDelivery),
                                 )
                               ],
                             ))
@@ -329,7 +303,8 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                             text: 'Estimated Distance   ',
                                             style: _textStyle),
                                         TextSpan(
-                                          text: '${distanceResponse.results.first.elements.first.distance.text}',
+                                          text:
+                                              '${distanceResponse.results.first.elements.first.distance.text}',
                                           style: _textStyle.copyWith(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -344,19 +319,13 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                 Center(
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
-                                    child: RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)),
-                                        color: Theme.of(context).primaryColor,
+                                    child: ElevatedButton(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('Request a driver',
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                fontSize: 18,
-                                              )),
+                                          padding: Constant.bottonPadding,
+                                          child: Text(
+                                            'Request a driver',
+                                            style: Constant.bottonStyle,
+                                          ),
                                         ),
                                         onPressed: _confirmToDelivery),
                                   ),
@@ -404,7 +373,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
                       displayName: "Baby Driver",
                       rating: 3.5,
                       vehicle: Vehicle(
-                          name: "White BMW",vehicleid: 'Bagmati B AA 7706', type: TranportType.Car)))));
+                          name: "White BMW",
+                          vehicleid: 'Bagmati B AA 7706',
+                          type: TranportType.Car)))));
     });
   }
 }

@@ -216,12 +216,13 @@ class _ChnagePasswordScreenState extends State<ChnagePasswordScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.only(top: 15),
-                      child: RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        padding: EdgeInsets.all(12),
-                        child: Text(
-                          'Change Password',
-                          style: Constant.titleWhite.copyWith(fontSize: 16),
+                      child: ElevatedButton(                       
+                        child: Padding(
+                          padding: Constant.bottonPadding,
+                          child: Text(
+                            'Change Password',
+                            style: Constant.bottonStyle.copyWith(fontSize: 16),
+                          ),
                         ),
                         onPressed: _isLoading
                             ? null

@@ -17,7 +17,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   User _user = UserService().getUser();
- 
+
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * .65,
@@ -81,7 +81,7 @@ class _SettingScreenState extends State<SettingScreen> {
           customCard(
               child: customRow(
             icon: Icon(Icons.money),
-            title: 'Add Payment',
+            title: 'Add Money',
           )),
           customCard(
               child: customRow(

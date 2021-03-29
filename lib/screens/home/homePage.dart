@@ -29,9 +29,12 @@ class _HomePageState extends State<HomePage> {
 
   _getLocationDetail() async {
     currentLocation = await Geolocator.getCurrentPosition();
-    locationDetail = await GeocodingService().getPlaceDetailFromLocation(
-        LocationModel(
-            lat: currentLocation.latitude, lng: currentLocation.longitude));
+    await GeocodingService()
+        .getPlaceDetailFromLocation(LocationModel(
+            lat: currentLocation.latitude, lng: currentLocation.longitude))
+        .then((value) => setState(() {
+              locationDetail = value;
+            }));
     setState(() {
       _initialized = true;
     });
@@ -174,11 +177,11 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                         !_initialized
+                            !_initialized
                                 ? SavedAddressView(AddressType.Work)
                                 : SavedAddressView(AddressType.Work,
                                     source: locationDetail),
-                           ],
+                          ],
                         ),
                       ),
                     ],

@@ -14,9 +14,12 @@ import 'package:rideon/services/utils/uiModifiers.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'config/appConfig.dart';
+import 'services/firebase/firebaseService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseService().initFirebase();
+
   ///todo: remove if status bar is default transparent
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
@@ -62,10 +65,10 @@ class _MyAppState extends State<MyApp> {
       //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
       // initialRoute: UserService().isWorkThrough ? '/login' : '/',
-      initialRoute: '/login',
+      initialRoute: '/splash',
       routes: {
         // '/': (context) => SplashScreen(),
-        '/slash': (context) => SplashScreen(),
+        '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginWrapper(),
         '/home': (context) => HomePageWrapper(),
       },

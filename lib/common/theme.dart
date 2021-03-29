@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:rideon/config/constant.dart';
 
 final appTheme = ThemeData(
-  primarySwatch: Colors.green,
-  primaryColor: Color(0xFF3cc83c),
-  visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: Color(0xff8cfaa0),
-  focusColor: Colors.teal,
-  textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-          primary: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          textStyle:
-              TextStyle(fontSize: 20, wordSpacing: 2, letterSpacing: 2))),
-  /* textTheme: TextTheme(
-          bodyText2:TextStyle(color: Colors.white)
-        ) */
-);
+    primarySwatch: Colors.red,
+    primaryColor: Color(0xfffafbf8),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    scaffoldBackgroundColor: Color(0xfffafbf8),
+    focusColor: Colors.white60,
+    textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            primary: Colors.black,
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            textStyle:
+                TextStyle(fontSize: 20, wordSpacing: 2, letterSpacing: 2))),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.white54),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.red)))),
+    ),
+    textTheme: TextTheme(
+      bodyText2: TextStyle(color: Colors.black87),
+      
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: Colors.black54),
+      disabledBorder: Constant.inputBorder,
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      enabledBorder: Constant.inputBorder,      
+      // or any other color
+    ));

@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
-import 'package:rideon/screens/profile/chnagePasswordScreen.dart';
+import 'package:rideon/screens/profile/changePasswordScreen.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/utils/extension.dart';

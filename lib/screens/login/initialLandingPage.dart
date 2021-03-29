@@ -7,13 +7,16 @@ import 'package:rideon/screens/widgets/appButton.dart';
 class InitialLandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
-     body: ListView(
+    return Scaffold(
+      body: ListView(
         children: [
           Image.asset(
-            'assets/logo1.png',
+            'assets/rideon.png',
             height: MediaQuery.of(context).size.height / 2,
             width: MediaQuery.of(context).size.height,
+            fit: BoxFit.cover,
+            //color: Theme.of(context).scaffoldBackgroundColor,
+            
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -25,30 +28,32 @@ class InitialLandingPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Spacer(flex: 1),
                     AppButton().appButton(
-                      small: true,
+                        small: true,
                         text: 'Sign In',
                         onTap: () {
-                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage(),
-                            ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ));
                         },
                         color: Colors.tealAccent),
-
-                         AppButton().appButton(
+                    Spacer(flex: 10),
+                    AppButton().appButton(
                       small: true,
-                        text: 'Register',
-                        onTap: () {
-                           Navigator.push(
+                      text: 'Register',
+                      onTap: () {
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => Registration(),
                             ));
-                        },
-                        ),
-                   /*  CustomDialog().dialogButton(
+                      },
+                    ),
+                    Spacer(flex: 1),
+                    /*  CustomDialog().dialogButton(
                         text: 'Register', onPressed: () {
                            Navigator.push(
                           context,

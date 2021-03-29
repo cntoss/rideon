@@ -383,7 +383,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
             child: Container(
               //padding: const EdgeInsets.all(8.0),
               width: MediaQuery.of(context).size.width,
-              child: Center(child: Text('Select')),
+              child: Center(child: Text('Select', style: TextStyle(color:Colors.black54),)),
             ),
             onPressed: () {
               onPlacePicked(result);

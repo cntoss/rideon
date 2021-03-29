@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
+import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/finalMap/routeScreen.dart';
 import 'package:rideon/screens/widgets/animatedPin.dart';
+import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/google/placeService.dart';
 import 'package:rideon/config/constant.dart';
+import 'package:rideon/services/helper/savedAddressService.dart';
 
 enum CurrentLocation { fromLocation, toLocation }
 
@@ -27,14 +30,17 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
   PlaceApiProvider apiClient;
   String query = '';
   CurrentLocation currentLocation;
-  bool _fromCLear = false;
+  bool _fromCLear;
   bool _toClear = false;
+  List<SavedAddressModel> _saveAddress =
+      SavedAddressService().getOtherAddress();
   @override
   void initState() {
     super.initState();
     _fromController =
         TextEditingController(text: fromLocationModel.formattedAddress ?? '');
     apiClient = PlaceApiProvider(UniqueKey());
+    _fromCLear = _fromController.text == '' ? false : true;
   }
 
   @override
@@ -76,6 +82,9 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             borderRadius: BorderRadius.circular(10)),
                         child: TextField(
                           controller: _fromController,
+                          autofocus: fromLocationModel.formattedAddress == null
+                              ? true
+                              : false,
                           onChanged: (x) async {
                             setState(() {
                               query = x;
@@ -87,23 +96,23 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               });
                             currentLocation = CurrentLocation.fromLocation;
                           },
-                          textAlign: TextAlign.start,                      
+                          textAlign: TextAlign.start,
                           maxLines: 3,
                           minLines: 1,
                           decoration: InputDecoration(
-                              hintText: "From Address",                          
+                              hintText: "From Address",
                               border: InputBorder.none,
                               suffixIcon: IconButton(
                                 icon:
-                                    _fromCLear ? Icon(Icons.clear) : Icon(null),
+                                    _fromCLear ? Icon(Icons.clear, color: Colors.black54) : Icon(Icons.search,color: Colors.black12),
                                 onPressed: () => setState(() {
                                   query = '';
                                   _fromController.clear();
                                   _fromCLear = false;
+                                  fromLocationModel = LocationDetail();
                                 }),
                               ),
-                              contentPadding: EdgeInsets.all(8)                             
-                              ),
+                              contentPadding: EdgeInsets.all(8)),
                         ),
                       ),
                     ]),
@@ -128,11 +137,14 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: TextField(
                           controller: _toController,
+                          autofocus: fromLocationModel.formattedAddress == null
+                              ? false
+                              : true,
                           onChanged: (x) {
                             setState(() {
                               query = x;
                             });
-                            if (!_toClear && x.trim().length > 1)
+                            if (!_toClear && x.trim().length > 0)
                               setState(() {
                                 _toClear = true;
                               });
@@ -143,11 +155,12 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                           decoration: InputDecoration(
                             hintText: "Your destination?",
                             suffixIcon: IconButton(
-                              icon: _fromCLear ? Icon(Icons.clear) : Icon(null),
+                              icon: _toClear ? Icon(Icons.clear, color: Colors.black54) : Icon(Icons.search,color: Colors.black12),
                               onPressed: () => setState(() {
                                 query = '';
                                 _toController.clear();
                                 _toClear = false;
+                                toLocationModel = LocationDetail();
                               }),
                             ),
                             border: InputBorder.none,
@@ -157,67 +170,115 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                       ),
                     ]),
                     FutureBuilder(
-                      future: query == ""
-                          ? null
-                          : apiClient.fetchSuggestions(query,
-                              Localizations.localeOf(context).languageCode),
-                      builder: (context, snapshot) => query == ''
-                          ? Container()
-                          : snapshot.hasData
-                              ? ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return Divider();
-                                  },
-                                  physics: ClampingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) => ListTile(
-                                    contentPadding: EdgeInsets.all(0),
-                                    leading: Material(
-                                      color: Colors.grey,
-                                      child: Icon(
-                                        Icons.location_on,
-                                        size: 20,
-                                      ),
-                                      shape: CircleBorder(),
+                        future: query == ""
+                            ? null
+                            : apiClient.fetchSuggestions(query,
+                                Localizations.localeOf(context).languageCode),
+                        builder: (context, snapshot) => query == ''
+                            ? ListView.separated(
+                                itemCount: _saveAddress.length,
+                                physics: ClampingScrollPhysics(),
+                                shrinkWrap: true,
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        Divider(height: 1),
+                                itemBuilder: (BuildContext context, int x) {
+                                  return ListTile(
+                                    leading:
+                                        CircularIcon(icon: Icon(Icons.star)),
+                                    title: Text(
+                                      _saveAddress[x].detail ?? '',
+                                      style: TextStyle(fontSize: 18),
                                     ),
-                                    title: Transform.translate(
-                                      offset: Offset(-25, 0),
-                                      child: Text(
-                                          (snapshot.data[index] as Suggestion)
-                                              .description),
+                                    subtitle: Text(
+                                      _saveAddress[x].locationName ?? '',
                                     ),
                                     onTap: () async {
-                                      if (snapshot.data[index] != null) {
-                                        var result =
-                                            snapshot.data[index] as Suggestion;
-                                        final placeDetails =
-                                            await PlaceApiProvider(UniqueKey())
-                                                .getPlaceDetailFromId(
-                                                    result.placeId);
-                                        if (currentLocation ==
-                                            CurrentLocation.toLocation) {
-                                          setState(() {
-                                            _toController.text =
-                                                result.description;
-                                            toLocationModel = placeDetails;
-                                            query = '';
-                                          });
-                                        } else {
-                                          setState(() {
-                                            _fromController.text =
-                                                result.description;
-                                            fromLocationModel = placeDetails;
-                                            query = '';
-                                          });
-                                        }
+                                      final placeDetails =
+                                          await PlaceApiProvider(UniqueKey())
+                                              .getPlaceDetailFromId(
+                                                  _saveAddress[x].placeId);
+                                      if (currentLocation ==
+                                              CurrentLocation.toLocation ||
+                                          fromLocationModel.formattedAddress !=
+                                              null) {
+                                        setState(() {
+                                          _toController.text =
+                                              _saveAddress[x].locationName;
+                                          toLocationModel = placeDetails;
+                                          query = '';
+                                        });
+                                      } else {
+                                        setState(() {
+                                          _fromController.text =
+                                              _saveAddress[x].locationName;
+                                          fromLocationModel = placeDetails;
+                                          query = '';
+                                        });
                                       }
+
                                       _navigateToProceed();
                                     },
-                                  ),
-                                  itemCount: snapshot.data.length,
-                                )
-                              : Container(child: Text('Loading...')),
-                    ),
+                                  );
+                                },
+                              )
+                            : snapshot.hasData
+                                ? ListView.separated(
+                                    separatorBuilder: (context, index) {
+                                      return Divider();
+                                    },
+                                    physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) => ListTile(
+                                      contentPadding: EdgeInsets.all(0),
+                                      leading: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: CircularIcon(
+                                          icon: Icon(
+                                            Icons.location_on,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Transform.translate(
+                                        offset: Offset(-10, 0),
+                                        child: Text(
+                                            (snapshot.data[index] as Suggestion)
+                                                .description),
+                                      ),
+                                      onTap: () async {
+                                        if (snapshot.data[index] != null) {
+                                          var result = snapshot.data[index]
+                                              as Suggestion;
+                                          final placeDetails =
+                                              await PlaceApiProvider(
+                                                      UniqueKey())
+                                                  .getPlaceDetailFromId(
+                                                      result.placeId);
+                                          if (currentLocation ==
+                                              CurrentLocation.fromLocation) {
+                                            setState(() {
+                                              _fromController.text =
+                                                  result.description;
+                                              fromLocationModel = placeDetails;
+                                              query = '';
+                                            });
+                                          } else {
+                                            setState(() {
+                                              _toController.text =
+                                                  result.description;
+                                              toLocationModel = placeDetails;
+                                              query = '';
+                                            });
+                                          }
+                                        }
+                                        _navigateToProceed();
+                                      },
+                                    ),
+                                    itemCount: snapshot.data.length,
+                                  )
+                                : Text('Loading')),
                     Divider(),
                     ListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -238,154 +299,36 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             MaterialPageRoute(
                               builder: (context) => PlacePicker(
                                 apiKey: googleAPIKey,
-                                //searchBarHeight: 0,
                                 usePlaceDetailSearch: true,
                                 initialPosition: SOURCE_LOCATION,
                                 useCurrentLocation: true,
-                                pinBuilder: (context, state) {
-                                  if (state == PinState.Idle) {
-                                    return Stack(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Icon(Icons.push_pin,
-                                                  size: 36,
-                                                  color: Colors.green),
-                                              SizedBox(height: 42),
-                                            ],
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Container(
-                                            width: 5,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return Stack(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              AnimatedPin(
-                                                  child: Icon(Icons.push_pin,
-                                                      size: 36,
-                                                      color: Colors.green)),
-                                              SizedBox(height: 42),
-                                            ],
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Container(
-                                            width: 5,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                },
-                                selectedPlaceWidgetBuilder: (_, selectedPlace,
-                                    state, isSearchBarFocused) {
-                                  return isSearchBarFocused
-                                      ? Container()
-                                      // Use FloatingCard or just create your own Widget.
-                                      : FloatingCard(
-                                          bottomPosition:
-                                              0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                          leftPosition: 10.0,
-                                          rightPosition: 10.0,
-                                          width: 500,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                          child: state ==
-                                                  SearchingState.Searching
-                                              ? Center(
-                                                  child:
-                                                      CircularProgressIndicator())
-                                              : Column(
-                                                  children: [
-                                                    ElevatedButton(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                              '${selectedPlace.name} ${selectedPlace.formattedAddress}'),
-                                                        ),
-                                                        onPressed: () {}),
-                                                    ElevatedButton(
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all(Constant
-                                                                      .cardColor)),
-                                                      child: Container(
-                                                        //padding: const EdgeInsets.all(8.0),
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: Center(
-                                                            child:
-                                                                Text('Select')),
-                                                      ),
-                                                      onPressed: () {
-                                                        if (currentLocation ==
-                                                                    null &&
-                                                                fromLocationModel
-                                                                        .formattedAddress ==
-                                                                    null ||
-                                                            currentLocation ==
-                                                                CurrentLocation
-                                                                    .fromLocation)
-                                                          setState(() {
-                                                            _fromController
-                                                                    .text =
-                                                                selectedPlace
-                                                                    .formattedAddress;
-                                                            fromLocationModel =
-                                                                LocationDetail
-                                                                    .fromPickResult(
-                                                                        selectedPlace);
+                                onPlacePicked: (PickResult selectedPlace) {
+                                  if (currentLocation == null &&
+                                          fromLocationModel.formattedAddress ==
+                                              null ||
+                                      currentLocation ==
+                                          CurrentLocation.fromLocation)
+                                    setState(() {
+                                      _fromController.text =
+                                          selectedPlace.formattedAddress;
+                                      fromLocationModel =
+                                          LocationDetail.fromPickResult(
+                                              selectedPlace);
 
-                                                            query = '';
-                                                          });
-                                                        else
-                                                          setState(() {
-                                                            _toController.text =
-                                                                selectedPlace
-                                                                    .name;
-                                                            toLocationModel =
-                                                                LocationDetail
-                                                                    .fromPickResult(
-                                                                        selectedPlace);
+                                      query = '';
+                                    });
+                                  else
+                                    setState(() {
+                                      _toController.text = selectedPlace.name;
+                                      toLocationModel =
+                                          LocationDetail.fromPickResult(
+                                              selectedPlace);
 
-                                                            query = '';
-                                                          });
+                                      query = '';
+                                    });
 
-                                                        Navigator.pop(context);
-                                                        _navigateToProceed();
-                                                      },
-                                                    )
-                                                  ],
-                                                ),
-                                        );
+                                  Navigator.pop(context);
+                                  _navigateToProceed();
                                 },
                               ),
                             ));
