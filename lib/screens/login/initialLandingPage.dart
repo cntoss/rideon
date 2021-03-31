@@ -16,55 +16,68 @@ class InitialLandingPage extends StatelessWidget {
             width: MediaQuery.of(context).size.height,
             fit: BoxFit.cover,
             //color: Theme.of(context).scaffoldBackgroundColor,
-            
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text('Welcome to ride on', style: Constant.titleBig),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Spacer(flex: 1),
-                    AppButton().appButton(
+          Container(
+            decoration: BoxDecoration(
+                gradient: new LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xffffffff),
+                Color(0xfffffbff),
+                Color(0xfffffbfa),
+                Color(0xfffafbf8),
+                Theme.of(context).scaffoldBackgroundColor,
+              ],
+            )),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Welcome to ride on', style: Constant.titleBig),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Spacer(flex: 1),
+                      AppButton().appButton(
+                          small: true,
+                          text: 'Sign In',
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(),
+                                ));
+                          },
+                          color: Colors.tealAccent),
+                      Spacer(flex: 10),
+                      AppButton().appButton(
                         small: true,
-                        text: 'Sign In',
+                        text: 'Register',
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LoginPage(),
+                                builder: (context) => Registration(),
                               ));
                         },
-                        color: Colors.tealAccent),
-                    Spacer(flex: 10),
-                    AppButton().appButton(
-                      small: true,
-                      text: 'Register',
-                      onTap: () {
-                        Navigator.push(
+                      ),
+                      Spacer(flex: 1),
+                      /*  CustomDialog().dialogButton(
+                          text: 'Register', onPressed: () {
+                             Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => Registration(),
                             ));
-                      },
-                    ),
-                    Spacer(flex: 1),
-                    /*  CustomDialog().dialogButton(
-                        text: 'Register', onPressed: () {
-                           Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Registration(),
-                          ));
-                        }) */
-                  ],
+                          }) */
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

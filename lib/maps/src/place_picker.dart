@@ -99,6 +99,7 @@ class PlacePicker extends StatefulWidget {
   final num autocompleteRadius;
   final String autocompleteLanguage;
   final List<String> autocompleteTypes;
+  //todo:remove if doest not requires filter
   final List<Component> autocompleteComponents;
   final bool strictbounds;
   final String region;
@@ -307,12 +308,15 @@ class _PlacePickerState extends State<PlacePicker> {
               autocompleteOffset: widget.autocompleteOffset,
               autocompleteRadius: widget.autocompleteRadius,
               autocompleteLanguage: widget.autocompleteLanguage,
-              autocompleteComponents: widget.autocompleteComponents,
+              //autocompleteComponents: widget.autocompleteComponents,
+              //todo:remove it if does not need filter
+              autocompleteComponents: [Component('country', 'np')],
               autocompleteTypes: widget.autocompleteTypes,
               strictbounds: widget.strictbounds,
               region: widget.region,
               initialSearchString: widget.initialSearchString,
               searchForInitialValue: widget.searchForInitialValue,
+              height: 55,
               autocompleteOnTrailingWhitespace:
                   widget.autocompleteOnTrailingWhitespace),
         ),

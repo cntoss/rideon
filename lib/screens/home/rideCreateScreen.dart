@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
+import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/finalMap/routeScreen.dart';
-import 'package:rideon/screens/widgets/animatedPin.dart';
 import 'package:rideon/screens/widgets/circleIcon.dart';
 import 'package:rideon/services/google/placeService.dart';
 import 'package:rideon/config/constant.dart';
@@ -103,8 +103,9 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               hintText: "From Address",
                               border: InputBorder.none,
                               suffixIcon: IconButton(
-                                icon:
-                                    _fromCLear ? Icon(Icons.clear, color: Colors.black54) : Icon(Icons.search,color: Colors.black12),
+                                icon: _fromCLear
+                                    ? Icon(Icons.clear, color: Colors.black54)
+                                    : Icon(Icons.search, color: Colors.black12),
                                 onPressed: () => setState(() {
                                   query = '';
                                   _fromController.clear();
@@ -155,7 +156,9 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                           decoration: InputDecoration(
                             hintText: "Your destination?",
                             suffixIcon: IconButton(
-                              icon: _toClear ? Icon(Icons.clear, color: Colors.black54) : Icon(Icons.search,color: Colors.black12),
+                              icon: _toClear
+                                  ? Icon(Icons.clear, color: Colors.black54)
+                                  : Icon(Icons.search, color: Colors.black12),
                               onPressed: () => setState(() {
                                 query = '';
                                 _toController.clear();
@@ -299,9 +302,11 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             MaterialPageRoute(
                               builder: (context) => PlacePicker(
                                 apiKey: googleAPIKey,
+                                //autocompleteComponents: [Component('country', 'np')],
                                 usePlaceDetailSearch: true,
                                 initialPosition: SOURCE_LOCATION,
-                                useCurrentLocation: true,
+                                useCurrentLocation:
+                                    false, //todo:make it true white real test
                                 onPlacePicked: (PickResult selectedPlace) {
                                   if (currentLocation == null &&
                                           fromLocationModel.formattedAddress ==
@@ -323,7 +328,11 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                       toLocationModel =
                                           LocationDetail.fromPickResult(
                                               selectedPlace);
-
+                                      var xyz =
+                                          GoogleMapsPlaces(apiKey: googleAPIKey)
+                                              .getDetailsByPlaceId(
+                                                  selectedPlace.placeId);
+                                      print(xyz);
                                       query = '';
                                     });
 

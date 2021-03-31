@@ -6,6 +6,7 @@ import 'package:rideon/screens/profile/changePasswordScreen.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/utils/extension.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -18,9 +19,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileScreenState(this._user);
   User _user;
   bool _enable = false;
-  TextEditingController _phoneNumberCOntroller, _nameCotroler, _emailController;
+  TextEditingController _phoneNumberCOntroller,
+      _econtact,
+      _nameCotroler,
+      _emailController;
   Icon icon = Icon(Icons.edit_outlined);
   final _formKey = GlobalKey<FormState>();
+  DateTime _selectedDate;
+  TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +34,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _phoneNumberCOntroller = TextEditingController(text: _user.phone);
     _emailController = TextEditingController(text: _user.email ?? '');
     _nameCotroler = TextEditingController(text: _user.name);
+    _econtact = TextEditingController(text: "");
+    _dateController = TextEditingController(text: "");
   }
 
   @override
@@ -182,6 +190,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                   ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      controller: _econtact,
+                      /* onFieldSubmitted: (v) {
+                        _pwFocus.requestFocus();
+                      }, */
+                      keyboardType: TextInputType.phone,
+                      validator: (s) {
+                        if (s.trim().length < 6)
+                          return 'Phone number must have exactly 10 digits';
+                        else
+                          return null;
+                      },
+                      maxLength: 10,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.contact_phone,
+                            color: Colors.grey,
+                          ),
+                          counterText: "",
+                          labelText: "Emergency Contact"),
+                    ),
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
@@ -211,6 +245,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           labelStyle: Constant.whiteText),
                     ),
                   ),
+
+                  //date
+                  //date
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      focusNode: AlwaysDisabledFocusNode(),
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      controller: _dateController,
+                      /* onFieldSubmitted: (v) {
+                        _pwFocus.requestFocus();
+                      },
+                       */validator: (s) {
+                        if (s.isEmpty)
+                          return 'Please select date of birth';
+                        else
+                          return null;
+                      },
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.date_range_outlined,
+                            color: Colors.grey,
+                          ),
+                          labelText: "Date of Birth"),
+                    ),
+                  ),
+
                   OpenContainer(
                     closedElevation: 0,
                     openColor: Theme.of(context).scaffoldBackgroundColor,
@@ -242,4 +305,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  _selectDate(BuildContext context) async {
+    DateTime newSelectedDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
+        firstDate: DateTime(1910),
+        lastDate: DateTime.now(),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: ColorScheme.dark(
+                //primary: Colors.tealAccent,
+                onPrimary: Colors.white,
+                surface: Colors.redAccent,
+                onSurface: Colors.black45,
+              ),
+              textTheme: TextTheme(bodyText2: TextStyle(color: Colors.blue)),
+              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            ),
+            child: child,
+          );
+        });
+
+    if (newSelectedDate != null) {
+      _selectedDate = newSelectedDate;
+      _dateController
+        ..text = DateFormat.yMMMd().format(_selectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _dateController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }

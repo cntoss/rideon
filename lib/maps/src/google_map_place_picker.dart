@@ -169,7 +169,16 @@ class GoogleMapPlacePicker extends StatelessWidget {
               provider.mapController = controller;
               provider.setCameraPosition(null);
               provider.pinState = PinState.Idle;
-
+             /*  controller.animateCamera(CameraUpdate.newLatLngBounds(
+                  LatLngBounds(
+                      southwest: LatLng(26, 79.5), northeast: LatLng(31, 88.5)),
+                  15));
+              Future.delayed(
+                Duration(seconds: 10),
+                () async => print(
+                  await controller.getVisibleRegion(),
+                ),
+              ); */
               // When select initialPosition set to true.
               if (selectInitialPosition) {
                 provider.setCameraPosition(initialCameraPosition);
@@ -383,7 +392,11 @@ class GoogleMapPlacePicker extends StatelessWidget {
             child: Container(
               //padding: const EdgeInsets.all(8.0),
               width: MediaQuery.of(context).size.width,
-              child: Center(child: Text('Select', style: TextStyle(color:Colors.black54),)),
+              child: Center(
+                  child: Text(
+                'Select',
+                style: TextStyle(color: Colors.black54),
+              )),
             ),
             onPressed: () {
               onPlacePicked(result);

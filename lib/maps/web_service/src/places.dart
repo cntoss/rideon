@@ -105,7 +105,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       sessionToken: sessionToken,
       fields: fields,
       language: language,
-      region: region,
+      region: 'nepal',
     );
     return _decodeDetailsResponse(await doGet(url, headers: apiHeaders));
   }

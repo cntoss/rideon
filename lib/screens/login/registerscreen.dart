@@ -7,7 +7,6 @@ import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/widgets/appButton.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
 import 'package:rideon/services/login/loginManager.dart';
-import 'package:intl/intl.dart';
 
 enum Gender { male, female, other }
 
@@ -18,15 +17,11 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   TextEditingController _phoneNumberCOntroller;
-  TextEditingController _passwordCOntroller,
-      _nameCotroler,
-      _econtact,
-      _emailController;
+  TextEditingController _passwordCOntroller, _nameCotroler, _emailController;
   String gender;
   final _formKey = GlobalKey<FormState>();
-  FocusNode _pwFocus;
-  DateTime _selectedDate;
-  TextEditingController _dateController = TextEditingController();
+  FocusNode _phoneFocus;
+  FocusNode _emailFocus;
 
   @override
   void initState() {
@@ -35,9 +30,8 @@ class _RegistrationState extends State<Registration> {
     _phoneNumberCOntroller = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
     _emailController = TextEditingController(text: "");
-    _econtact = TextEditingController(text: "");
-    _dateController = TextEditingController(text: "");
-    _pwFocus = FocusNode();
+    _phoneFocus = FocusNode();
+    _emailFocus = FocusNode();
   }
 
   Gender _gender = Gender.male;
@@ -70,7 +64,7 @@ class _RegistrationState extends State<Registration> {
                         child: TextFormField(
                           controller: _nameCotroler,
                           onFieldSubmitted: (v) {
-                            _pwFocus.requestFocus();
+                            _phoneFocus.requestFocus();
                           },
                           validator: (value) {
                             if (value.isEmpty)
@@ -88,13 +82,14 @@ class _RegistrationState extends State<Registration> {
                               labelText: "Full Name"),
                         ),
                       ),
+                      //phone
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _phoneNumberCOntroller,
-                          focusNode: _pwFocus,
+                          focusNode: _phoneFocus,
                           onFieldSubmitted: (v) {
-                            _pwFocus.requestFocus();
+                            _emailFocus.requestFocus();
                           },
                           keyboardType: TextInputType.phone,
                           maxLength: 10,
@@ -113,62 +108,12 @@ class _RegistrationState extends State<Registration> {
                               labelText: "Phone Number"),
                         ),
                       ),
-                      //date
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: TextFormField(
-                          focusNode: AlwaysDisabledFocusNode(),
-                          onTap: () {
-                            _selectDate(context);
-                          },
-                          controller: _dateController,
-                          onFieldSubmitted: (v) {
-                            _pwFocus.requestFocus();
-                          },
-                          validator: (s) {
-                            if (s.isEmpty)
-                              return 'Please select date of birth';
-                            else
-                              return null;
-                          },
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.date_range_outlined,
-                                color: Colors.grey,
-                              ),
-                             labelText: "Date of Birth"),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: TextFormField(
-                          controller: _econtact,
-                          onFieldSubmitted: (v) {
-                            _pwFocus.requestFocus();
-                          },
-                          keyboardType: TextInputType.phone,
-                          validator: (s) {
-                            if (s.trim().length < 6)
-                              return 'Phone number must have exactly 10 digits';
-                            else
-                              return null;
-                          },
-                          maxLength: 10,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.contact_phone,
-                                color: Colors.grey,
-                              ),
-                              counterText: "",
-                              labelText: "Emergency Contact"),
-                        ),
-                      ),
 
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _emailController,
+                          focusNode: _emailFocus,
                           validator: (value) {
                             if (value.isNotEmpty) {
                               if (value.length < 5)
@@ -314,7 +259,7 @@ class _RegistrationState extends State<Registration> {
                                                 email: _emailController.text,
                                                 gender: 'male',
                                                 paymentId: null,
-                                                dob: _dateController.text))
+                                                dob: null))
                                             .then((value) =>
                                                 Navigator.pushReplacement(
                                                     context,
@@ -343,42 +288,4 @@ class _RegistrationState extends State<Registration> {
           content: Text(manager.errorText ?? Constant.defaultloginError)));
     });
   }
-
-  _selectDate(BuildContext context) async {
-    DateTime newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime(1910),
-        lastDate: DateTime.now(),
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-              //primary: Colors.tealAccent,
-                onPrimary: Colors.white,
-                surface: Colors.redAccent,
-                onSurface: Colors.black45,
-              
-              ),
-              textTheme: TextTheme(bodyText2: TextStyle(color:Colors.blue)),
-              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            child: child,
-          );
-        });
-
-    if (newSelectedDate != null) {
-      _selectedDate = newSelectedDate;
-      _dateController
-        ..text = DateFormat.yMMMd().format(_selectedDate)
-        ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _dateController.text.length,
-            affinity: TextAffinity.upstream));
-    }
-  }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
