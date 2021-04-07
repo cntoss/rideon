@@ -169,7 +169,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
               provider.mapController = controller;
               provider.setCameraPosition(null);
               provider.pinState = PinState.Idle;
-             /*  controller.animateCamera(CameraUpdate.newLatLngBounds(
+              /*  controller.animateCamera(CameraUpdate.newLatLngBounds(
                   LatLngBounds(
                       southwest: LatLng(26, 79.5), northeast: LatLng(31, 88.5)),
                   15));
@@ -228,8 +228,6 @@ class GoogleMapPlacePicker extends StatelessWidget {
             onCameraMove: (CameraPosition position) {
               provider.setCameraPosition(position);
             },
-            // gestureRecognizers make it possible to navigate the map when it's a
-            // child in a scroll view e.g ListView, SingleChildScrollView...
             gestureRecognizers: Set()
               ..add(Factory<EagerGestureRecognizer>(
                   () => EagerGestureRecognizer())),
@@ -368,6 +366,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
     return Container(
       //margin: EdgeInsets.all(10),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
@@ -379,28 +378,31 @@ class GoogleMapPlacePicker extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                result.formattedAddress,
+                result.name,///todo:use formated address instead
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
             ),
           ),
           //SizedBox(height: 10),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Constant.cardColor)),
-            child: Container(
-              //padding: const EdgeInsets.all(8.0),
-              width: MediaQuery.of(context).size.width,
-              child: Center(
-                  child: Text(
-                'Select',
-                style: TextStyle(color: Colors.black54),
-              )),
+          Container(
+            width: MediaQuery.of(context).size.width/1.3,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Constant.cardColor)),
+              child: Container(
+                //padding: const EdgeInsets.all(8.0),
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                    child: Text(
+                  'Select',
+                  style: TextStyle(color: Colors.black54),
+                )),
+              ),
+              onPressed: () {
+                onPlacePicked(result);
+              },
             ),
-            onPressed: () {
-              onPlacePicked(result);
-            },
           ),
         ],
       ),

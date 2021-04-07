@@ -59,7 +59,7 @@ factory SavedAddressModel.fromPickResult(PickResult result) {
     return SavedAddressModel(
       placeId: result.placeId,
       location: LnModel.fromGeomerty(result.geometry.location.lat,result.geometry.location.lng),
-      locationName: result.formattedAddress,
+      locationName: result.name,///todo:formated address
       //types: result.types,
       //adrAddress: result.adrAddress,
       //name: result.name,

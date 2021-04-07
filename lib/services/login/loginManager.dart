@@ -91,7 +91,7 @@ class LoginManger {
       onError();
     } else {
       //todo clear app data
-      _notifier.value = LoginStates.loggedOut;
+      //_notifier.value = LoginStates.loggedOut;
       UserService().removeUser();
     }
   }

@@ -41,7 +41,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text('FInd a ride')),
+      appBar: AppBar(title: Text('FInd a ride')),
       body: Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: Container(
@@ -79,7 +79,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         hintText: "Leaving Form",
-                        labelStyle: Constant.whiteText),
+                        labelStyle: Constant.normalText),
                   ),
                 ),
               ),
@@ -131,7 +131,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         hintText: "Going to",
-                        labelStyle: Constant.whiteText),
+                        labelStyle: Constant.normalText),
                   ),
                 ),
               ),
@@ -140,9 +140,14 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  child: Text(_dateController.text == ''
-                      ? 'Today'
-                      : _dateController.text),
+                  child: Text(
+                    _dateController.text == '' ? 'Today' : _dateController.text,
+                    style: TextStyle(
+                        fontSize: 20,
+                        wordSpacing: 2,
+                        color: Colors.black45,
+                        letterSpacing: 2),
+                  ),
                   onPressed: () => _selectDate(context),
                 ),
                 OpenContainer(
@@ -165,7 +170,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                               style: TextStyle(
                                   fontSize: 20,
                                   wordSpacing: 2,
-                                  color: Colors.white,
+                                  color: Colors.black45,
                                   letterSpacing: 2),
                             ),
                           ));
@@ -173,28 +178,27 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
               ],
             ),
             Consumer<PassengerCounter>(
-                builder: (context, passenger, child) => !_isFilled
-                            .contains(false) &&
-                        passenger.value != 0
-                    ? ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 8),
-                          child: Text('Search'),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CarShareSearching(
-                                      SharingModel(
-                                        fromLocation: _fromAddress,
-                                          toLocation: _toAddress,
-                                          passenger: passenger.value,
-                                          date: _selectedDate))));
-                        },
-                      )
-                    : Container())
+                builder: (context, passenger, child) =>
+                    !_isFilled.contains(false) && passenger.value != 0
+                        ? ElevatedButton(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 8),
+                              child: Text('Search'),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CarShareSearching(
+                                          SharingModel(
+                                              fromLocation: _fromAddress,
+                                              toLocation: _toAddress,
+                                              passenger: passenger.value,
+                                              date: _selectedDate))));
+                            },
+                          )
+                        : Container())
           ]),
         ),
       ),
@@ -205,18 +209,19 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
     DateTime newSelectedDate = await showDatePicker(
         context: context,
         initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2022),
+        firstDate: DateTime(1910),
+        lastDate: DateTime.now(),
         builder: (BuildContext context, Widget child) {
           return Theme(
             data: ThemeData.dark().copyWith(
               colorScheme: ColorScheme.dark(
-                primary: Colors.tealAccent,
+                //primary: Colors.tealAccent,
                 onPrimary: Colors.white,
-                surface: Colors.teal,
-                onSurface: Colors.yellow,
+                surface: Colors.redAccent,
+                onSurface: Colors.black45,
               ),
-              dialogBackgroundColor: Colors.green[500],
+              textTheme: TextTheme(bodyText2: TextStyle(color: Colors.blue)),
+              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             child: child,
           );
@@ -224,14 +229,11 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
 
     if (newSelectedDate != null) {
       _selectedDate = newSelectedDate;
-      setState(() {
-        _dateController
-          ..text = DateFormat.yMMMd().format(_selectedDate)
-          ..selection = TextSelection.fromPosition(TextPosition(
-              offset: _dateController.text.length,
-              affinity: TextAffinity.upstream));
-        _isFilled[2] = true;
-      });
+      _dateController
+        ..text = DateFormat.yMMMd().format(_selectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _dateController.text.length,
+            affinity: TextAffinity.upstream));
     }
   }
 }

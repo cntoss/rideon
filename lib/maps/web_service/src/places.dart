@@ -35,7 +35,7 @@ class GoogleMapsPlaces extends GoogleWebService {
     num radius, {
     String type,
     String keyword,
-    String language,   
+    String language,
     String name,
     String pagetoken,
   }) async {
@@ -44,7 +44,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       language: language,
       radius: radius,
       type: type,
-      keyword: keyword,     
+      keyword: keyword,
       name: name,
       pagetoken: pagetoken,
     );
@@ -56,7 +56,7 @@ class GoogleMapsPlaces extends GoogleWebService {
     String rankby, {
     String type,
     String keyword,
-    String language,    
+    String language,
     String name,
     String pagetoken,
   }) async {
@@ -65,7 +65,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       language: language,
       type: type,
       rankby: rankby,
-      keyword: keyword,     
+      keyword: keyword,
       name: name,
       pagetoken: pagetoken,
     );
@@ -76,7 +76,6 @@ class GoogleMapsPlaces extends GoogleWebService {
     String query, {
     Location location,
     num radius,
-   
     bool opennow,
     String type,
     String pagetoken,
@@ -89,7 +88,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       language: language,
       region: region,
       type: type,
-      radius: radius,     
+      radius: radius,
       pagetoken: pagetoken,
     );
     return _decodeSearchResponse(await doGet(url, headers: apiHeaders));
@@ -105,7 +104,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       sessionToken: sessionToken,
       fields: fields,
       language: language,
-      region: 'nepal',
+      region: 'np',
     );
     return _decodeDetailsResponse(await doGet(url, headers: apiHeaders));
   }
@@ -200,7 +199,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       'radius': radius,
       'language': language,
       'type': type,
-      'keyword': keyword,     
+      'keyword': keyword,
       'name': name,
       'rankby': rankby,
       'pagetoken': pagetoken,
@@ -227,7 +226,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       'language': language,
       'region': region,
       'location': location,
-      'radius': radius,      
+      'radius': radius,
       'type': type,
       'pagetoken': pagetoken,
     };
@@ -258,9 +257,20 @@ class GoogleMapsPlaces extends GoogleWebService {
       'region': region,
     };
 
-    if (fields?.isNotEmpty == true) {
+    params['fields'] = [
+      'address_component',
+      'name',
+      'geometry',
+      'formatted_address',
+      'geometry',
+      'place_id'
+    ].join(',');
+
+    ///todo:remove if we dont need filter
+    ///fields=address_component,name,geometry
+    /* if (fields?.isNotEmpty == true) {
       params['fields'] = fields.join(',');
-    }
+    } */
 
     if (sessionToken != null) {
       params.putIfAbsent('sessiontoken', () => sessionToken);
@@ -329,7 +339,7 @@ class GoogleMapsPlaces extends GoogleWebService {
     return '$url$_queryAutocompleteUrl?${buildQuery(params)}';
   }
 
- PlacesSearchResponse _decodeSearchResponse(Response res) =>
+  PlacesSearchResponse _decodeSearchResponse(Response res) =>
       PlacesSearchResponse.fromJson(json.decode(res.body));
 
   PlacesDetailsResponse _decodeDetailsResponse(Response res) =>
@@ -390,7 +400,7 @@ class PlacesSearchResult {
 
   /// JSON formatted_address
   final String formattedAddress;
- 
+
   final String id;
 
   final String reference;
@@ -412,12 +422,12 @@ class PlacesSearchResult {
       ? PlacesSearchResult(
           json['icon'],
           json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null,
-          json['name'],         
+          json['name'],
           json['place_id'],
           json['alt_ids']
               ?.map((a) => AlternativeId.fromJson(a))
               ?.toList()
-              ?.cast<AlternativeId>(),         
+              ?.cast<AlternativeId>(),
           json['vicinity'],
           json['formatted_address'],
           json['permanently_closed'],
@@ -443,13 +453,13 @@ class PlaceDetails {
   final String icon;
 
   final String name;
+
   /// JSON place_id
   final String placeId;
 
   final String scope;
 
   final List<String> types;
-
 
   final String vicinity;
 
@@ -495,7 +505,6 @@ class PlaceDetails {
       : null;
 }
 
-
 class AlternativeId {
   /// JSON place_id
   final String placeId;
@@ -507,7 +516,6 @@ class AlternativeId {
   factory AlternativeId.fromJson(Map json) =>
       json != null ? AlternativeId(json['place_id'], json['scope']) : null;
 }
-
 
 class PlacesDetailsResponse extends GoogleResponse<PlaceDetails> {
   /// JSON html_attributions

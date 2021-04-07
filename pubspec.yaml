@@ -1,5 +1,5 @@
 name: rideon
-description: A passenger application
+description: A rides haring passenger application
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -40,12 +40,8 @@ flutter:
 
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    - assets/logo.gif
-  #   - images/a_dot_ham.jpeg
-
   
   # example:
   # fonts:

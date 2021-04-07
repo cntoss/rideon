@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/screens/widgets/customCard.dart';
 
-class ChnagePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends StatefulWidget {
   @override
   _ChnagePasswordScreenState createState() => _ChnagePasswordScreenState();
 }
 
-class _ChnagePasswordScreenState extends State<ChnagePasswordScreen> {
+class _ChnagePasswordScreenState extends State<ChangePasswordScreen> {
   bool _isLoading = false;
   TextEditingController _oldPinController = TextEditingController(),
       _newPinController = TextEditingController(),

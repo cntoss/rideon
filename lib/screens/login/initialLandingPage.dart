@@ -33,7 +33,7 @@ class InitialLandingPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Welcome to ride on', style: Constant.titleBig),
+                Text('Welcome to ride on', style: Constant.title),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 30),

@@ -194,7 +194,7 @@ class _AddAddressState extends State<AddAddress> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.grey)),
                         labelText: "Address Name",
-                        labelStyle: Constant.whiteText),
+                        labelStyle: Constant.normalText),
                   ),
                 ),
               ),

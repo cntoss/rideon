@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                       RoundedBar(),
                       Padding(
                         padding: const EdgeInsets.only(top: 22.0),
-                        child: Column(
+                      child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(

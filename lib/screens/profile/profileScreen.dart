@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               borderRadius: BorderRadius.circular(24),
                               borderSide: BorderSide(color: Colors.green)),
                           labelText: "Full Name",
-                          labelStyle: Constant.whiteText),
+                          labelStyle: Constant.normalText),
                     ),
                   ),
                   OpenContainer(
@@ -156,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     EdgeInsets.symmetric(horizontal: 12),
                                 counterText: "",
                                 labelText: "Phone Number",
-                                labelStyle: Constant.whiteText),
+                                labelStyle: Constant.normalText),
                           ),
                         ),
                       );
@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       EdgeInsets.symmetric(horizontal: 12),
                                   counterText: "",
                                   labelText: "Phone Number",
-                                  labelStyle: Constant.whiteText),
+                                  labelStyle: Constant.normalText),
                             ),
                           ),
                         ),
@@ -242,7 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               borderSide: BorderSide(color: Colors.green)),
                           labelText: "Email",
                           hintText: "Enter valid email",
-                          labelStyle: Constant.whiteText),
+                          labelStyle: Constant.normalText),
                     ),
                   ),
 
@@ -280,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     closedColor: Constant.cardColor,
                     openBuilder: (BuildContext context,
                         void Function({Object returnValue}) action) {
-                      return Center(child: ChnagePasswordScreen());
+                      return Center(child: ChangePasswordScreen());
                     },
                     closedBuilder:
                         (BuildContext context, void Function() action) {

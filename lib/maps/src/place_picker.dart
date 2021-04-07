@@ -48,7 +48,7 @@ class PlacePicker extends StatefulWidget {
     this.enableMyLocationButton = true,
     this.myLocationButtonCooldown = 10,
     this.usePinPointingSearch = true,
-    this.usePlaceDetailSearch = false,
+    this.usePlaceDetailSearch = true,
     this.autocompleteOffset,
     this.autocompleteRadius,
     this.autocompleteLanguage,
@@ -316,7 +316,7 @@ class _PlacePickerState extends State<PlacePicker> {
               region: widget.region,
               initialSearchString: widget.initialSearchString,
               searchForInitialValue: widget.searchForInitialValue,
-              height: 55,
+              height: 45,
               autocompleteOnTrailingWhitespace:
                   widget.autocompleteOnTrailingWhitespace),
         ),
