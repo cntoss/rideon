@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
-import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/finalMap/routeScreen.dart';
@@ -301,10 +301,14 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PlacePicker(
-                                apiKey: googleAPIKey,
                                 //autocompleteComponents: [Component('country', 'np')],
                                 usePlaceDetailSearch: true,
-                                initialPosition: SOURCE_LOCATION,
+                                initialPosition: fromLocationModel.geometry !=
+                                        null
+                                    ? LatLng(
+                                        fromLocationModel.geometry.location.lat,
+                                        fromLocationModel.geometry.location.lng)
+                                    : SOURCE_LOCATION,
                                 useCurrentLocation:
                                     false, //todo:make it true white real test
                                 onPlacePicked: (PickResult selectedPlace) {
@@ -328,11 +332,11 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                       toLocationModel =
                                           LocationDetail.fromPickResult(
                                               selectedPlace);
-                                      var xyz =
+                                      /*  var xyz =
                                           GoogleMapsPlaces(apiKey: googleAPIKey)
                                               .getDetailsByPlaceId(
                                                   selectedPlace.placeId);
-                                      print(xyz);
+                                      print(xyz); */
                                       query = '';
                                     });
 

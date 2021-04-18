@@ -9,6 +9,7 @@ import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/addPassengerScreen.dart';
+import 'package:rideon/screens/widgets/date_picker.dart';
 import 'carShareSearching.dart';
 
 class CarPoolingFirst extends StatefulWidget {
@@ -140,16 +141,30 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  child: Text(
-                    _dateController.text == '' ? 'Today' : _dateController.text,
-                    style: TextStyle(
-                        fontSize: 20,
-                        wordSpacing: 2,
-                        color: Colors.black45,
-                        letterSpacing: 2),
-                  ),
-                  onPressed: () => _selectDate(context),
-                ),
+                    child: Text(
+                      _dateController.text == ''
+                          ? 'Today'
+                          : _dateController.text,
+                      style: TextStyle(
+                          fontSize: 20,
+                          wordSpacing: 2,
+                          color: Colors.black45,
+                          letterSpacing: 2),
+                    ),
+                    onPressed: () async {
+                      _selectedDate = await CustomDatePicker()
+                          .selectDate(context, _selectedDate);
+                      if (_selectedDate != null) {
+                        _dateController
+                          ..text = DateFormat.yMMMd().format(_selectedDate)
+                          ..selection = TextSelection.fromPosition(TextPosition(
+                              offset: _dateController.text.length,
+                              affinity: TextAffinity.upstream));
+                        setState(() {
+                          _isFilled[2] = true;//to enable search button
+                        });
+                      }
+                    }),
                 OpenContainer(
                     closedElevation: 0,
                     openColor: Theme.of(context).scaffoldBackgroundColor,
@@ -198,42 +213,10 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                                               date: _selectedDate))));
                             },
                           )
-                        : Container())
+                        : Text('No Data selected'))
           ]),
         ),
       ),
     );
-  }
-
-  _selectDate(BuildContext context) async {
-    DateTime newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime(1910),
-        lastDate: DateTime.now(),
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-                //primary: Colors.tealAccent,
-                onPrimary: Colors.white,
-                surface: Colors.redAccent,
-                onSurface: Colors.black45,
-              ),
-              textTheme: TextTheme(bodyText2: TextStyle(color: Colors.blue)),
-              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            child: child,
-          );
-        });
-
-    if (newSelectedDate != null) {
-      _selectedDate = newSelectedDate;
-      _dateController
-        ..text = DateFormat.yMMMd().format(_selectedDate)
-        ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _dateController.text.length,
-            affinity: TextAffinity.upstream));
-    }
   }
 }

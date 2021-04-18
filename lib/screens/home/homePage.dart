@@ -43,87 +43,80 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
 
     return Stack(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 0.6,
+        Positioned(
+          top: 170,
+          left: 0,
+          right: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               InkWell(
+                onTap: () {
+                  //todo: bike select
+                },
+                child: VehichleOption(
+                  width: width,
+                  image: 'assets/bike.png',
+                  title: 'Bike',
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  //todo: car select
+                },
+                child: VehichleOption(
+                  width: width,
+                  image: 'assets/car.png',
+                  title: 'Car',
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  //todo: car select
+                },
+                child: VehichleOption(
+                  width: width,
+                  image: 'assets/plane.png',
+                  title: 'Plane',
+                ),
+              )
+            ],
+          ),
+        ),
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          childAspectRatio:
+              MediaQuery.of(context).orientation == Orientation.portrait
+                  ? 1.2
+                  : 2.5,
+          children: [
+            InkWell(
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CarPoolingFirst()));
                 },
-                child: Container(
-                  child: Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12.0),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Carpooling',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                        Image.asset('assets/carpooling.png'),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Easy way to share rides'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ParcelScreen()));
-                },
-                child: Container(
-                  child: Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12.0),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Package Transfer',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/gift.png',
-                          height: height / 4.5,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Real time stuffs delivery'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                child: _homeCard(
+                    title: 'Carpooling',
+                    subtitle: 'Easy way to share rides',
+                    image: 'assets/carpooling.png')),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ParcelScreen()));
+              },
+              child: _homeCard(
+                  title: 'Package Transfer',
+                  subtitle: 'Real time stuffs delivery',
+                  image: 'assets/gift.png'),
+            ),
+          ],
         ),
         DraggableScrollableSheet(
             initialChildSize: 0.318,
@@ -138,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                       RoundedBar(),
                       Padding(
                         padding: const EdgeInsets.only(top: 22.0),
-                      child: Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(
@@ -188,6 +181,70 @@ class _HomePageState extends State<HomePage> {
                   ));
             })
       ],
+    );
+  }
+
+  Widget _homeCard({@required title, @required subtitle, @required image}) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(12.0),
+        ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          Image.asset(
+            image,
+            height: MediaQuery.of(context).size.height / 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(subtitle),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class VehichleOption extends StatelessWidget {
+  const VehichleOption({
+    Key key,
+    @required this.width,
+    @required this.image,
+    @required this.title,
+  }) : super(key: key);
+
+  final double width;
+  final String image;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Image.asset(
+              image,
+              height: 70,
+              width: width / 4,
+            ),
+            Text(title),
+          ],
+        ),
+      ),
     );
   }
 }

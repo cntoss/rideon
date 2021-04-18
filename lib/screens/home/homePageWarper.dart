@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/screens/home/homePage.dart';
+import 'package:rideon/screens/notification/notification_screen.dart';
 import 'package:rideon/screens/setting/settingScreen.dart';
 
 class HomePageWrapper extends StatefulWidget {
@@ -24,8 +25,6 @@ class _HomePageWrapperState extends State<HomePageWrapper>
       isTouchable.value = animController.status != AnimationStatus.completed;
     });
   }
-
-  
 
   ValueNotifier<bool> isTouchable = ValueNotifier(true);
 
@@ -73,7 +72,6 @@ class _HomePageWrapperState extends State<HomePageWrapper>
                             child: HomePage(),
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
@@ -85,8 +83,6 @@ class _HomePageWrapperState extends State<HomePageWrapper>
       ),
     );
   }
-
- 
 
   Container untouchableFilter() {
     return Container(
@@ -101,14 +97,18 @@ class _HomePageWrapperState extends State<HomePageWrapper>
       elevation: 0,
       centerTitle: true,
       title: Row(
-            children: [
-              Text('Rideon', style: Theme.of(context).textTheme.headline6,),
-              Image.asset('assets/logo.png', height: 55,),
-             //Text('Tapaiko Sawari Sathi')
-             
-            ],
-          ) ,
-          
+        children: [
+          Text(
+            'Rideon',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Image.asset(
+            'assets/logo.png',
+            height: 55,
+          ),
+          //Text('Tapaiko Sawari Sathi')
+        ],
+      ),
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -125,7 +125,18 @@ class _HomePageWrapperState extends State<HomePageWrapper>
           ),
         ],
       ),
-      actions: [IconButton(icon: Icon(Icons.notifications, color: Colors.red,),onPressed: (){},)],
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.notifications,
+            color: Colors.red,
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => NotificationScreen()));
+          },
+        )
+      ],
     );
   }
 
@@ -153,49 +164,47 @@ class _HomePageWrapperState extends State<HomePageWrapper>
     );
   }
 
-
-Widget menu() {
-  var height = 12.0;
-  var width = 80.0;
-  return Center(
-      child: Container(
-        width: width,
-        height: height * 3 + 15.0,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Container(
-                width: width * .6,
-                height: height,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), color: Colors.black),
-              ),
+  Widget menu() {
+    var height = 12.0;
+    var width = 80.0;
+    return Center(
+        child: Container(
+      width: width,
+      height: height * 3 + 15.0,
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              width: width * .6,
+              height: height,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.black),
             ),
-            Center(
-              child: Container(
-                width: width,
-                height: height,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), color: Colors.black),
-              ),
+          ),
+          Center(
+            child: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.black),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                width: width * .6,
-                height: height,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), color: Colors.black),
-              ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: width * .6,
+              height: height,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: Colors.black),
             ),
-          ],
-        ),
-      ));
-}
-
+          ),
+        ],
+      ),
+    ));
+  }
 
   double height(BuildContext context) {
     return MediaQuery.of(context).size.height -

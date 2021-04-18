@@ -83,6 +83,13 @@ class _SettingScreenState extends State<SettingScreen> {
             icon: Icon(Icons.money),
             title: 'Add Money',
           )),
+
+          customCard(
+              child: customRow(
+            icon: Icon(Icons.badge),
+            title: 'Rewards',
+          )),
+          
           customCard(
               child: customRow(
             icon: Icon(Icons.help),

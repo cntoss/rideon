@@ -9,3 +9,9 @@ extension EmailValidator on String {
         .hasMatch(this);
   }
 }
+
+extension PhoneValidator on String {
+  bool isValidPhone() {
+    return RegExp(r'(^[0-9\-\(\)\/\+\s]{10}?$)').hasMatch(this);
+  }
+}

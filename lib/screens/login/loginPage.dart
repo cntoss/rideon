@@ -305,3 +305,81 @@ class _PasswordFieldWidgetState extends State<_PasswordFieldWidget> {
     );
   }
 }
+
+/* class _PasswordFieldWidget extends StatefulWidget {
+  final TextEditingController controller;
+  final FocusNode node;
+
+  const _PasswordFieldWidget({Key key, this.controller, this.node})
+      : super(key: key);
+
+  @override
+  _PasswordFieldWidgetState createState() => _PasswordFieldWidgetState();
+}
+
+class _PasswordFieldWidgetState extends State<_PasswordFieldWidget> {
+  bool hidden = true;
+  bool showingEye = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        TextFormField(
+          onChanged: (v) {
+            if (!showingEye && v.trim().length > 1)
+              setState(() {
+                showingEye = true;
+              });
+            else if (showingEye && v.trim().length < 1)
+              setState(() {
+                showingEye = false;
+              });
+          },
+          focusNode: widget.node,
+          controller: widget.controller,
+          obscureText: hidden,
+          validator: (s) {
+            if (s.trim().length < 6)
+              return Constant.passwordValidationError;
+            else
+              return null;
+          },
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.lock,
+              color: Colors.grey,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+            errorStyle: Constant.errorStyle,
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide(color: Colors.green)),
+            hintText: "Password",
+          ),
+        ),
+        if (widget.controller.text.trim().length > 0)
+          Positioned(
+            top: 6,
+            right: 4,
+            child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    hidden = !hidden;
+                  });
+                },
+                child: Material(
+                    borderRadius: BorderRadius.circular(24),
+                    color: Colors.white.withOpacity(.02),
+                    child: SizedBox(
+                        height: 44,
+                        width: 50,
+                        child: Icon(
+                          hidden ? Icons.visibility : Icons.visibility_off,
+                          size: 20,
+                        )))),
+          ),
+      ],
+    );
+  }
+} */

@@ -25,10 +25,18 @@ class Constant {
   static TextStyle title = const TextStyle(
       inherit: false,
       color: Color(0x8a000000),
-      fontFamily: "Roboto",
+      fontFamily: "Poppins",
       fontSize: 28.0,
       fontWeight: FontWeight.w400,
       decoration: TextDecoration.none);
+
+static TextStyle subTitle = const TextStyle(
+    inherit: false,
+    color: Color(0x8a000000),
+    fontFamily: "Poppins",
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.none);
 
   static OutlineInputBorder inputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.black12),

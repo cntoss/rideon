@@ -39,65 +39,69 @@ class _CarShareSearchingState extends State<CarShareSearching> {
       appBar: AppBar(title: Text('Search Result')),
       body: SafeArea(
         child: Stack(
+
           children: [
-            Column(
-              children: [
-                CustomCard(
-                    child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.3,
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text: sharingModel
-                                          .fromLocation.formattedAddress,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2),
-                                  WidgetSpan(
-                                    child: Icon(Icons.east, size: 14),
-                                  ),
-                                  TextSpan(
-                                      text: sharingModel
-                                          .fromLocation.formattedAddress,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2),
-                                ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  CustomCard(
+                      child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.3,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                        text: sharingModel
+                                            .fromLocation.formattedAddress,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2),
+                                    WidgetSpan(
+                                      child: Icon(Icons.east, size: 14),
+                                    ),
+                                    TextSpan(
+                                        text: sharingModel
+                                            .fromLocation.formattedAddress,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2),
+                                  ],
+                                ),
+                                maxLines: 3,
                               ),
-                              maxLines: 3,
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                  '${AppConfig().dateWithoutTime.format(sharingModel.date)} , ${sharingModel.passenger} passengers'),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
+                            Row(
+                              children: [
+                                Text(
+                                    '${AppConfig().dateWithoutTime.format(sharingModel.date)} , ${sharingModel.passenger} passengers'),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  )),
+                  /*  CircleAvatar(
+                    radius: 100,
+                    backgroundImage: ExactAssetImage('assets/waiting.png'),
                   ),
-                )),
-                /*  CircleAvatar(
-                  radius: 100,
-                  backgroundImage: ExactAssetImage('assets/waiting.png'),
-                ),
-                Container(
-                  height: 100,
-                  child: Text(
-                      'There is no rides between this cities on ${AppConfig().dateWithoutTime.format(sharingModel.date)}'),
-                ), */
-                Container(
-                    height: 220, child: SharingResult(widget.sharingModel))
-              ],
+                  Container(
+                    height: 100,
+                    child: Text(
+                        'There is no rides between this cities on ${AppConfig().dateWithoutTime.format(sharingModel.date)}'),
+                  ), */
+                  Container(
+                      height: 220, child: SharingResult(widget.sharingModel))
+                ],
+              ),
             ),
             if (_loading)
               Center(
@@ -136,7 +140,7 @@ class _SharingResultState extends State<SharingResult> {
   Widget build(BuildContext context) {
     //var width = MediaQuery.of(context).size.width;
     return CustomCard(
-        color: Color(0xff05a74b),
+        color: Color(0xfffedcf0),
         child: Stack(
           children: [
             Positioned(
@@ -145,7 +149,7 @@ class _SharingResultState extends State<SharingResult> {
               child: MaterialButton(
                 height: 30,
                 onPressed: () {},
-                color: Colors.blueAccent,
+                color: Colors.redAccent,
                 textColor: Colors.white,
                 child: Text(
                   "cheapest",
@@ -277,14 +281,14 @@ class _SharingResultState extends State<SharingResult> {
                                           Row(
                                             children: [
                                               Icon(Icons.star,
-                                                  size: 12, color: Colors.white),
+                                                  size: 12),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 8.0),
                                                 child: Text('4.5',
                                                     style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.white)),
+                                                        fontSize: 12
+                                                       )),
                                               )
                                             ],
                                           )

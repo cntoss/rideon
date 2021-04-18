@@ -97,9 +97,6 @@ class _ChnagePasswordScreenState extends State<ChangePasswordScreen> {
                               decoration: InputDecoration(
                                   labelText: 'Old password',
                                   counterText: "",
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 12),
-                                  border: InputBorder.none,
                                   prefixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: Icon(
@@ -142,9 +139,6 @@ class _ChnagePasswordScreenState extends State<ChangePasswordScreen> {
                               decoration: InputDecoration(
                                 labelText: 'New Password',
                                 counterText: "",
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 12),
-                                border: InputBorder.none,
                                 prefixIcon: Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
@@ -183,9 +177,6 @@ class _ChnagePasswordScreenState extends State<ChangePasswordScreen> {
                                       isConfirmPin: true);
                                 },
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 12),
-                                  border: InputBorder.none,
                                   labelText: 'Confirm password',
                                   counterText: "",
                                   prefixIcon: Padding(
@@ -216,7 +207,7 @@ class _ChnagePasswordScreenState extends State<ChangePasswordScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.only(top: 15),
-                      child: ElevatedButton(                       
+                      child: ElevatedButton(
                         child: Padding(
                           padding: Constant.bottonPadding,
                           child: Text(

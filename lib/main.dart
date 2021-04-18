@@ -8,6 +8,7 @@ import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginwrapper.dart';
 import 'package:rideon/screens/splashScreen.dart';
 import 'package:rideon/services/helper/hiveService.dart';
+import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
 import 'package:rideon/services/theme/theme_provider.dart';
 import 'package:rideon/services/utils/uiModifiers.dart';
@@ -64,8 +65,8 @@ class _MyAppState extends State<MyApp> {
       //home: LoginPage(),
       //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
-      // initialRoute: UserService().isWorkThrough ? '/login' : '/',
-      initialRoute: '/splash',
+      initialRoute: UserService().isLogin ? '/login' : '/splash',
+      //initialRoute: '/splash',
       routes: {
         // '/': (context) => SplashScreen(),
         '/splash': (context) => SplashScreen(),

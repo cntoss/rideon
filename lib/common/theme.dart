@@ -4,6 +4,7 @@ import 'package:rideon/config/constant.dart';
 final appTheme = ThemeData(
     primarySwatch: Colors.red,
     primaryColor: Color(0xfffafbf8),
+    iconTheme: IconThemeData(color: Colors.redAccent),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: Color(0xfffafbf8),
     focusColor: Colors.white60,
@@ -16,11 +17,11 @@ final appTheme = ThemeData(
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.white54),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                  side: BorderSide(color: Colors.red)))),
+                  side: BorderSide(color: Colors.deepOrangeAccent)))),
     ),
     textTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.black87),
