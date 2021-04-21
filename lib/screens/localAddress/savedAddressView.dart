@@ -7,7 +7,7 @@ import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/route/navigateToRoute.dart';
-import 'package:rideon/screens/widgets/circleIcon.dart';
+import 'package:rideon/widgets/circleIcon.dart';
 
 import 'addressListScreen.dart';
 
@@ -42,7 +42,7 @@ class SavedAddressView extends StatelessWidget {
                     NavigateToRoute().navigateToAdd(type: addressType),
                 style: Constant.buttonStyle,
                 label: Text(
-                    addressType == AddressType.Work ? 'Set Home' : 'Set Home'));
+                    addressType == AddressType.Work ? 'Set Work' : 'Set Home'));
           else
             return TextButton.icon(
                 icon: icon,

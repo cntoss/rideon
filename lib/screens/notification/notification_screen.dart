@@ -3,8 +3,7 @@ import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/notification/notification.dart';
-import 'package:rideon/screens/widgets/circleIcon.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/widgets/customCard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -54,7 +53,7 @@ class NotificationScreen extends StatelessWidget {
                         children: [
                           Text(
                             notifications[index].title,
-                            style: Constant.subTitle,
+                            style: subTitle,
                           ),
                           Text(notifications[index].description),
                           Align(

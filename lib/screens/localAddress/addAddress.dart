@@ -72,7 +72,7 @@ class _AddAddressState extends State<AddAddress> {
             Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: Constant.cardColor,
+                    color: cardColor,
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   children: [
@@ -185,7 +185,7 @@ class _AddAddressState extends State<AddAddress> {
                       address.locationName = _addressName.text;
                     },
                     decoration: InputDecoration(
-                        errorStyle: Constant.errorStyle,
+                        errorStyle: errorStyle,
                         contentPadding: EdgeInsets.symmetric(horizontal: 12),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -194,7 +194,7 @@ class _AddAddressState extends State<AddAddress> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.grey)),
                         labelText: "Address Name",
-                        labelStyle: Constant.normalText),
+                        labelStyle: normalText),
                   ),
                 ),
               ),

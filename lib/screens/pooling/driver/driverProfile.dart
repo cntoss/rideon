@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/models/driverModel.dart';
+import 'package:rideon/models/driver/driverModel.dart';
 
 class DriverProfile extends StatelessWidget {
   final DriverModel driverModel;
@@ -28,7 +28,7 @@ class DriverProfile extends StatelessWidget {
                       ),
           ),
           Positioned(top:120,left:0,right: 0,
-          child: Text(driverModel.displayName,textAlign: TextAlign.center, style: Constant.title.copyWith(fontSize: 20),)),
+          child: Text(driverModel.displayName,textAlign: TextAlign.center, style: title.copyWith(fontSize: 20),)),
           Padding(
             padding: const EdgeInsets.only(top:130.0),
             child: Column(

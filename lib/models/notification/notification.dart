@@ -2,13 +2,41 @@
 //
 //     final notification = notificationFromJson(jsonfinal);
 
-import 'dart:convert';
+//import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
+import 'package:rideon/config/appConfig.dart';
 
+part 'notification.g.dart';
 //List<Notification> notificationFromJson(final str) => List<Notification>.from(json.decode(str).map((x) => Notification.fromJson(x)));
 
 //final notificationToJson(List<Notification> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+@HiveType(typeId: htNotification)
+class OfflineNotification extends HiveObject {
+  
+  @HiveField(0)
+  String id;
+  @HiveField(1)
+  String title;
+  @HiveField(2)
+  String description;
+  @HiveField(3)
+  DateTime date;
+  @HiveField(4)
+  String image;
+  @HiveField(5)
+  String link;
+
+   OfflineNotification({
+    this.id,
+    this.title,
+    this.description,
+    this.date,
+    this.image,
+    this.link,
+  });
+}
 
 class Notification {
   const Notification({

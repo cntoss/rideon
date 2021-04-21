@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/web_service/distance.dart' as distance;
-import 'package:rideon/models/driverModel.dart';
+import 'package:rideon/models/driver/driverModel.dart';
 import 'dart:async';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:geolocator/geolocator.dart';

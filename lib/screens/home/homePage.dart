@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
@@ -11,6 +12,9 @@ import 'package:rideon/screens/packageDelivery/parcelScreen.dart';
 import 'package:rideon/screens/pooling/carPoolingStart.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
+import 'package:rideon/services/location/location_service.dart';
+import 'package:rideon/widgets/custom_dialog.dart';
+import 'package:rideon/widgets/network_sensitive.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getLocationDetail();
+    LocationService().getLocation();
   }
 
   _getLocationDetail() async {
@@ -34,153 +39,186 @@ class _HomePageState extends State<HomePage> {
             lat: currentLocation.latitude, lng: currentLocation.longitude))
         .then((value) => setState(() {
               locationDetail = value;
+              locationDetail.formattedAddress = getName(locationDetail);
             }));
     setState(() {
       _initialized = true;
     });
   }
 
+  String getName(LocationDetail locationDetail) {
+    List locationNames = [];
+    for (int i = 0; i < locationDetail.addressComponents.length; i++) {
+      locationNames.add(locationDetail.addressComponents[i].longName);
+    }
+    return locationNames.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: 170,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return NetworkSensitive(
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 170,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () {
+                    //todo: bike select
+                    //
+                    CustomDialog().showCustomDialog(
+                      title: 'Ride on bike',
+                      content:
+                          'Choose good bike to travel from here and there with best price and good dervice from driver',
+                      actions: <Widget>[
+                        CustomDialog().dialogButton(
+                          text: 'CLOSE',
+                          onPressed: () {
+                            Navigator.pop(
+                                AppConfig.navigatorKey.currentState.context);
+                          },
+                        ),
+                        CustomDialog().dialogButton(
+                          text: 'OPEN',
+                          onPressed: () {
+                            Navigator.pop(
+                                AppConfig.navigatorKey.currentState.context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                  child: VehichleOption(
+                    width: width,
+                    image: 'assets/bike.png',
+                    title: 'Bike',
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    //todo: car select
+                  },
+                  child: VehichleOption(
+                    width: width,
+                    image: 'assets/car.png',
+                    title: 'Car',
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    //todo: car select
+                  },
+                  child: VehichleOption(
+                    width: width,
+                    image: 'assets/heli.png',
+                    title: 'Plane',
+                  ),
+                )
+              ],
+            ),
+          ),
+          GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            childAspectRatio:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 1.2
+                    : 2.5,
             children: [
               InkWell(
-                onTap: () {
-                  //todo: bike select
-                },
-                child: VehichleOption(
-                  width: width,
-                  image: 'assets/bike.png',
-                  title: 'Bike',
-                ),
-              ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CarPoolingFirst()));
+                  },
+                  child: _homeCard(
+                      title: 'Carpooling',
+                      subtitle: 'Easy way to share rides',
+                      image: 'assets/carpooling.png')),
               InkWell(
                 onTap: () {
-                  //todo: car select
-                },
-                child: VehichleOption(
-                  width: width,
-                  image: 'assets/car.png',
-                  title: 'Car',
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  //todo: car select
-                },
-                child: VehichleOption(
-                  width: width,
-                  image: 'assets/plane.png',
-                  title: 'Plane',
-                ),
-              )
-            ],
-          ),
-        ),
-        GridView.count(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          childAspectRatio:
-              MediaQuery.of(context).orientation == Orientation.portrait
-                  ? 1.2
-                  : 2.5,
-          children: [
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CarPoolingFirst()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ParcelScreen()));
                 },
                 child: _homeCard(
-                    title: 'Carpooling',
-                    subtitle: 'Easy way to share rides',
-                    image: 'assets/carpooling.png')),
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ParcelScreen()));
-              },
-              child: _homeCard(
-                  title: 'Package Transfer',
-                  subtitle: 'Real time stuffs delivery',
-                  image: 'assets/gift.png'),
-            ),
-          ],
-        ),
-        DraggableScrollableSheet(
-            initialChildSize: 0.318,
-            minChildSize: 0.318, //make 0.05 if scrollable
-            maxChildSize: 0.318,
-            expand: true,
-            builder: (context, scrollController) {
-              return SingleChildScrollView(
-                  controller: scrollController,
-                  child: Stack(
-                    children: [
-                      RoundedBar(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 22.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        LocationSetScreen(locationDetail),
+                    title: 'Package Transfer',
+                    subtitle: 'Real time stuffs delivery',
+                    image: 'assets/gift.png'),
+              ),
+            ],
+          ),
+          DraggableScrollableSheet(
+              initialChildSize: 0.318,
+              minChildSize: 0.318, //make 0.05 if scrollable
+              maxChildSize: 0.318,
+              expand: true,
+              builder: (context, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    child: Stack(
+                      children: [
+                        RoundedBar(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 22.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LocationSetScreen(locationDetail),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  color: Color(0xfff0e1ee),
+                                  child: Container(
+                                    width: width,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Where to go? ',
+                                      style: title,
+                                    ),
                                   ),
-                                );
-                              },
-                              child: Card(
-                                color: Color(0xfff0e1ee),
-                                child: Container(
+                                ),
+                              ),
+                              !_initialized
+                                  ? SavedAddressView(AddressType.Home)
+                                  : SavedAddressView(AddressType.Home,
+                                      source: locationDetail),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 50.0),
+                                child: SizedBox(
+                                  height: 1,
                                   width: width,
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Where to go? ',
-                                    style: Constant.title,
+                                  child: Container(
+                                    color: Colors.grey,
                                   ),
                                 ),
                               ),
-                            ),
-                            !_initialized
-                                ? SavedAddressView(AddressType.Home)
-                                : SavedAddressView(AddressType.Home,
-                                    source: locationDetail),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 50.0),
-                              child: SizedBox(
-                                height: 1,
-                                width: width,
-                                child: Container(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            !_initialized
-                                ? SavedAddressView(AddressType.Work)
-                                : SavedAddressView(AddressType.Work,
-                                    source: locationDetail),
-                          ],
+                              !_initialized
+                                  ? SavedAddressView(AddressType.Work)
+                                  : SavedAddressView(AddressType.Work,
+                                      source: locationDetail),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ));
-            })
-      ],
+                      ],
+                    ));
+              })
+        ],
+      ),
     );
   }
 

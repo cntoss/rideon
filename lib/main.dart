@@ -6,7 +6,8 @@ import 'package:rideon/common/theme.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginwrapper.dart';
-import 'package:rideon/screens/splashScreen.dart';
+import 'package:rideon/screens/splash/splash.dart';
+import 'package:rideon/services/connectivity/connectivity_service.dart';
 import 'package:rideon/services/helper/hiveService.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/login/loginManager.dart';
@@ -15,11 +16,14 @@ import 'package:rideon/services/utils/uiModifiers.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'config/appConfig.dart';
+import 'models/connectivity/connectivity_status.dart';
 import 'services/firebase/firebaseService.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseService().initFirebase();
+  Firebase.initializeApp();
 
   ///todo: remove if status bar is default transparent
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -57,7 +61,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return StreamProvider<ConnectivityStatus>(
+      create: (context) =>
+          ConnectivityService().connectionStatusController.stream,
+          child: MaterialApp(
       navigatorKey: AppConfig.navigatorKey,
       title: 'Ride On',
       debugShowCheckedModeBanner: false,
@@ -73,6 +80,6 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => LoginWrapper(),
         '/home': (context) => HomePageWrapper(),
       },
-    );
+    ),);
   }
 }

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
-import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginPage.dart';
-import 'package:rideon/screens/widgets/appButton.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/widgets/appButton.dart';
+import 'package:rideon/widgets/customCard.dart';
 import 'package:rideon/services/login/loginManager.dart';
 
 enum Gender { male, female, other }
@@ -95,7 +94,7 @@ class _RegistrationState extends State<Registration> {
                           maxLength: 10,
                           validator: (s) {
                             if (s.trim().length < 6)
-                              return Constant.phoneValidationError;
+                              return phoneValidationError;
                             else
                               return null;
                           },
@@ -142,7 +141,7 @@ class _RegistrationState extends State<Registration> {
                           height: 20,
                           child: Text(
                             "Select Gender",
-                            style: TextStyle(color: Constant.textColor),
+                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ),
@@ -239,7 +238,7 @@ class _RegistrationState extends State<Registration> {
                                             TextSpan(
                                                 text: 'login',
                                                 style: TextStyle(
-                                                    color: Constant.textColor))
+                                                    color: textColor))
                                           ]),
                                     ),
                                   ),
@@ -260,13 +259,14 @@ class _RegistrationState extends State<Registration> {
                                                 gender: 'male',
                                                 paymentId: null,
                                                 dob: null))
-                                            .then((value) =>
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HomePageWrapper(),
-                                                    )));
+                                            .then((value) => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginPage(
+                                                          fromRegistration:
+                                                              true),
+                                                )));
                                       }
                                     },
                                   ),
@@ -285,7 +285,7 @@ class _RegistrationState extends State<Registration> {
   void showLoginFailMessage(context, manager) {
     Future.delayed(Duration(seconds: 1), () {
       Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(manager.errorText ?? Constant.defaultloginError)));
+          content: Text(manager.errorText ?? defaultloginError)));
     });
   }
 }

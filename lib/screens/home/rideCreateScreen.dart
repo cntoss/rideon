@@ -5,7 +5,7 @@ import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/finalMap/routeScreen.dart';
-import 'package:rideon/screens/widgets/circleIcon.dart';
+import 'package:rideon/widgets/circleIcon.dart';
 import 'package:rideon/services/google/placeService.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
@@ -77,8 +77,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                       Container(
                         width: MediaQuery.of(context).size.width * 0.9,
                         decoration: BoxDecoration(
-                            color: Constant.cardColor,
-                            border: Border.all(color: Constant.cardColor),
+                            color: cardColor,
+                            border: Border.all(color: cardColor),
                             borderRadius: BorderRadius.circular(10)),
                         child: TextField(
                           controller: _fromController,
@@ -131,8 +131,8 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                       Icon(Icons.location_on, color: Colors.black38),
                       Container(
                         decoration: BoxDecoration(
-                          color: Constant.cardColor,
-                          border: Border.all(color: Constant.cardColor),
+                          color: cardColor,
+                          border: Border.all(color: cardColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         width: MediaQuery.of(context).size.width * 0.9,

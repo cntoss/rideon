@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
-import 'package:rideon/models/driverModel.dart';
+import 'package:rideon/models/driver/driverModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/driver/driverProfile.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/widgets/customCard.dart';
 
 class CarShareSearching extends StatefulWidget {
   final SharingModel sharingModel;

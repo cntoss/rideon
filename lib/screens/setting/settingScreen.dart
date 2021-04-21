@@ -34,7 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
           Card(
-              color: Constant.cardColor,
+              color: cardColor,
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: const BorderRadius.all(
@@ -72,12 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: customRow(
             icon: Icon(Icons.language),
             title: 'Language',
-          )),
-          customCard(
-              child: customRow(
-            icon: Icon(Icons.security),
-            title: 'Permission',
-          )),
+          )),          
           customCard(
               child: customRow(
             icon: Icon(Icons.money),
@@ -140,7 +135,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   customCard({Widget child}) {
     return Card(
-        color: Constant.cardColor,
+        color: cardColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
@@ -162,7 +157,7 @@ class CustomDOgTAg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: Constant.cardColor,
+        color: cardColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(

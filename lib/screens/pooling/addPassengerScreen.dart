@@ -33,7 +33,7 @@ class _AddPassengerScreenState extends State<AddPassengerScreen> {
               children: [
                 Text(
                   'Select Number of seats to book',
-                  style: Constant.title.copyWith(fontSize: 22),
+                  style: title.copyWith(fontSize: 22),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -63,7 +63,7 @@ class _AddPassengerScreenState extends State<AddPassengerScreen> {
                               )), */
                       Text(
                         passenger.value == 0 ? '1' : passenger.value.toString(),
-                        style: Constant.title,
+                        style: title,
                       ),
                       IconButton(
                           icon: passenger.value > 7

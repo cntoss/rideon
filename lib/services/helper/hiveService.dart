@@ -8,7 +8,7 @@ import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/models/user/userModel.dart';
-
+import 'package:rideon/models/notification/notification.dart';
 class HiveService {
   Future<Box> initHive() async {
     final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -39,6 +39,7 @@ class HiveService {
     Hive.registerAdapter(SavedAddressModelAdapter());
     Hive.registerAdapter(AddressTypeAdapter());
     Hive.registerAdapter(LnModelAdapter());
+    Hive.registerAdapter(OfflineNotificationAdapter());
   
   }
 

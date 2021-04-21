@@ -2,9 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/screens/login/loginPage.dart';
 import 'package:rideon/screens/login/registerscreen.dart';
-import 'package:rideon/screens/widgets/appButton.dart';
+import 'package:rideon/widgets/appButton.dart';
+import 'package:rideon/services/firebase/firebaseService.dart';
 
-class InitialLandingPage extends StatelessWidget {
+class InitialLandingPage extends StatefulWidget {
+  @override
+  _InitialLandingPageState createState() => _InitialLandingPageState();
+}
+
+class _InitialLandingPageState extends State<InitialLandingPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getss();
+  }
+
+  getss() async {
+    var token = await FirebaseService().getFirebaseToken();
+    print(token);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,29 +51,16 @@ class InitialLandingPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Welcome to ride on', style: Constant.title),
+                Text('Welcome to ride on', style: title),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Spacer(flex: 1),
                       AppButton().appButton(
-                          small: true,
-                          text: 'Sign In',
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginPage(),
-                                ));
-                          },
-                          color: Colors.tealAccent),
-                      Spacer(flex: 10),
-                      AppButton().appButton(
-                        small: true,
-                        text: 'Register',
+                        text: 'Get Started',
+                        color: Colors.red,
                         onTap: () {
                           Navigator.push(
                               context,
@@ -64,15 +69,15 @@ class InitialLandingPage extends StatelessWidget {
                               ));
                         },
                       ),
-                      Spacer(flex: 1),
-                      /*  CustomDialog().dialogButton(
-                          text: 'Register', onPressed: () {
-                             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Registration(),
-                            ));
-                          }) */
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(),
+                                ));
+                          },
+                          child: Text('Login'))
                     ],
                   ),
                 ),

@@ -9,7 +9,7 @@ import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/addPassengerScreen.dart';
-import 'package:rideon/screens/widgets/date_picker.dart';
+import 'package:rideon/widgets/date_picker.dart';
 import 'carShareSearching.dart';
 
 class CarPoolingFirst extends StatefulWidget {
@@ -80,7 +80,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         hintText: "Leaving Form",
-                        labelStyle: Constant.normalText),
+                        labelStyle: normalText),
                   ),
                 ),
               ),
@@ -132,7 +132,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         hintText: "Going to",
-                        labelStyle: Constant.normalText),
+                        labelStyle: normalText),
                   ),
                 ),
               ),

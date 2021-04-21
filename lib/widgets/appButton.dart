@@ -19,7 +19,7 @@ Widget appButton(
         padding: EdgeInsets.symmetric(horizontal: small ? 20.0 : 60.0 , vertical: 8),
         child: Text(
           text,
-          style: Constant.title.copyWith(fontSize: 20),
+          style: title.copyWith(fontSize: 20),
         ),
       ),
     );

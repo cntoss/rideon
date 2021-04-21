@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/user/userModel.dart';
 import 'package:rideon/screens/profile/add_single_field.dart';
-import 'package:rideon/screens/profile/changePasswordScreen.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/widgets/customCard.dart';
 import 'package:rideon/services/helper/userService.dart';
 import 'package:rideon/services/utils/extension.dart';
 import 'package:intl/intl.dart';
@@ -119,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   OpenContainer(
                     closedElevation: 0,
                     openColor: Theme.of(context).scaffoldBackgroundColor,
-                    closedColor: Constant.cardColor,
+                    closedColor: cardColor,
                     openBuilder: (BuildContext context,
                         void Function({Object returnValue}) action) {
                       return Center(child: AddSingleField());
@@ -143,7 +142,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                   ),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
@@ -216,31 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           labelText: "Date of Birth"),
                     ),
                   ),
-
-                  OpenContainer(
-                    closedElevation: 0,
-                    openColor: Theme.of(context).scaffoldBackgroundColor,
-                    closedColor: Constant.cardColor,
-                    openBuilder: (BuildContext context,
-                        void Function({Object returnValue}) action) {
-                      return Center(child: ChangePasswordScreen());
-                    },
-                    closedBuilder:
-                        (BuildContext context, void Function() action) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Change password?",
-                            style: TextStyle(
-                                color: Constant.textColor, fontSize: 16),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  ],
               ),
             )
             )

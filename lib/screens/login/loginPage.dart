@@ -1,218 +1,139 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/screens/login/forgotPassword.dart';
 import 'package:rideon/screens/login/registerscreen.dart';
-import 'package:rideon/screens/widgets/appButton.dart';
-import 'package:rideon/screens/widgets/customCard.dart';
+import 'package:rideon/widgets/appButton.dart';
+import 'package:rideon/widgets/customCard.dart';
 import 'package:rideon/services/login/loginManager.dart';
-import 'package:animations/animations.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rideon/services/utils/extension.dart';
+
 
 class LoginPage extends StatefulWidget {
+  final bool fromRegistration;
+  LoginPage({this.fromRegistration = false});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _phoneNumberCOntroller;
+  TextEditingController _phoneController;
   TextEditingController _passwordCOntroller;
   final _formKey = GlobalKey<FormState>();
-  FocusNode _pwFocus;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  bool _showLoading = false;
+  bool _showOtp = false;
+  String _otpValue;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String verificationId;
+  TextEditingController otp1, otp2, otp3, otp4, otp5, otp6;
+  List<TextEditingController> _otp =
+      List.generate(6, (i) => TextEditingController());
+  List<FocusNode> _focus = List.generate(6, (i) => FocusNode());
 
   @override
   void initState() {
     super.initState();
-    _phoneNumberCOntroller = TextEditingController(text: "");
+    _phoneController = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
-    _pwFocus = FocusNode();
+    _otpValue = '';
   }
 
   @override
   void dispose() {
     super.dispose();
-    _phoneNumberCOntroller.dispose();
+    _phoneController.dispose();
     _passwordCOntroller.dispose();
+  }
+
+  void _changefieldFocus(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+  void signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential, LoginManger _manager) async {
+    setState(() {
+      _showLoading = true;
+    });
+    try {
+      final authCredential =
+          await _auth.signInWithCredential(phoneAuthCredential);
+      setState(() {
+        _showLoading = false;
+      });
+      if (authCredential?.user != null) {
+        _manager.login(
+            phone: _phoneController.text, password: _phoneController.text);
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _showLoading = false;
+      });
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
+  }
+
+  verification(context) async {
+    setState(() {
+      _showLoading = true;
+    });
+    await _auth.verifyPhoneNumber(
+      phoneNumber: ['+977', _phoneController.text].join('').trim(),
+      //phoneNumber: '+9779829326110',
+
+      verificationCompleted: (phoneAuthCredential) async {
+        setState(() {
+          _showLoading = false;
+        });
+        //signInWithPhoneAuthCredential(phoneAuthCredential);
+      },
+      verificationFailed: (verificationFailed) async {
+        setState(() {
+          _showLoading = false;
+        });
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text(verificationFailed.message)));
+      },
+      codeSent: (verificationId, resendingToken) async {
+        setState(() {
+          _showLoading = false;
+          _showOtp = true;
+          this.verificationId = verificationId;
+        });
+      },
+      codeAutoRetrievalTimeout: (verificationId) async {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var _manager = Provider.of<LoginManger>(context);
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: Container(
-           decoration: BoxDecoration(
-                gradient: new LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xffffffff),
-                Color(0xfffffbff),
-                Color(0xfffffbfc),
-                Color(0xfffcfbfa),
-                Color(0xfffafbf8),
-                Theme.of(context).scaffoldBackgroundColor,
-              ],
-            )),
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 18.0),
+        key: _scaffoldKey,
+        body: SingleChildScrollView(
+          child: Column(
             children: [
               Image.asset(
-              'assets/rideon.png',
-              height: MediaQuery.of(context).size.height / 3,
-              width: MediaQuery.of(context).size.height/2.5,
-              fit: BoxFit.cover,
-              //color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-              Form(
-                key: _formKey,
-                child: CustomCard(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 18.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: TextFormField(
-                            controller: _phoneNumberCOntroller,
-                            onFieldSubmitted: (v) {
-                              _pwFocus.requestFocus();
-                            },
-                            keyboardType: TextInputType.phone,
-                            maxLength: 10,
-                            validator: (s) {
-                              if (s.trim().length < 6)
-                                return Constant.phoneValidationError;
-                              else
-                                return null;
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.person,
-                                color: Colors.grey,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              errorStyle: Constant.errorStyle,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                  borderSide: BorderSide(color: Colors.green)),
-                              counterText: '',
-                              hintText: "Phone Number",
-                            ),
-                          ),
-                        ),
-                        _PasswordFieldWidget(
-                            controller: _passwordCOntroller, node: _pwFocus),
-                        OpenContainer(
-                          closedElevation: 0,
-                          openColor: Theme.of(context).scaffoldBackgroundColor,
-                          closedColor: Constant.cardColor,
-                          openBuilder: (BuildContext context,
-                              void Function({Object returnValue}) action) {
-                            return Center(child: ForgotPassword());
-                          },
-                          closedBuilder:
-                              (BuildContext context, void Function() action) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  "Forgot password?",
-                                  style: TextStyle(
-                                      color: Constant.textColor, fontSize: 16),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        ValueListenableBuilder<LoginStates>(
-                          valueListenable: _manager.currentState,
-                          builder: (con, val, _) {
-                            if (val == LoginStates.error)
-                              showLoginFailMessage(context, _manager);
-                            return AnimatedSwitcher(
-                              child: val == LoginStates.loading
-                                  ? SizedBox(
-                                      key: ValueKey("1"),
-                                      height: 50,
-                                      child: Center(
-                                          child: CircularProgressIndicator()))
-                                  : SizedBox(
-                                      /* width:
-                                            MediaQuery.of(context).size.width * .554,*/
-                                      key: ValueKey("2"),
-                                      height: 50,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Registration(),
-                                                  ));
-                                            },
-                                            child: RichText(
-                                              text: TextSpan(
-                                                  style: TextStyle(
-                                                      color: Colors.black),
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Not account? ',
-                                                    ),
-                                                    TextSpan(
-                                                        text: 'sign up',
-                                                        style: TextStyle(
-                                                            color: Constant
-                                                                .textColor))
-                                                  ]),
-                                            ),
-                                          ),
-                                          AppButton().appButton(
-                                            small: true,
-                                            text: "Login",
-                                            onTap: () async {
-                                              FocusScope.of(context).unfocus();
-                                              if (_formKey.currentState
-                                                  .validate()) {
-                                                _manager.login(
-                                                    phone: _phoneNumberCOntroller
-                                                        .text,
-                                                    password:
-                                                        _phoneNumberCOntroller
-                                                            .text);
-                                                Navigator.pushReplacementNamed(
-                                                    context, '/home');
-
-                                                /*  Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePageWrapper(),
-                                            )); */
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      )),
-                              duration: Duration(milliseconds: 400),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                'assets/logoma.png',
+                height: MediaQuery.of(context).size.height / 3,
+                width: MediaQuery.of(context).size.height,
               ),
+              CustomCard(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 18.0),
+                      child: !_showOtp
+                          ? _showPhoneField(context)
+                          : _showOtpField(context)))
+              // if(_showLoading) Center(child: CircularProgressIndicator())
             ],
           ),
         ),
@@ -220,166 +141,231 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void showLoginFailMessage(context, manager) {
+  Widget _showPhoneField(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: TextFormField(
+              controller: _phoneController,
+              onFieldSubmitted: (v) {
+                FocusScope.of(context).unfocus();
+              },
+              keyboardType: TextInputType.phone,
+              maxLength: 10,
+              validator: (s) {
+                return s.isValidPhone()
+                                ? null
+                                : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid phone number.";
+                        
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.phone_iphone_rounded,
+                  color: Colors.grey,
+                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+                errorStyle: errorStyle,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(color: Colors.green)),
+                counterText: '',
+                hintText: "Phone Number",
+              ),
+            ),
+          ),
+          !widget.fromRegistration
+              ? AnimatedSwitcher(
+                  child: _showLoading
+                      ? SizedBox(
+                          key: ValueKey("1"),
+                          height: 50,
+                          child: Center(child: CircularProgressIndicator()))
+                      : SizedBox(
+                          /* width:
+                                          MediaQuery.of(context).size.width * .554,*/
+                          key: ValueKey("2"),
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Registration(),
+                                      ));
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                      style: TextStyle(color: Colors.black),
+                                      children: [
+                                        TextSpan(
+                                          text: 'Not account? ',
+                                        ),
+                                        TextSpan(
+                                            text: 'sign up',
+                                            style: TextStyle(color: textColor))
+                                      ]),
+                                ),
+                              ),
+                              AppButton().appButton(
+                                small: true,
+                                text: "Continue",
+                                color: Colors.redAccent,
+                                onTap: () async {
+                                  FocusScope.of(context).unfocus();
+                                  if (_formKey.currentState.validate()) {
+                                    verification(context);
+                                  }
+                                },
+                              ),
+                            ],
+                          )),
+                  duration: Duration(milliseconds: 400),
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: AnimatedSwitcher(
+                    child: _showLoading
+                        ? SizedBox(
+                            key: ValueKey("1"),
+                            height: 50,
+                            child: Center(child: CircularProgressIndicator()))
+                        : SizedBox(
+                            //width: MediaQuery.of(context).size.width * .554,
+                            key: ValueKey("2"),
+                            height: 50,
+                            child: AppButton().appButton(
+                              small: false,
+                              text: "Continue",
+                              color: Colors.redAccent,
+                              onTap: () async {
+                                FocusScope.of(context).unfocus();
+                                if (_formKey.currentState.validate()) {
+                                  verification(context);
+                                }
+                              },
+                            )),
+                    duration: Duration(milliseconds: 400),
+                  ),
+                )
+        ],
+      ),
+    );
+  }
+
+  Widget _showOtpField(BuildContext context) {
+    var _manager = Provider.of<LoginManger>(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Text('Enter 6 digit OTP From Your Message'),
+        ),
+        _boxBuilder(),
+        SizedBox(
+          height: 16,
+        ),
+        ValueListenableBuilder<LoginStates>(
+          valueListenable: _manager.currentState,
+          builder: (con, val, _) {
+            if (val == LoginStates.error)
+              showLoginFailMessage(context, _manager.errorText);
+            return AnimatedSwitcher(
+              child: val == LoginStates.loading
+                  ? SizedBox(
+                      key: ValueKey("1"),
+                      height: 50,
+                      child: Center(child: CircularProgressIndicator()))
+                  : SizedBox(
+                      key: ValueKey("2"),
+                      height: 50,
+                      child: AppButton().appButton(
+                        small: true,
+                        text: "Verify",
+                        color: Colors.redAccent,
+                        onTap: () async {
+                          List _finalOtp = [];
+                          FocusScope.of(context).unfocus();
+                          for (int i = 0; i < _otp.length; i++) {
+                            if (_otp[i].text != null)
+                              _finalOtp.add(_otp[i].text.trim());
+                          }
+                          _otpValue = _finalOtp.join('').trim();
+                          print(_otpValue);
+                          if (_otpValue.length == 6) {
+                            PhoneAuthCredential phoneAuthCredential =
+                                PhoneAuthProvider.credential(
+                                    verificationId: verificationId,
+                                    smsCode: _otpValue);
+                            signInWithPhoneAuthCredential(
+                                phoneAuthCredential, _manager);
+                          } else {
+                            showLoginFailMessage(context, otpEmptyError);
+                          }
+                        },
+                      )),
+              duration: Duration(milliseconds: 400),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _boxBuilder() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        for (int i = 0; i < _otp.length; i++)
+          _box(_otp[i], _focus[i], i < 5 ? _focus[i + 1] : null),
+      ],
+    );
+  }
+
+  Widget _box(TextEditingController otpController, FocusNode currentFocus,
+      FocusNode nextFocus) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+      alignment: Alignment.center,
+      height: 50,
+      width: 40,
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        controller: otpController,
+        maxLength: 1,
+        focusNode: currentFocus,
+        onChanged: (_) {
+          setState(() {
+            otpController.text = _;
+          });
+          if (nextFocus != null)
+            _changefieldFocus(context, currentFocus, nextFocus);
+          else
+            currentFocus.unfocus();
+        },
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            counterText: '',
+            hintText: '*',
+            contentPadding: EdgeInsets.symmetric(horizontal: 14)),
+      ),
+      //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+    );
+  }
+
+  void showLoginFailMessage(context, errorMessage) {
     Future.delayed(Duration(seconds: 1), () {
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(manager.errorText ?? Constant.defaultloginError)));
+      _scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text(errorMessage ?? defaultloginError)));
     });
   }
 }
-
-class _PasswordFieldWidget extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode node;
-
-  const _PasswordFieldWidget({Key key, this.controller, this.node})
-      : super(key: key);
-
-  @override
-  _PasswordFieldWidgetState createState() => _PasswordFieldWidgetState();
-}
-
-class _PasswordFieldWidgetState extends State<_PasswordFieldWidget> {
-  bool hidden = true;
-  bool showingEye = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        TextFormField(
-          onChanged: (v) {
-            if (!showingEye && v.trim().length > 1)
-              setState(() {
-                showingEye = true;
-              });
-            else if (showingEye && v.trim().length < 1)
-              setState(() {
-                showingEye = false;
-              });
-          },
-          focusNode: widget.node,
-          controller: widget.controller,
-          obscureText: hidden,
-          validator: (s) {
-            if (s.trim().length < 6)
-              return Constant.passwordValidationError;
-            else
-              return null;
-          },
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock,
-              color: Colors.grey,
-            ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            errorStyle: Constant.errorStyle,
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: Colors.green)),
-            hintText: "Password",
-          ),
-        ),
-        if (widget.controller.text.trim().length > 0)
-          Positioned(
-            top: 6,
-            right: 4,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    hidden = !hidden;
-                  });
-                },
-                child: Material(
-                    borderRadius: BorderRadius.circular(24),
-                    color: Colors.white.withOpacity(.02),
-                    child: SizedBox(
-                        height: 44,
-                        width: 50,
-                        child: Icon(
-                          hidden ? Icons.visibility : Icons.visibility_off,
-                          size: 20,
-                        )))),
-          ),
-      ],
-    );
-  }
-}
-
-/* class _PasswordFieldWidget extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode node;
-
-  const _PasswordFieldWidget({Key key, this.controller, this.node})
-      : super(key: key);
-
-  @override
-  _PasswordFieldWidgetState createState() => _PasswordFieldWidgetState();
-}
-
-class _PasswordFieldWidgetState extends State<_PasswordFieldWidget> {
-  bool hidden = true;
-  bool showingEye = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        TextFormField(
-          onChanged: (v) {
-            if (!showingEye && v.trim().length > 1)
-              setState(() {
-                showingEye = true;
-              });
-            else if (showingEye && v.trim().length < 1)
-              setState(() {
-                showingEye = false;
-              });
-          },
-          focusNode: widget.node,
-          controller: widget.controller,
-          obscureText: hidden,
-          validator: (s) {
-            if (s.trim().length < 6)
-              return Constant.passwordValidationError;
-            else
-              return null;
-          },
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock,
-              color: Colors.grey,
-            ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-            errorStyle: Constant.errorStyle,
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: Colors.green)),
-            hintText: "Password",
-          ),
-        ),
-        if (widget.controller.text.trim().length > 0)
-          Positioned(
-            top: 6,
-            right: 4,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    hidden = !hidden;
-                  });
-                },
-                child: Material(
-                    borderRadius: BorderRadius.circular(24),
-                    color: Colors.white.withOpacity(.02),
-                    child: SizedBox(
-                        height: 44,
-                        width: 50,
-                        child: Icon(
-                          hidden ? Icons.visibility : Icons.visibility_off,
-                          size: 20,
-                        )))),
-          ),
-      ],
-    );
-  }
-} */

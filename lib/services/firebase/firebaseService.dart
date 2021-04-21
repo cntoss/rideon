@@ -3,23 +3,30 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
+import 'package:rideon/models/notification/notification.dart';
+
+import 'notification_service.dart';
 
 class FirebaseService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   void initFirebase() {
     _firebaseMessaging.configure(onMessage: (dynamic message) async {
+      print(message);
       _showNotificationDialog(message);
+      _saveNotification(message);
     }, onLaunch: (dynamic message) async {
       _showNotificationDialog(message, isBackground: true);
+      _saveNotification(message);
     }, onResume: (dynamic message) async {
       _showNotificationDialog(message, isBackground: true);
+      _saveNotification(message);
     });
 
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {});
-    _firebaseMessaging.subscribeToTopic("notification");
+    _firebaseMessaging.subscribeToTopic("all");
   }
 
   void _showNotificationDialog(dynamic message, {bool isBackground = false}) {
@@ -63,6 +70,24 @@ class FirebaseService {
             ],
           );
         });
+  }
+
+  void _saveNotification(dynamic message) {
+    if (Platform.isIOS) {
+      if (message["type"] != "news")
+        NotificationService().saveNotification(OfflineNotification(
+            title: message["title"],
+            description: message["message"],
+            date: DateTime.now()));
+    } else {
+      if (message["data"]["type"] != "news")
+        NotificationService().saveNotification(OfflineNotification(
+            title: message["data"]["title"],
+            description: message["data"]["message"],
+            image: message["data"]["image"],
+            link: message["data"]["link"],
+            date: DateTime.now()));
+    }
   }
 
   Future<String> getFirebaseToken() {

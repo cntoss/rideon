@@ -98,10 +98,11 @@ class _HomePageWrapperState extends State<HomePageWrapper>
       centerTitle: true,
       title: Row(
         children: [
-          Text(
+          //TODO: for app bar 
+        /*   Text(
             'Rideon',
             style: Theme.of(context).textTheme.headline6,
-          ),
+          ), */
           Image.asset(
             'assets/logo.png',
             height: 55,

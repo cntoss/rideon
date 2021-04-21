@@ -2,7 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
-import 'package:rideon/models/driverModel.dart';
+import 'package:rideon/models/driver/driverModel.dart';
 import 'dart:async';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:geolocator/geolocator.dart';
@@ -165,7 +165,7 @@ class MapPinPillComponent extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 'On the way',
-                style: Constant.title,
+                style: title,
               ),
             ),
             Container(

@@ -165,6 +165,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
             initialCameraPosition: initialCameraPosition,
             mapType: data,
             myLocationEnabled: true,
+            zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) {
               provider.mapController = controller;
               provider.setCameraPosition(null);
@@ -261,7 +262,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(Icons.push_pin, size: 36, color: Colors.grey),
+                Icon(Icons.push_pin, size: 36, color: Colors.redAccent),
                 SizedBox(height: 42),
               ],
             ),
@@ -271,7 +272,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
               width: 5,
               height: 5,
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: Colors.redAccent,
                 shape: BoxShape.circle,
               ),
             ),
@@ -342,7 +343,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.9,
       borderRadius: BorderRadius.circular(12.0),
       elevation: 4.0,
-      color: Constant.cardColor,
+      color: cardColor,
       child: state == SearchingState.Searching
           ? _buildLoadingIndicator()
           : _buildSelectionDetails(context, data),
@@ -378,7 +379,9 @@ class GoogleMapPlacePicker extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                result.name,///todo:use formated address instead
+                getName(result),
+
+                ///todo:use formated address instead
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
@@ -386,10 +389,11 @@ class GoogleMapPlacePicker extends StatelessWidget {
           ),
           //SizedBox(height: 10),
           Container(
-            width: MediaQuery.of(context).size.width/1.3,
+            width: MediaQuery.of(context).size.width / 1.3,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Constant.cardColor)),
+                  backgroundColor:
+                      MaterialStateProperty.all(cardColor)),
               child: Container(
                 //padding: const EdgeInsets.all(8.0),
                 width: MediaQuery.of(context).size.width,
@@ -409,11 +413,44 @@ class GoogleMapPlacePicker extends StatelessWidget {
     );
   }
 
-  Widget _buildMapIcons(BuildContext context) {
-    //  final RenderBox appBarRenderBox = appBarKey.currentContext.findRenderObject();
+  String getName(PickResult locationDetail) {
+    List locationNames = [];
+    for (int i = 0; i < 4; i++) {
+      if (i == 3) {
+        if (locationDetail.addressComponents[3].types[0] == 'locality') {
+          locationNames.add(locationDetail.addressComponents[i].longName);
+        }
+      } else if (locationDetail.addressComponents[i].longName !=
+              'Unnamed Road' &&
+          locationDetail.addressComponents[i].types[0] != 'country')
+        locationNames.add(locationDetail.addressComponents[i].longName);
+    }
+    return locationNames.toSet().toList().join(', ');
+  }
 
+  Widget _buildMapIcons(BuildContext context) {
     return Positioned(
-      top: 0, //appBarRenderBox.size.height,
+      bottom: 150, //appBarRenderBox.size.height,
+      right: 15,
+      child: Container(
+        width: 35,
+        height: 35,
+        child: RawMaterialButton(
+          shape: CircleBorder(),
+          fillColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black54
+              : Colors.white,
+          elevation: 8.0,
+          onPressed: onMyLocation,
+          child: Icon(Icons.my_location),
+        ),
+      ),
+    );
+
+    //  final RenderBox appBarRenderBox = appBarKey.currentContext.findRenderObject();
+    //always disable satellite mode
+    /*  return Positioned(
+      bottom: 150, //appBarRenderBox.size.height,
       right: 15,
       child: Column(
         children: <Widget>[
@@ -451,5 +488,6 @@ class GoogleMapPlacePicker extends StatelessWidget {
         ],
       ),
     );
+ */
   }
 }

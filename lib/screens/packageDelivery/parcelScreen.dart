@@ -3,10 +3,10 @@ import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/web_service/distance.dart';
-import 'package:rideon/models/driverModel.dart';
+import 'package:rideon/models/driver/driverModel.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/screens/finalMap/packageDeliveryRouteScreen.dart';
-import 'package:rideon/screens/widgets/loader.dart';
+import 'package:rideon/widgets/loader.dart';
 
 class ParcelScreen extends StatefulWidget {
   @override
@@ -55,7 +55,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
               child: Card(
                 elevation: 0,
-                color: Constant.cardColor,
+                color: cardColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 child: Padding(
@@ -255,9 +255,9 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                   width: MediaQuery.of(context).size.width,
                                   child: ElevatedButton(
                                       child: Padding(
-                                        padding: Constant.bottonPadding,
+                                        padding: bottonPadding,
                                         child: Text('Continue',
-                                            style: Constant.bottonStyle),
+                                            style: bottonStyle),
                                       ),
                                       onPressed: _continueToDelivery),
                                 )
@@ -321,10 +321,10 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                     width: MediaQuery.of(context).size.width,
                                     child: ElevatedButton(
                                         child: Padding(
-                                          padding: Constant.bottonPadding,
+                                          padding: bottonPadding,
                                           child: Text(
                                             'Request a driver',
-                                            style: Constant.bottonStyle,
+                                            style: bottonStyle,
                                           ),
                                         ),
                                         onPressed: _confirmToDelivery),
