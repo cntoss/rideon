@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/screens/home/homePage.dart';
-import 'package:rideon/screens/notification/notification_screen.dart';
+import 'package:rideon/screens/notification/view/notification_screen.dart';
 import 'package:rideon/screens/setting/settingScreen.dart';
 
 class HomePageWrapper extends StatefulWidget {

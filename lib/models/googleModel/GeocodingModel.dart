@@ -152,7 +152,7 @@ factory LocationDetail.fromPickResult(PickResult result) {
         "formatted_address": formattedAddress,
         "geometry": geometry.toJson(),
         "place_id": placeId,
-        "types": List<dynamic>.from(types.map((x) => x)),
+        "types": types == null ? null: List<dynamic>.from(types.map((x) => x)),
         "plus_code": plusCode == null ? null : plusCode.toJson(),
       };
 }

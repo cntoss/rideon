@@ -22,6 +22,7 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
       placeId: fields[2] as String,
       location: fields[3] as LnModel,
       locationName: fields[4] as String,
+      addrComponent: (fields[6] as List)?.cast<AddrComponent>(),
       detail: fields[5] as String,
     );
   }
@@ -29,7 +30,7 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
   @override
   void write(BinaryWriter writer, SavedAddressModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
       ..writeByte(4)
       ..write(obj.locationName)
       ..writeByte(5)
-      ..write(obj.detail);
+      ..write(obj.detail)
+      ..writeByte(6)
+      ..write(obj.addrComponent);
   }
 
   @override
@@ -88,6 +91,46 @@ class LnModelAdapter extends TypeAdapter<LnModel> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is LnModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class AddrComponentAdapter extends TypeAdapter<AddrComponent> {
+  @override
+  final int typeId = 4;
+
+  @override
+  AddrComponent read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AddrComponent(
+      (fields[0] as List)?.cast<String>(),
+      fields[1] as String,
+      fields[2] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AddrComponent obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.types)
+      ..writeByte(1)
+      ..write(obj.longName)
+      ..writeByte(2)
+      ..write(obj.shortName);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AddrComponentAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

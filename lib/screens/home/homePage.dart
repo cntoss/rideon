@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
+import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
+import 'package:rideon/screens/heli/heli.dart';
 import 'package:rideon/screens/home/rideCreateScreen.dart';
 import 'package:rideon/screens/localAddress/savedAddressView.dart';
 import 'package:rideon/screens/packageDelivery/parcelScreen.dart';
@@ -13,7 +14,6 @@ import 'package:rideon/screens/pooling/carPoolingStart.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/services/location/location_service.dart';
-import 'package:rideon/widgets/custom_dialog.dart';
 import 'package:rideon/widgets/network_sensitive.dart';
 
 class HomePage extends StatefulWidget {
@@ -71,14 +71,25 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   onTap: () {
                     //todo: bike select
-                    //
-                    CustomDialog().showCustomDialog(
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationSetScreen(
+                          locationDetail,
+                          tranportType: TranportType.Bike,
+                        ),
+                      ),
+                    );
+
+                    /*   CustomDialog().showCustomDialog(
                       title: 'Ride on bike',
                       content:
                           'Choose good bike to travel from here and there with best price and good dervice from driver',
                       actions: <Widget>[
                         CustomDialog().dialogButton(
                           text: 'CLOSE',
+                          color: Color(0xffba976c),
                           onPressed: () {
                             Navigator.pop(
                                 AppConfig.navigatorKey.currentState.context);
@@ -93,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     );
+                 */
                   },
                   child: VehichleOption(
                     width: width,
@@ -103,6 +115,15 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   onTap: () {
                     //todo: car select
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationSetScreen(
+                          locationDetail,
+                          tranportType: TranportType.Car,
+                        ),
+                      ),
+                    );
                   },
                   child: VehichleOption(
                     width: width,
@@ -112,12 +133,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 InkWell(
                   onTap: () {
-                    //todo: car select
+                    //todo: heli select
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HelicopterBookingPage(),
+                      ),
+                    );
                   },
                   child: VehichleOption(
                     width: width,
                     image: 'assets/heli.png',
-                    title: 'Plane',
+                    title: 'HeliCopter',
                   ),
                 )
               ],

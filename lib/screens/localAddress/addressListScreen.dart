@@ -6,6 +6,7 @@ import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/localAddress/addAddress.dart';
 import 'package:rideon/widgets/circleIcon.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
+import 'package:rideon/widgets/error_widget.dart';
 
 class SavedAddressScreenScreen extends StatefulWidget {
   @override
@@ -20,7 +21,11 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Saved Address')),
-      body: ListView.separated(
+      body:  _saveAddress == null
+            ? ErrorEmptyWidget(message: "Failed to Fetch Saved Locations")
+            :  _saveAddress.isEmpty
+                ? ErrorEmptyWidget(message: "You did not save location")
+                :  ListView.separated(
         padding: EdgeInsets.all(8),
         itemCount: _saveAddress.length,
         separatorBuilder: (BuildContext context, int index) =>

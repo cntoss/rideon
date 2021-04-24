@@ -4,6 +4,7 @@ import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/web_service/distance.dart';
 import 'package:rideon/models/driver/driverModel.dart';
+import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/screens/finalMap/packageDeliveryRouteScreen.dart';
 import 'package:rideon/widgets/loader.dart';
@@ -207,12 +208,14 @@ class _ParcelScreenState extends State<ParcelScreen> {
                                   child: TextFormField(
                                     controller: _phone,
                                     keyboardType: TextInputType.phone,
+                                    maxLength: 10,
                                     onFieldSubmitted: (v) {
                                       //  _noteFocus.requestFocus();
                                     },
                                     style: TextStyle(fontSize: 15),
                                     decoration: InputDecoration(
                                         hintText: 'Contact No.',
+                                        counterText: ''
                                        ),
                                     validator: (value) {
                                       if (value.isEmpty) {

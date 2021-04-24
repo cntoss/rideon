@@ -29,6 +29,8 @@ class NavigateToRoute {
       LocationDetail destination = LocationDetail(
           formattedAddress: address.locationName,
           placeId: address.placeId,
+          addressComponents: List<AddressComponent>.from(address.addrComponent
+              .map((x) => AddressComponent(x.types, x.longName, x.shortName))),
           geometry: Geometry(
               Location(address.location.lat, address.location.lng),
               '',
@@ -48,6 +50,7 @@ class NavigateToRoute {
                   SavedAddressModel address =
                       SavedAddressModel.fromPickResult(result);
                   address.type = type;
+                  address.detail = type.toString().split('.')[1];
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

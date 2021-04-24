@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 
 class CustomDialog {
-  
-   Widget dialogButton(
+  Widget dialogButton(
       {@required String text, @required VoidCallback onPressed, Color color}) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: onPressed,
-        color: color != null
-            ? color
-            : Theme.of(AppConfig.navigatorKey.currentContext).buttonColor,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          primary: color != null
+              ? color
+              : Theme.of(AppConfig.navigatorKey.currentContext).buttonColor,
+        ),
         child: Text(
           text,
           style: TextStyle(color: Colors.white),
@@ -21,7 +21,7 @@ class CustomDialog {
       ),
     );
   }
-  
+
   Future showCustomDialog({
     String title,
     String content,
@@ -39,13 +39,12 @@ class CustomDialog {
         title: Center(
           child: Padding(
             padding: EdgeInsets.only(
-                top: MediaQuery.of(context).orientation ==
-                        Orientation.portrait
+                top: MediaQuery.of(context).orientation == Orientation.portrait
                     ? 10
                     : 5),
             child: Container(
-              height: 100,
-              width: 100,
+              height: 80,
+              width: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade200),
                 shape: BoxShape.circle,
@@ -103,7 +102,6 @@ class CustomDialog {
       ),
     );
   }
-
 
   Future showCustomDialogWIthoutLogo({
     String title,

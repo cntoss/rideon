@@ -4,13 +4,13 @@
 
 import 'dart:convert';
 
+import 'package:rideon/models/enum_mode/transport_type.dart';
+
 
 DriverModel driverModelFromJson(String str) =>
     DriverModel.fromJson(json.decode(str));
 
 String driverModelToJson(DriverModel data) => json.encode(data.toJson());
-
-enum TranportType { Cycle, Bike, Car }
 
 class DriverModel {
   DriverModel({

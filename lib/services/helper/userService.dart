@@ -15,14 +15,15 @@ class UserService {
   }
 
   void removeUser() {
-    setLogin(setLoginTo: false);
+    //setLogin(setLoginTo: false);
     Navigator.pushAndRemoveUntil(
         AppConfig.navigatorKey.currentState.overlay.context,
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
         (Route<dynamic> route) => false);
 
     print('Removing User');
-    _box.delete(hkUser);
+    //_box.delete(hkUser);
+    _box.clear();
   }
 
   /*  List<User> getUsers() {

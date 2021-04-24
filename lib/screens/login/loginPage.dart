@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Image.asset(
-                'assets/logoma.png',
+                'assets/logo.png',
                 height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.height,
               ),

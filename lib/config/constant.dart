@@ -82,6 +82,6 @@ const subTitle = const TextStyle(
     decoration: TextDecoration.none);
 
 const bottonStyle =
-    const TextStyle(inherit: false, color: Colors.black, fontSize: 16);
+    const TextStyle(inherit: false, color: Colors.white, fontSize: 16);
 
 const bottonPadding = EdgeInsets.all(12.0);

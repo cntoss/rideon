@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
+import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/screens/finalMap/routeScreen.dart';
@@ -13,8 +14,9 @@ import 'package:rideon/services/helper/savedAddressService.dart';
 enum CurrentLocation { fromLocation, toLocation }
 
 class LocationSetScreen extends StatefulWidget {
-  LocationSetScreen(this.locationDetail);
+  LocationSetScreen(this.locationDetail, {this.tranportType = TranportType.None});
   final LocationDetail locationDetail;
+  final TranportType tranportType;
 
   @override
   _LocationSetScreenState createState() =>
@@ -362,6 +364,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
           MaterialPageRoute(
               builder: (context) => RouteScreen(
                   sourceDetail: fromLocationModel,
+                  tranportType: widget.tranportType,
                   destinationDetail: toLocationModel)));
   }
 }

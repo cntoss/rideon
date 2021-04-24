@@ -11,26 +11,26 @@ class SavedAddressService {
   void saveAddress({@required SavedAddressModel savedAddressModel}) {
     List<SavedAddressModel> _list = getSavedAddress();
     _list.add(savedAddressModel);
-    _box.put(hkAddressType, _list);
+    _box.put(hkSavedAddress, _list);
   }
 
   void editAddress({@required SavedAddressModel savedAddressModel}) {
     List<SavedAddressModel> _list = getSavedAddress();
     _list.removeWhere((element) => element.id == savedAddressModel.id);
     _list.add(savedAddressModel);
-    _box.put(hkAddressType, _list);
+    _box.put(hkSavedAddress, _list);
   }
 
   void deleteAddress({@required SavedAddressModel savedAddressModel}) {
     List<SavedAddressModel> _list = getSavedAddress();
     _list.removeWhere((element) => element.id == savedAddressModel.id);
-    _box.put(hkAddressType, _list);
+    _box.put(hkSavedAddress, _list);
   }
 
   List<SavedAddressModel> getSavedAddress() {
     List<SavedAddressModel> _list = List<SavedAddressModel>();
     List<dynamic> result = _box.get(
-      hkAddressType,
+      hkSavedAddress,
       defaultValue: List<SavedAddressModel>(),
     );
     _list = result.cast();
@@ -40,7 +40,7 @@ class SavedAddressService {
    List<SavedAddressModel> getOtherAddress() {
     List<SavedAddressModel> _list = List<SavedAddressModel>();
     List<dynamic> result = _box.get(
-      hkAddressType,
+      hkSavedAddress,
       defaultValue: List<SavedAddressModel>(),
     );
     _list = result.cast();
@@ -50,7 +50,7 @@ class SavedAddressService {
   SavedAddressModel getSingleAddress(AddressType type) {
     List<SavedAddressModel> _list = List<SavedAddressModel>();
     List<dynamic> result = _box.get(
-      hkAddressType,
+      hkSavedAddress,
       defaultValue: List<SavedAddressModel>(),
     );
     _list = result.cast();

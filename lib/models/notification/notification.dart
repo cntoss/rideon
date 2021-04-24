@@ -4,7 +4,6 @@
 
 //import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:rideon/config/appConfig.dart';
 
@@ -38,7 +37,7 @@ class OfflineNotification extends HiveObject {
   });
 }
 
-class Notification {
+/* class Notification {
   const Notification({
     this.id,
     @required this.title,
@@ -92,3 +91,4 @@ const notifications = [
       title: 'No link and image',
       description: "In this notification we provide no link and no image")
 ];
+ */

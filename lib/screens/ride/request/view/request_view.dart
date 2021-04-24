@@ -2,35 +2,36 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
+import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/web_service/distance.dart' as distance;
-import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'dart:async';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rideon/models/route/pininformation.dart';
+import 'package:rideon/models/notification/request_notification.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
-import 'package:rideon/services/repository/ride_request.dart';
 
-class RouteScreen extends StatefulWidget {
-  RouteScreen({this.sourceDetail, this.destinationDetail, this.tranportType = TranportType.None});
-  final LocationDetail sourceDetail;
-  final LocationDetail destinationDetail;
-  final TranportType tranportType;
+class RideRequestPage extends StatefulWidget {
+  RideRequestPage({this.notificationData});
+  final NotificationData notificationData;
   @override
   State<StatefulWidget> createState() =>
-      RouteScreenState(this.sourceDetail, this.destinationDetail);
+      RideRequestState(this.notificationData);
 }
 
-class RouteScreenState extends State<RouteScreen> {
-  RouteScreenState(this.sourceDetail, this.destinationDetail);
+class RideRequestState extends State<RideRequestPage> {
+  RideRequestState(this._notificationData);
+  NotificationData _notificationData;
+
   LocationDetail sourceDetail;
   LocationDetail destinationDetail;
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set<Marker>();
+
 // for my drawn routes on the map
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints;
+
 // for my custom marker pins
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
@@ -41,19 +42,12 @@ class RouteScreenState extends State<RouteScreen> {
   Position destinationLocation;
 // wrapper around the location API
   double pinPillPosition = -100;
-  PinInformation currentlySelectedPin = PinInformation(
-      pinPath: '',
-      avatarPath: '',
-      location: LatLng(0, 0),
-      locationName: '',
-      labelColor: Colors.grey);
-  PinInformation sourcePinInfo;
-  PinInformation destinationPinInfo;
-
   @override
   void initState() {
     super.initState();
     // create an instance of Location
+    sourceDetail = _notificationData.fromLocation;
+    destinationDetail = _notificationData.toLocation;
     polylinePoints = PolylinePoints();
     currentLocation = Position.fromMap({
       "latitude": sourceDetail.geometry.location.lat,
@@ -91,8 +85,8 @@ class RouteScreenState extends State<RouteScreen> {
 
   void setInitialLocation() async {
     destinationLocation = Position.fromMap({
-      "latitude": widget.destinationDetail.geometry.location.lat,
-      "longitude": widget.destinationDetail.geometry.location.lng
+      "latitude": destinationDetail.geometry.location.lat,
+      "longitude": destinationDetail.geometry.location.lng
     });
   }
 
@@ -133,11 +127,11 @@ class RouteScreenState extends State<RouteScreen> {
               onMapCreated: (GoogleMapController controller) {
                 //controller.setMapStyle(Utils.mapStyles);
                 _controller.complete(controller);
-                // my map has completed being created;
-                // i'm ready to show the pins on the map
                 showPinsOnMap();
               }),
-          Positioned(
+
+          ///TODO: disable back button
+          /*  Positioned(
             top: MediaQuery.of(context).padding.top,
             left: 20,
             child: IconButton(
@@ -149,27 +143,11 @@ class RouteScreenState extends State<RouteScreen> {
               ),
               onPressed: () => Navigator.pop(context),
             ),
-          ),
-          FutureBuilder(
-            future: getDistance(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.data != null)
-                return MapPinPillComponent(
-                  fromLocation: widget.sourceDetail,
-                  toLocation: widget.destinationDetail,
-                  distance: snapshot.data,
-                  transportType: widget.tranportType,
-                );
-              else
-                return Center(
-                    child: Text(
-                  'Unable to find route',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                ));
-            },
+          ), */
+          //make future loader here if distance and time response is not
+          // coming from firebase nitifiation
+          MapPinPillComponent(
+            data: _notificationData,
           )
         ],
       ),
@@ -177,54 +155,22 @@ class RouteScreenState extends State<RouteScreen> {
   }
 
   void showPinsOnMap() {
-    // get a LatLng for the source location
-    // from the LocationData currentLocation object
     var pinPosition =
         LatLng(currentLocation.latitude, currentLocation.longitude);
-    // get a LatLng out of the LocationData object
     var destPosition =
         LatLng(destinationLocation.latitude, destinationLocation.longitude);
 
-    sourcePinInfo = PinInformation(
-        locationName: "Start Location",
-        location: pinPosition,
-        pinPath: "assets/driving_pin.png",
-        avatarPath: "assets/avatar.png",
-        labelColor: Colors.blueAccent);
-
-    destinationPinInfo = PinInformation(
-        locationName: "End Location",
-        location: destPosition,
-        pinPath: "assets/destination_map_marker.png",
-        avatarPath: "assets/avatar.png",
-        labelColor: Colors.purple);
-
-    // add the initial source location pin
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
         infoWindow: InfoWindow(
             title: sourceDetail.formattedAddress, snippet: 'Rideon map'),
         position: pinPosition,
-        onTap: () {
-          setState(() {
-            currentlySelectedPin = sourcePinInfo;
-            pinPillPosition = 0;
-          });
-        },
         icon: sourceIcon));
     // destination pin
     _markers.add(Marker(
         markerId: MarkerId('destPin'),
         position: destPosition,
-        onTap: () {
-          setState(() {
-            currentlySelectedPin = destinationPinInfo;
-            pinPillPosition = 0;
-          });
-        },
         icon: destinationIcon));
-    // set the route lines on the map from source to destination
-    // for more info follow this tutorial
   }
 
   _addPolyLine() {
@@ -265,17 +211,9 @@ class RouteScreenState extends State<RouteScreen> {
       var pinPosition =
           LatLng(currentLocation.latitude, currentLocation.longitude);
 
-      sourcePinInfo.location = pinPosition;
-
       _markers.removeWhere((m) => m.markerId.value == 'sourcePin');
       _markers.add(Marker(
           markerId: MarkerId('sourcePin'),
-          onTap: () {
-            setState(() {
-              currentlySelectedPin = sourcePinInfo;
-              pinPillPosition = 0;
-            });
-          },
           position: pinPosition, // updated position
           icon: sourceIcon));
     });
@@ -294,114 +232,163 @@ class RouteScreenState extends State<RouteScreen> {
 }
 
 class MapPinPillComponent extends StatefulWidget {
-  final String distance;
-  final LocationDetail fromLocation;
-  final LocationDetail toLocation;
-  final TranportType transportType;
-  MapPinPillComponent({this.fromLocation, this.toLocation, this.distance, this.transportType});
+  final NotificationData data;
+  MapPinPillComponent({this.data});
 
   @override
   _MapPinPillComponentState createState() => _MapPinPillComponentState();
 }
 
 class _MapPinPillComponentState extends State<MapPinPillComponent> {
-  TranportType transportType;
-  @override
-  void initState() {
-    super.initState();
-    transportType = widget.transportType;
-  }
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Container(
-        padding: EdgeInsets.all(8),
-        width: width,
-        decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  blurRadius: 20,
-                  offset: Offset.zero,
-                  color: Colors.grey.withOpacity(0.5))
-            ]),
+      child: Card(
+        color: cardColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(50.0),
+                topRight: Radius.circular(50.0))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if(widget.transportType == TranportType.None)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      transportType = TranportType.Bike;
-                    });
-                  },
-                  child: Card(
-                    color: transportType == TranportType.Bike
-                        ? Colors.green
-                        : Theme.of(context).scaffoldBackgroundColor,
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'assets/bike.png',
-                            height: 100,
-                            width: width / 2.5,
-                          ),
-                          Text('Bike'),
-                          Text(widget.distance ?? '')
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      transportType = TranportType.Car;
-                    });
-                  },
-                  child: Card(
-                    color: transportType == TranportType.Car
-                        ? Colors.green
-                        : Theme.of(context).scaffoldBackgroundColor,
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'assets/car.png',
-                            height: 100,
-                            width: width / 2.5,
-                          ),
-                          Text('Car'),
-                          Text(widget.distance ?? '')
-                        ],
-                      ),
-                    ),
+                IconButton(
+                    padding: EdgeInsets.all(0),
+                    icon: Icon(Icons.keyboard_arrow_down),
+                    onPressed: () {}),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    'You got a ride request',
+                    style: title,
                   ),
                 )
               ],
             ),
-            ElevatedButton(
-              onPressed: () async {
-                var result = await RideRequest().request(
-                    fromLocation: widget.fromLocation,
-                    toLocation: widget.toLocation,
-                    time: '100',
-                    distance: '10');
-                print(result);
-              },
-              child: Text('Send Pick Request'),
+            Container(
+              color: Colors.white,
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          child: Icon(Icons.person, size: 30),
+                          foregroundColor: Colors.grey[300],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [Text('Pyari Suntali'), Text('Damak, Jhapa')],
+                      )
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Divider(height: 3, color: Colors.black45)),
+                  Row(
+                    children: [
+                      Icon(Icons.person_pin_circle),
+                      Expanded(
+                          child:
+                              Text(widget.data.fromLocation.formattedAddress))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.pin_drop),
+                      Expanded(
+                          child: Text(widget.data.toLocation.formattedAddress))
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Divider(height: 3, color: Colors.black45)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Spacer(flex: 1),
+                      Flexible(
+                        flex: 10,
+                        child: Column(
+                          children: [
+                            Text('Distance'),
+                            Text(
+                              widget.data.distance ?? '5.8 Km',
+                              style: TextStyle(color: Colors.red, fontSize: 20),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      Column(
+                        children: [
+                          Text('Fare'),
+                          Text(
+                            'Rs 100',
+                            style: TextStyle(color: Colors.red, fontSize: 20),
+                          )
+                        ],
+                      ),
+                      Spacer(
+                        flex: 1,
+                      )
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Divider(height: 3, color: Colors.black45)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Spacer(flex: 4),
+                      Icon(Icons.call),
+                      //Spacer(flex: 1),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          'Support',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Spacer(flex: 1),
+                      Container(
+                        height: 20,
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      Spacer(flex: 1),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          'Reject',
+                          style: TextStyle(color: Colors.red, fontSize: 20),
+                        ),
+                      ),
+                      Spacer(
+                        flex: 4,
+                      )
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Divider(height: 3, color: Colors.black45)),
+                  ElevatedButton(
+                    onPressed: () => {},
+                    child: Text('Accept rideon request'),
+                  )
+                ],
+              ),
             )
           ],
         ),

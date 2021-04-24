@@ -8,7 +8,7 @@ part of 'notification.dart';
 
 class OfflineNotificationAdapter extends TypeAdapter<OfflineNotification> {
   @override
-  final int typeId = 4;
+  final int typeId = 5;
 
   @override
   OfflineNotification read(BinaryReader reader) {

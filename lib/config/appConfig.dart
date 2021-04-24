@@ -18,19 +18,24 @@ const hiveBoxName = 'rideOnBox';
 const htSavedAddress = 1;
 const htAddressType = 2;
 const htlnModel = 3;
-const htNotification = 4;
+const htAddressComponents = 4;
+const htNotification = 5;
+
 
 const hkEncryptionKey = "hkKey";
 const hkUser = 'user';
 const hkIsLoging = 'isLogin';
 const hkIsWorkThrough = 'isWorkThrough';
-const hkAddressType = 'addressType';
+const hkSavedAddress = 'savedAddress';
 const hkNotification = 'notification';
 
 const googleAPIKey = 'AIzaSyA8yyji0eV-0jkNXg-yFhIRXUa5bIChX78';
+const firebaseUrl = 'https://fcm.googleapis.com/fcm/send';
+
 const double CAMERA_ZOOM = 15;
 const double CAMERA_ZOOM_HOME = 14;
 const double CAMERA_TILT = 80; //80
 const double CAMERA_BEARING = 30; //30
 const LatLng SOURCE_LOCATION = LatLng(27.6844713, 85.3254059);
 const LatLng DEST_LOCATION = LatLng(27.6431663, 85.2664908);
+

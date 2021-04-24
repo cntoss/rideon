@@ -26,7 +26,7 @@ class SavedAddressView extends StatelessWidget {
         builder: (context, _box, _) {
           List<SavedAddressModel> _list = List<SavedAddressModel>();
           List<dynamic> result = _box.get(
-            hkAddressType,
+            hkSavedAddress,
             defaultValue: List<SavedAddressModel>(),
           );
           _list = result.cast();

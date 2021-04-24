@@ -4,6 +4,7 @@ import 'package:rideon/config/constant.dart';
 final appTheme = ThemeData(
     primarySwatch: Colors.red,
     primaryColor: Color(0xfffafbf8),
+    buttonColor: Colors.redAccent,
     iconTheme: IconThemeData(color: Colors.redAccent),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: Color(0xfffafbf8),
@@ -25,12 +26,18 @@ final appTheme = ThemeData(
     ),
     textTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.black87),
-      
+    ),
+    buttonTheme: ButtonThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      buttonColor: Colors.redAccent,
+      hoverColor: Colors.orangeAccent,
+      focusColor: Colors.orangeAccent,
+      disabledColor: Colors.black,
     ),
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: TextStyle(color: Colors.black54),
       disabledBorder: Constant.inputBorder,
       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-      enabledBorder: Constant.inputBorder,      
+      enabledBorder: Constant.inputBorder,
       // or any other color
     ));
