@@ -5,7 +5,7 @@ import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/screens/finalMap/routeScreen.dart';
+import 'package:rideon/screens/navigation/navigation_page.dart';
 import 'package:rideon/widgets/circleIcon.dart';
 import 'package:rideon/services/google/placeService.dart';
 import 'package:rideon/config/constant.dart';
@@ -362,7 +362,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => RouteScreen(
+              builder: (context) => NavigationPage(
                   sourceDetail: fromLocationModel,
                   tranportType: widget.tranportType,
                   destinationDetail: toLocationModel)));

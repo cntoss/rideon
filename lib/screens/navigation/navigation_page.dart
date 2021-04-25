@@ -11,8 +11,8 @@ import 'package:rideon/models/route/pininformation.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
 import 'package:rideon/services/repository/ride_request.dart';
 
-class RouteScreen extends StatefulWidget {
-  RouteScreen({this.sourceDetail, this.destinationDetail, this.tranportType = TranportType.None});
+class NavigationPage extends StatefulWidget {
+  NavigationPage({this.sourceDetail, this.destinationDetail, this.tranportType = TranportType.None});
   final LocationDetail sourceDetail;
   final LocationDetail destinationDetail;
   final TranportType tranportType;
@@ -21,7 +21,7 @@ class RouteScreen extends StatefulWidget {
       RouteScreenState(this.sourceDetail, this.destinationDetail);
 }
 
-class RouteScreenState extends State<RouteScreen> {
+class RouteScreenState extends State<NavigationPage> {
   RouteScreenState(this.sourceDetail, this.destinationDetail);
   LocationDetail sourceDetail;
   LocationDetail destinationDetail;

@@ -1,3 +1,4 @@
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
@@ -9,24 +10,28 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rideon/models/route/pininformation.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
 
-class PackageDeliveryRouteScreen extends StatefulWidget {
-  PackageDeliveryRouteScreen(
+class PackageDeliveryNavigationPage extends StatefulWidget {
+  PackageDeliveryNavigationPage(
       {this.sourceDetail, this.driverDetail, this.destinationDetail});
   final LocationDetail sourceDetail;
   final DriverModel driverDetail;
   final LocationDetail destinationDetail;
   @override
-  State<StatefulWidget> createState() => PackageDeliveryRouteScreenState(
-      this.sourceDetail, this.destinationDetail);
+  State<StatefulWidget> createState() =>
+      PackageDeliveryNavigationState(this.sourceDetail, this.destinationDetail);
 }
 
-class PackageDeliveryRouteScreenState
-    extends State<PackageDeliveryRouteScreen> {
-  PackageDeliveryRouteScreenState(this.sourceDetail, this.destinationDetail);
+class PackageDeliveryNavigationState
+    extends State<PackageDeliveryNavigationPage> {
+  PackageDeliveryNavigationState(this.sourceDetail, this.destinationDetail);
   LocationDetail sourceDetail;
   LocationDetail destinationDetail;
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set<Marker>();
+  // for my drawn routes on the map
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints;
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
   Position currentLocation;
@@ -44,6 +49,7 @@ class PackageDeliveryRouteScreenState
 
     setSourceAndDestinationIcons();
     setInitialLocation();
+    _getPolyline();
   }
 
   void setSourceAndDestinationIcons() async {
@@ -89,7 +95,7 @@ class PackageDeliveryRouteScreenState
       body: Stack(
         children: <Widget>[
           GoogleMap(
-              myLocationEnabled: false,
+              myLocationEnabled: true,
               compassEnabled: true,
               tiltGesturesEnabled: false,
               zoomControlsEnabled: true,
@@ -97,7 +103,8 @@ class PackageDeliveryRouteScreenState
               scrollGesturesEnabled: true,
               buildingsEnabled: false,
               markers: _markers,
-              myLocationButtonEnabled: false,
+              polylines: Set<Polyline>.of(polylines.values),
+              myLocationButtonEnabled: true,
               mapType: MapType.terrain,
               trafficEnabled: false,
               initialCameraPosition: initialCameraPosition,
@@ -109,6 +116,30 @@ class PackageDeliveryRouteScreenState
         ],
       ),
     );
+  }
+
+  _addPolyLine() {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+        polylineId: id, color: Colors.redAccent, points: polylineCoordinates);
+    polylines[id] = polyline;
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  _getPolyline() async {
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleAPIKey,
+      PointLatLng(currentLocation.latitude, currentLocation.longitude),
+      PointLatLng(destinationLocation.latitude, destinationLocation.longitude),
+      travelMode: TravelMode.driving,
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    _addPolyLine();
   }
 
   void showPinsOnMap() {

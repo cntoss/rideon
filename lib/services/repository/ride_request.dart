@@ -27,6 +27,11 @@ class RideRequest {
       @required String distance,
       @required String time}) async {
     try {
+      print(RequestBody().driveRequestBody(
+              fromLocation: fromLocation,
+              toLocation: toLocation,
+              distance: distance,
+              time: time));
       var response = await Dio().post(firebaseUrl,
           options: RequestHeader().optionsForFirebase(),
           data: RequestBody().driveRequestBody(

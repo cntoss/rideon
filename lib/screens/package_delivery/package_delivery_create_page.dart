@@ -6,15 +6,15 @@ import 'package:rideon/maps/web_service/distance.dart';
 import 'package:rideon/models/driver/driverModel.dart';
 import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
-import 'package:rideon/screens/finalMap/packageDeliveryRouteScreen.dart';
+import 'package:rideon/screens/package_delivery/package_delivery_navigation_page.dart';
 import 'package:rideon/widgets/loader.dart';
 
-class ParcelScreen extends StatefulWidget {
+class PackageDeliveryCreatePage extends StatefulWidget {
   @override
-  _ParcelScreenState createState() => _ParcelScreenState();
+  PackageDeliveryCreateState createState() => PackageDeliveryCreateState();
 }
 
-class _ParcelScreenState extends State<ParcelScreen> {
+class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
   var _formKey = GlobalKey<FormState>();
   //cosysapps@cosys.com.np
   LocationDetail _toAddress = LocationDetail();
@@ -369,7 +369,7 @@ class _ParcelScreenState extends State<ParcelScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => PackageDeliveryRouteScreen(
+              builder: (context) => PackageDeliveryNavigationPage(
                   sourceDetail: _fromAddress,
                   destinationDetail: _toAddress,
                   driverDetail: DriverModel(

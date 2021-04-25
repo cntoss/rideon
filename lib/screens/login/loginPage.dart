@@ -62,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
+      if(!mounted) return;   
       setState(() {
         _showLoading = false;
       });

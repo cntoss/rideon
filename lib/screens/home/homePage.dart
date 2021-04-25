@@ -7,9 +7,9 @@ import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/locationModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/screens/heli/heli.dart';
-import 'package:rideon/screens/home/rideCreateScreen.dart';
+import 'package:rideon/screens/ride/request/rideCreateScreen.dart';
 import 'package:rideon/screens/localAddress/savedAddressView.dart';
-import 'package:rideon/screens/packageDelivery/parcelScreen.dart';
+import 'package:rideon/screens/package_delivery/package_delivery_create_page.dart';
 import 'package:rideon/screens/pooling/carPoolingStart.dart';
 import 'package:rideon/services/google/geocodingService.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ParcelScreen()));
+                      MaterialPageRoute(builder: (context) => PackageDeliveryCreatePage()));
                 },
                 child: _homeCard(
                     title: 'Package Transfer',

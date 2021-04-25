@@ -32,6 +32,8 @@ class FirebaseService {
         .listen((IosNotificationSettings settings) {});
     _firebaseMessaging
         .subscribeToTopic("all"); //"to":"topics/all" in firebase body parameter
+    _firebaseMessaging
+        .subscribeToTopic("passenger");
   }
 
   void _showNotificationDialog(message) {

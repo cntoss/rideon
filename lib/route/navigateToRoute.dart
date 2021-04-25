@@ -5,8 +5,8 @@ import 'package:rideon/maps/web_service/places.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
-import 'package:rideon/screens/finalMap/routeScreen.dart';
 import 'package:rideon/screens/localAddress/addAddress.dart';
+import 'package:rideon/screens/navigation/navigation_page.dart';
 
 class NavigateToRoute {
   navigateToRoute(
@@ -15,7 +15,7 @@ class NavigateToRoute {
       Navigator.push(
           AppConfig.navigatorKey.currentContext,
           MaterialPageRoute(
-              builder: (context) => RouteScreen(
+              builder: (context) => NavigationPage(
                   sourceDetail: source, destinationDetail: destination)));
   }
 
