@@ -55,7 +55,19 @@ class _InitialLandingPageState extends State<InitialLandingPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 30),
-                  child: Column(
+                  child: AppButton().appButton(
+                        text: 'Get Started',
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ));
+                        },
+                      ),
+                      //removing multiple choice option that is register and login
+                  /* Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       AppButton().appButton(
@@ -79,7 +91,7 @@ class _InitialLandingPageState extends State<InitialLandingPage> {
                           },
                           child: Text('Login'))
                     ],
-                  ),
+                  ), */
                 ),
               ],
             ),

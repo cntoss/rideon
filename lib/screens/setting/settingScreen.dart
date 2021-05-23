@@ -72,29 +72,32 @@ class _SettingScreenState extends State<SettingScreen> {
               child: customRow(
             icon: Icon(Icons.language),
             title: 'Language',
-          )),          
+          )),
           customCard(
               child: customRow(
             icon: Icon(Icons.money),
             title: 'Add Money',
           )),
-
           customCard(
               child: customRow(
             icon: Icon(Icons.badge),
             title: 'Rewards',
           )),
-          
           customCard(
               child: customRow(
             icon: Icon(Icons.help),
             title: 'Help',
           )),
           customCard(
-              child: customRow(
-            icon: Icon(Icons.privacy_tip),
-            title: 'Privacy Policy',
-          )),
+              child: InkWell(
+                  onTap: () async{
+                  var  result =  LoginManger().login(phone: "9829326110");
+                  print(result);
+                  },
+                  child: customRow(
+                    icon: Icon(Icons.privacy_tip),
+                    title: 'Privacy Policy',
+                  ))),
           customCard(
               child: InkWell(
             onTap: () {

@@ -9,7 +9,6 @@ import 'package:rideon/services/login/loginManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rideon/services/utils/extension.dart';
 
-
 class LoginPage extends StatefulWidget {
   final bool fromRegistration;
   LoginPage({this.fromRegistration = false});
@@ -62,14 +61,22 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
-      if(!mounted) return;   
+      if (!mounted) return;
       setState(() {
         _showLoading = false;
       });
       if (authCredential?.user != null) {
-        _manager.login(
-            phone: _phoneController.text, password: _phoneController.text);
-        Navigator.pushReplacementNamed(context, '/home');
+        bool _loginSuccess = await _manager.login(phone: _phoneController.text);
+        if(_loginSuccess == null) return;
+        else if (_loginSuccess)
+          Navigator.pushReplacementNamed(context, '/home');
+        else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Registration(phone: _phoneController.text,),
+              ));
+        }
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -148,8 +155,9 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          Text('Verify Phone Number', style: title),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: TextFormField(
               controller: _phoneController,
               onFieldSubmitted: (v) {
@@ -159,9 +167,8 @@ class _LoginPageState extends State<LoginPage> {
               maxLength: 10,
               validator: (s) {
                 return s.isValidPhone()
-                                ? null
-                                : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid phone number.";
-                        
+                    ? null
+                    : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid phone number.";
               },
               decoration: InputDecoration(
                 prefixIcon: Icon(
@@ -191,7 +198,19 @@ class _LoginPageState extends State<LoginPage> {
                                           MediaQuery.of(context).size.width * .554,*/
                           key: ValueKey("2"),
                           height: 50,
-                          child: Row(
+                          child: AppButton().appButton(
+                            small: true,
+                            text: "Continue",
+                            color: Colors.redAccent,
+                            onTap: () async {
+                              FocusScope.of(context).unfocus();
+                              if (_formKey.currentState.validate()) {
+                                verification(context);
+                              }
+                            },
+                          ),
+                          //disabling 'signup' redirect option
+                          /* Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
@@ -199,8 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            Registration(),
+                                        builder: (context) => Registration(),
                                       ));
                                 },
                                 child: RichText(
@@ -228,7 +246,8 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                               ),
                             ],
-                          )),
+                          ), */
+                        ),
                   duration: Duration(milliseconds: 400),
                 )
               : Padding(

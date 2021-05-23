@@ -21,16 +21,17 @@ const htlnModel = 3;
 const htAddressComponents = 4;
 const htNotification = 5;
 
-
 const hkEncryptionKey = "hkKey";
 const hkUser = 'user';
 const hkIsLoging = 'isLogin';
 const hkIsWorkThrough = 'isWorkThrough';
 const hkSavedAddress = 'savedAddress';
 const hkNotification = 'notification';
+const hkToken = 'token';
 
 const googleAPIKey = 'AIzaSyA8yyji0eV-0jkNXg-yFhIRXUa5bIChX78';
 const firebaseUrl = 'https://fcm.googleapis.com/fcm/send';
+const baseUrl = "http://192.168.1.66:3000/api/passenger/";
 
 const double CAMERA_ZOOM = 15;
 const double CAMERA_ZOOM_HOME = 14;

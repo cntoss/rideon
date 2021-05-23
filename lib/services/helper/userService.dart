@@ -26,14 +26,6 @@ class UserService {
     _box.clear();
   }
 
-  /*  List<User> getUsers() {
-    List<User> Users = List<User>();
-    List<dynamic> result =
-        _box.get(hkUsers, defaultValue: List<User>());
-    Users = result.cast();
-    return Users;
-  }
- */
   User getUser() {
     return _box.get(hkUser, defaultValue: User(id: null));
   }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rideon/models/user/userModel.dart';
+import 'package:rideon/repository/login/login_repo.dart';
+import 'package:rideon/repository/login/register_repo.dart';
 import 'package:rideon/services/helper/userService.dart';
 
 enum LoginStates { loggedIn, loggedOut, loading, error }
@@ -21,9 +23,10 @@ class LoginManger {
     return _notifier;
   }
 
-  login({@required String phone, @required String password}) async {
+/*   login({@required String phone}) async {
     var result;
     _notifier.value = LoginStates.loading;
+    result = LoginRequest().loginRequest(phone);
     await Future.delayed(Duration(seconds: 3), () {
       // todo : hit login ko api
       result = true;
@@ -47,15 +50,25 @@ class LoginManger {
       //UserService().addUser(user: user);//todo:login
       _notifier.value = LoginStates.loggedIn;
     }
+  } */
+
+  Future<bool> login({@required String phone}) async {
+    LoginResponse result = await LoginRequest().loginRequest(phone);
+    if (result == null) {
+      return null;
+    } else if (!result.valid) {
+      return false;
+    } else {
+      UserService().setLogin(setLoginTo: true);
+      return true;
+    }
   }
 
   Future<bool> register(User user) async {
     var result;
     _notifier.value = LoginStates.loading;
-    await Future.delayed(Duration(seconds: 3), () {
-      // todo : hit login ko api
-      result = true;
-    });
+    //LoginResponse result = await RegisterRequest().registerRequest(user);
+
     if (result == null) {
       UserService().setLogin(setLoginTo: false);
       //todo string lai const ma lagne
@@ -65,7 +78,7 @@ class LoginManger {
         _notifier.value = LoginStates.loggedOut;
       });
       return false;
-    } else if (result is String) {
+    } else if (!result.valid) {
       _errorMessage = result;
       _notifier.value = LoginStates.error;
       Future.delayed(Duration(seconds: 3), () {
@@ -74,7 +87,7 @@ class LoginManger {
       return false;
     } else {
       UserService().setLogin(setLoginTo: true);
-      UserService().addUser(user: user); //todo:login
+      UserService().addUser(user: user); 
       _notifier.value = LoginStates.loggedIn;
       return true;
     }

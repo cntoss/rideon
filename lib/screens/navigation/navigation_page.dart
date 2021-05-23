@@ -8,8 +8,8 @@ import 'dart:async';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rideon/models/route/pininformation.dart';
+import 'package:rideon/repository/ride_request.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
-import 'package:rideon/services/repository/ride_request.dart';
 
 class NavigationPage extends StatefulWidget {
   NavigationPage({this.sourceDetail, this.destinationDetail, this.tranportType = TranportType.None});

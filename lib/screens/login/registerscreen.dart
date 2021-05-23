@@ -10,6 +10,8 @@ import 'package:rideon/services/login/loginManager.dart';
 enum Gender { male, female, other }
 
 class Registration extends StatefulWidget {
+  final String phone;
+  Registration({@required this.phone});
   @override
   _RegistrationState createState() => _RegistrationState();
 }
@@ -26,7 +28,7 @@ class _RegistrationState extends State<Registration> {
   void initState() {
     super.initState();
     _nameCotroler = TextEditingController(text: "");
-    _phoneNumberCOntroller = TextEditingController(text: "");
+    _phoneNumberCOntroller = TextEditingController(text: widget.phone);
     _passwordCOntroller = TextEditingController(text: "");
     _emailController = TextEditingController(text: "");
     _phoneFocus = FocusNode();
@@ -82,7 +84,7 @@ class _RegistrationState extends State<Registration> {
                         ),
                       ),
                       //phone
-                      Padding(
+                      /*   Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
                           controller: _phoneNumberCOntroller,
@@ -107,7 +109,7 @@ class _RegistrationState extends State<Registration> {
                               labelText: "Phone Number"),
                         ),
                       ),
-
+ */
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: TextFormField(
@@ -214,6 +216,35 @@ class _RegistrationState extends State<Registration> {
                             key: ValueKey("2"),
                             //height: 50,
                             child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: AppButton().appButton(
+                                small: true,
+                                text: "Continue",
+                                onTap: () async {
+                                  FocusScope.of(context).unfocus();
+                                  if (_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                    _manager
+                                        .register(User(
+                                            id: 1,
+                                            name: _nameCotroler.text,
+                                            phone: _phoneNumberCOntroller.text,
+                                            email: _emailController.text,
+                                            gender: 'male',
+                                            paymentId: null,
+                                            dob: null))
+                                        .then((value) => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => LoginPage(
+                                                  fromRegistration: true),
+                                            )));
+                                  }
+                                },
+                              ),
+                            ),
+                            //the commented code have redirect link to login
+                            /* child: Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Row(
                                 mainAxisAlignment:
@@ -272,7 +303,9 @@ class _RegistrationState extends State<Registration> {
                                   ),
                                 ],
                               ),
-                            )),
+                            )
+                   */
+                          ),
                     duration: Duration(milliseconds: 400),
                   );
                 },
@@ -284,8 +317,8 @@ class _RegistrationState extends State<Registration> {
 
   void showLoginFailMessage(context, manager) {
     Future.delayed(Duration(seconds: 1), () {
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(manager.errorText ?? defaultloginError)));
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text(manager.errorText ?? defaultloginError)));
     });
   }
 }
