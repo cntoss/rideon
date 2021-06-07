@@ -4,7 +4,7 @@ import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/widgets/custom_dialog.dart';
 
 class LoginRequest {
-  Future<LoginResponse> loginRequest(String phone) async {
+  Future<LoginResponse?> loginRequest(String phone) async {
     try {
       var response = await Dio().post(baseUrl + 'login',
           options: Options(
@@ -14,11 +14,11 @@ class LoginRequest {
       print(LoginResponse.fromJson(response.data).message);
       return LoginResponse.fromJson(response.data);
     } on DioError catch (error) {
-      if (error.response.data != null) {
+      if (error.response!.data != null) {
         /* CustomDialog().showCustomDialog(
             title: 'Login Failed',
             content: LoginResponse.fromJson(error.response.data).message); */
-        return LoginResponse.fromJson(error.response.data);
+        return LoginResponse.fromJson(error.response!.data);
       } else {
         CustomDialog().showCustomDialog(
             title: 'Login Failed',
@@ -45,9 +45,9 @@ class LoginResponse {
     this.message,
   });
 
-  bool valid;
-  Data data;
-  String message;
+  bool? valid;
+  Data? data;
+  String? message;
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         valid: json["valid"],
@@ -57,7 +57,7 @@ class LoginResponse {
 
   Map<String, dynamic> toJson() => {
         "valid": valid,
-        "data": data.toJson(),
+        "data": data!.toJson(),
         "message": message,
       };
 }
@@ -67,7 +67,7 @@ class Data {
     this.token,
   });
 
-  String token;
+  String? token;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         token: json["token"],

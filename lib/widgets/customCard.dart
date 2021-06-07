@@ -3,12 +3,12 @@ import 'package:rideon/config/constant.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
-    Key key,
+    Key? key,
     this.color,
-    @required this.child,
+    required this.child,
   }) : super(key: key);
 
-  final Color color;
+  final Color? color;
   final Widget child;
 
   @override

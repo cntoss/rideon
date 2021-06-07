@@ -12,9 +12,10 @@ import 'package:rideon/widgets/custom_dialog.dart';
 import 'notification_service.dart';
 
 class FirebaseService {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   void initFirebase() {
-    _firebaseMessaging.configure(onMessage: (dynamic message) async {
+    _firebaseMessaging.getInitialMessage().then((value) => print(value));
+   /*  _firebaseMessaging.configure(onMessage: (dynamic message) async {
       print(message);
       _showNotificationDialog(message);
       _saveNotification(message);
@@ -24,12 +25,49 @@ class FirebaseService {
     }, onResume: (dynamic message) async {
       _saveNotification(message);
       _openNotification(message);
+    }); */
+ _firebaseMessaging.getInitialMessage().then((RemoteMessage? x) => print(x));
+      
+    /* FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage message) {
+      if (message != null) {
+        print(message);
+      }
+    }); */
+
+
+  /*   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'launch_background',
+              ),
+            ));
+      }
     });
 
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {});
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      Navigator.pushNamed(context, '/message',
+          arguments: MessageArguments(message, true));
+    });
+  } */
+
+    _firebaseMessaging.requestPermission();
+    /* _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {}); */
     _firebaseMessaging
         .subscribeToTopic("all"); //"to":"topics/all" in firebase body parameter
     _firebaseMessaging
@@ -52,13 +90,13 @@ class FirebaseService {
       CustomDialog().dialogButton(
         text: 'CLOSE',
         onPressed: () {
-          Navigator.pop(AppConfig.navigatorKey.currentState.context);
+          Navigator.pop(AppConfig.navigatorKey.currentState!.context);
         },
       ),
       CustomDialog().dialogButton(
         text: 'OPEN',
         onPressed: () {
-          Navigator.pop(AppConfig.navigatorKey.currentState.context);
+          Navigator.pop(AppConfig.navigatorKey.currentState!.context);
           _openNotification(message);
         },
       ),
@@ -87,7 +125,7 @@ class FirebaseService {
   void _openNotification(Map<String, dynamic> message) {
     if (message['data']['type'] == 'ride_request')
       Navigator.push(
-        AppConfig.navigatorKey.currentState.context,
+        AppConfig.navigatorKey.currentState!.context,
         MaterialPageRoute(
           builder: (context) {
             return RideRequestPage(
@@ -98,7 +136,7 @@ class FirebaseService {
       );
     else
       Navigator.push(
-        AppConfig.navigatorKey.currentState.context,
+        AppConfig.navigatorKey.currentState!.context,
         MaterialPageRoute(
           builder: (context) {
             return NotificationScreen();
@@ -109,7 +147,7 @@ class FirebaseService {
 
   Future<String> getFirebaseToken() {
     Future<String> firebaseToken =
-        _firebaseMessaging.getToken().then((value) => value);
+        _firebaseMessaging.getToken().then((value) => value!);
     return firebaseToken;
   }
 }

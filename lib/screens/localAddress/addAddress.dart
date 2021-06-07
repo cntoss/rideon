@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/src/utils/uuid.dart';
@@ -7,9 +8,9 @@ import 'package:rideon/models/savedAddress/savedAddressModel.dart';
 import 'package:rideon/services/helper/savedAddressService.dart';
 
 class AddAddress extends StatefulWidget {
-  AddAddress({this.address, this.title});
+  AddAddress({required this.address, this.title});
   final SavedAddressModel address;
-  final String title;
+  final String? title;
   @override
   _AddAddressState createState() => _AddAddressState(this.address);
 }
@@ -17,9 +18,9 @@ class AddAddress extends StatefulWidget {
 class _AddAddressState extends State<AddAddress> {
   _AddAddressState(this.address);
   SavedAddressModel address;
-  TextEditingController _addressName;
+  late TextEditingController _addressName;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _detail;
+  late TextEditingController _detail;
   @override
   void initState() {
     super.initState();
@@ -48,8 +49,8 @@ class _AddAddressState extends State<AddAddress> {
               onPressed: () {
                 if (address.type == AddressType.Other) {
                   //to check _details is null or not
-                  _formKey.currentState.save();
-                  if (_formKey.currentState.validate()) {
+                  _formKey.currentState!.save();
+                  if (_formKey.currentState!.validate()) {
                     address.detail = _detail.text;
                     _addAddress();
                   }
@@ -84,6 +85,7 @@ class _AddAddressState extends State<AddAddress> {
                               MaterialPageRoute(
                                 builder: (context) => PlacePicker(
                                   useCurrentLocation: true,
+                                  initialPosition: SOURCE_LOCATION,
                                   onPlacePicked: (result) {
                                     setState(() {
                                       SavedAddressModel newAddress =
@@ -176,7 +178,7 @@ class _AddAddressState extends State<AddAddress> {
                   child: TextFormField(
                     controller: _detail,
                     validator: (value) {
-                      if (value.isEmpty)
+                      if (value == null)
                         return 'Enter Address Name';
                       else
                         return null;

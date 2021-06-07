@@ -11,7 +11,7 @@ import 'package:rideon/models/notification/request_notification.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
 
 class RideRequestPage extends StatefulWidget {
-  RideRequestPage({this.notificationData});
+  RideRequestPage({required this.notificationData});
   final NotificationData notificationData;
   @override
   State<StatefulWidget> createState() =>
@@ -22,24 +22,24 @@ class RideRequestState extends State<RideRequestPage> {
   RideRequestState(this._notificationData);
   NotificationData _notificationData;
 
-  LocationDetail sourceDetail;
-  LocationDetail destinationDetail;
+  late LocationDetail sourceDetail;
+  late LocationDetail destinationDetail;
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set<Marker>();
 
 // for my drawn routes on the map
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
-  PolylinePoints polylinePoints;
+  PolylinePoints polylinePoints = PolylinePoints();
 
 // for my custom marker pins
-  BitmapDescriptor sourceIcon;
-  BitmapDescriptor destinationIcon;
+  late BitmapDescriptor sourceIcon;
+  late BitmapDescriptor destinationIcon;
 // the user's initial location and current location
 // as it moves
-  Position currentLocation;
+  late Position currentLocation;
 // a reference to the destination location
-  Position destinationLocation;
+  late Position destinationLocation;
 // wrapper around the location API
   double pinPillPosition = -100;
   @override
@@ -48,10 +48,9 @@ class RideRequestState extends State<RideRequestPage> {
     // create an instance of Location
     sourceDetail = _notificationData.fromLocation;
     destinationDetail = _notificationData.toLocation;
-    polylinePoints = PolylinePoints();
     currentLocation = Position.fromMap({
-      "latitude": sourceDetail.geometry.location.lat,
-      "longitude": sourceDetail.geometry.location.lng
+      "latitude": sourceDetail.geometry!.location.lat,
+      "longitude": sourceDetail.geometry!.location.lng
     });
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
@@ -85,8 +84,8 @@ class RideRequestState extends State<RideRequestPage> {
 
   void setInitialLocation() async {
     destinationLocation = Position.fromMap({
-      "latitude": destinationDetail.geometry.location.lat,
-      "longitude": destinationDetail.geometry.location.lng
+      "latitude": destinationDetail.geometry!.location.lat,
+      "longitude": destinationDetail.geometry!.location.lng
     });
   }
 
@@ -94,17 +93,17 @@ class RideRequestState extends State<RideRequestPage> {
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
         target: LatLng(
-            (sourceDetail.geometry.location.lat +
-                    destinationDetail.geometry.location.lat) /
+            (sourceDetail.geometry!.location.lat +
+                    destinationDetail.geometry!.location.lat) /
                 2,
-            (sourceDetail.geometry.location.lng +
-                    destinationDetail.geometry.location.lng) /
+            (sourceDetail.geometry!.location.lng +
+                    destinationDetail.geometry!.location.lng) /
                 2),
         zoom: ZoomCalculate().getZoom(
-            sourceDetail.geometry.location.lat,
-            sourceDetail.geometry.location.lng,
-            destinationDetail.geometry.location.lat,
-            destinationDetail.geometry.location.lng),
+            sourceDetail.geometry!.location.lat,
+            sourceDetail.geometry!.location.lng,
+            destinationDetail.geometry!.location.lat,
+            destinationDetail.geometry!.location.lng),
         tilt: CAMERA_TILT,
         bearing: CAMERA_BEARING);
 
@@ -222,18 +221,18 @@ class RideRequestState extends State<RideRequestPage> {
   Future<String> getDistance() async {
     var distanceResponse =
         await distance.GoogleDistanceMatrix(apiKey: googleAPIKey)
-            .distanceWithLocation([sourceDetail.geometry.location],
-                [destinationDetail.geometry.location]);
-    if (distanceResponse != null)
-      return distanceResponse.results.first.elements.first.distance.text;
-    else
-      return '';
+            .distanceWithLocation([sourceDetail.geometry!.location],
+                [destinationDetail.geometry!.location]);
+    //if (distanceResponse != null)
+      return distanceResponse.rows.first.elements.first.distance.text;
+    /* else
+      return ''; */
   }
 }
 
 class MapPinPillComponent extends StatefulWidget {
   final NotificationData data;
-  MapPinPillComponent({this.data});
+  MapPinPillComponent({required this.data});
 
   @override
   _MapPinPillComponentState createState() => _MapPinPillComponentState();
@@ -297,14 +296,14 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                       Icon(Icons.person_pin_circle),
                       Expanded(
                           child:
-                              Text(widget.data.fromLocation.formattedAddress))
+                              Text(widget.data.fromLocation.formattedAddress!))
                     ],
                   ),
                   Row(
                     children: [
                       Icon(Icons.pin_drop),
                       Expanded(
-                          child: Text(widget.data.toLocation.formattedAddress))
+                          child: Text(widget.data.toLocation.formattedAddress!))
                     ],
                   ),
                   Padding(
@@ -320,7 +319,7 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                           children: [
                             Text('Distance'),
                             Text(
-                              widget.data.distance ?? '5.8 Km',
+                              widget.data.distance,
                               style: TextStyle(color: Colors.red, fontSize: 20),
                             )
                           ],

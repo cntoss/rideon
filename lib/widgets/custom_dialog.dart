@@ -3,7 +3,7 @@ import 'package:rideon/config/appConfig.dart';
 
 class CustomDialog {
   Widget dialogButton(
-      {@required String text, @required VoidCallback onPressed, Color color}) {
+      {required String text, required VoidCallback onPressed, Color? color}) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: ElevatedButton(
@@ -12,7 +12,7 @@ class CustomDialog {
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           primary: color != null
               ? color
-              : Theme.of(AppConfig.navigatorKey.currentContext).buttonColor,
+              : Theme.of(AppConfig.navigatorKey.currentContext!).buttonColor,
         ),
         child: Text(
           text,
@@ -23,13 +23,13 @@ class CustomDialog {
   }
 
   Future showCustomDialog({
-    String title,
-    String content,
-    Widget body,
-    List<Widget> actions,
+    String? title,
+    String? content,
+    Widget? body,
+    List<Widget>? actions,
   }) {
     return showDialog(
-      context: AppConfig.navigatorKey.currentState.context,
+      context: AppConfig.navigatorKey.currentState!.context,
       builder: (context) => AlertDialog(
         titlePadding: EdgeInsets.zero,
         actionsPadding: EdgeInsets.zero,
@@ -79,7 +79,7 @@ class CustomDialog {
                     content,
                     style: TextStyle(fontWeight: FontWeight.w300),
                   )
-                : body,
+                : body as Widget,
           ],
         )),
         actions: [
@@ -104,13 +104,13 @@ class CustomDialog {
   }
 
   Future showCustomDialogWIthoutLogo({
-    String title,
-    String content,
-    Widget body,
-    List<Widget> actions,
+    required String title,
+    String? content,
+    Widget? body,
+    List<Widget>? actions,
   }) {
     return showDialog(
-      context: AppConfig.navigatorKey.currentState.context,
+      context: AppConfig.navigatorKey.currentState!.context,
       builder: (context) => AlertDialog(
         titlePadding: EdgeInsets.zero,
         actionsPadding: EdgeInsets.zero,

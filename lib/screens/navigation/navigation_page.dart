@@ -12,7 +12,7 @@ import 'package:rideon/repository/ride_request.dart';
 import 'package:rideon/services/helper/zoomCalculate.dart';
 
 class NavigationPage extends StatefulWidget {
-  NavigationPage({this.sourceDetail, this.destinationDetail, this.tranportType = TranportType.None});
+  NavigationPage({required this.sourceDetail, required this.destinationDetail, this.tranportType = TranportType.None});
   final LocationDetail sourceDetail;
   final LocationDetail destinationDetail;
   final TranportType tranportType;
@@ -30,15 +30,15 @@ class RouteScreenState extends State<NavigationPage> {
 // for my drawn routes on the map
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
-  PolylinePoints polylinePoints;
+  late PolylinePoints polylinePoints;
 // for my custom marker pins
-  BitmapDescriptor sourceIcon;
-  BitmapDescriptor destinationIcon;
+  late BitmapDescriptor sourceIcon;
+  late BitmapDescriptor destinationIcon;
 // the user's initial location and current location
 // as it moves
-  Position currentLocation;
+ late Position currentLocation;
 // a reference to the destination location
-  Position destinationLocation;
+ late Position destinationLocation;
 // wrapper around the location API
   double pinPillPosition = -100;
   PinInformation currentlySelectedPin = PinInformation(
@@ -47,8 +47,8 @@ class RouteScreenState extends State<NavigationPage> {
       location: LatLng(0, 0),
       locationName: '',
       labelColor: Colors.grey);
-  PinInformation sourcePinInfo;
-  PinInformation destinationPinInfo;
+  late PinInformation sourcePinInfo;
+  late PinInformation destinationPinInfo;
 
   @override
   void initState() {
@@ -56,8 +56,8 @@ class RouteScreenState extends State<NavigationPage> {
     // create an instance of Location
     polylinePoints = PolylinePoints();
     currentLocation = Position.fromMap({
-      "latitude": sourceDetail.geometry.location.lat,
-      "longitude": sourceDetail.geometry.location.lng
+      "latitude": sourceDetail.geometry!.location.lat,
+      "longitude": sourceDetail.geometry!.location.lng
     });
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
@@ -91,8 +91,8 @@ class RouteScreenState extends State<NavigationPage> {
 
   void setInitialLocation() async {
     destinationLocation = Position.fromMap({
-      "latitude": widget.destinationDetail.geometry.location.lat,
-      "longitude": widget.destinationDetail.geometry.location.lng
+      "latitude": widget.destinationDetail.geometry!.location.lat,
+      "longitude": widget.destinationDetail.geometry!.location.lng
     });
   }
 
@@ -100,17 +100,17 @@ class RouteScreenState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
         target: LatLng(
-            (sourceDetail.geometry.location.lat +
-                    destinationDetail.geometry.location.lat) /
+            (sourceDetail.geometry!.location.lat +
+                    destinationDetail.geometry!.location.lat) /
                 2,
-            (sourceDetail.geometry.location.lng +
-                    destinationDetail.geometry.location.lng) /
+            (sourceDetail.geometry!.location.lng +
+                    destinationDetail.geometry!.location.lng) /
                 2),
         zoom: ZoomCalculate().getZoom(
-            sourceDetail.geometry.location.lat,
-            sourceDetail.geometry.location.lng,
-            destinationDetail.geometry.location.lat,
-            destinationDetail.geometry.location.lng),
+            sourceDetail.geometry!.location.lat,
+            sourceDetail.geometry!.location.lng,
+            destinationDetail.geometry!.location.lat,
+            destinationDetail.geometry!.location.lng),
         tilt: CAMERA_TILT,
         bearing: CAMERA_BEARING);
 
@@ -160,7 +160,7 @@ class RouteScreenState extends State<NavigationPage> {
                 return MapPinPillComponent(
                   fromLocation: widget.sourceDetail,
                   toLocation: widget.destinationDetail,
-                  distance: snapshot.data,
+                  distance: snapshot.data as String,
                   transportType: widget.tranportType,
                 );
               else
@@ -284,12 +284,12 @@ class RouteScreenState extends State<NavigationPage> {
   Future<String> getDistance() async {
     var distanceResponse =
         await distance.GoogleDistanceMatrix(apiKey: googleAPIKey)
-            .distanceWithLocation([sourceDetail.geometry.location],
-                [destinationDetail.geometry.location]);
-    if (distanceResponse != null)
-      return distanceResponse.results.first.elements.first.distance.text;
-    else
-      return '';
+            .distanceWithLocation([sourceDetail.geometry!.location],
+                [destinationDetail.geometry!.location]);
+    //if (distanceResponse != null) chnaged results from rows
+      return distanceResponse.rows.first.elements.first.distance.text;
+   /*  else
+      return ''; */
   }
 }
 
@@ -298,14 +298,14 @@ class MapPinPillComponent extends StatefulWidget {
   final LocationDetail fromLocation;
   final LocationDetail toLocation;
   final TranportType transportType;
-  MapPinPillComponent({this.fromLocation, this.toLocation, this.distance, this.transportType});
+  MapPinPillComponent({ required this.fromLocation, required this.toLocation, required this.distance, required this.transportType});
 
   @override
   _MapPinPillComponentState createState() => _MapPinPillComponentState();
 }
 
 class _MapPinPillComponentState extends State<MapPinPillComponent> {
-  TranportType transportType;
+  late TranportType transportType;
   @override
   void initState() {
     super.initState();
@@ -357,7 +357,7 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                             width: width / 2.5,
                           ),
                           Text('Bike'),
-                          Text(widget.distance ?? '')
+                          Text(widget.distance)
                         ],
                       ),
                     ),
@@ -384,7 +384,7 @@ class _MapPinPillComponentState extends State<MapPinPillComponent> {
                             width: width / 2.5,
                           ),
                           Text('Car'),
-                          Text(widget.distance ?? '')
+                          Text(widget.distance )
                         ],
                       ),
                     ),

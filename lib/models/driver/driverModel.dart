@@ -1,6 +1,4 @@
-// To parse this JSON data, do
-//
-//     final driverModel = driverModelFromJson(jsonString);
+
 
 import 'dart:convert';
 
@@ -14,23 +12,23 @@ String driverModelToJson(DriverModel data) => json.encode(data.toJson());
 
 class DriverModel {
   DriverModel({
-    this.id,
-    this.displayName,
+    required this.id,
+    required this.displayName,
     this.profilePicture,
-    this.age,
-    this.rating,
-    this.memberDate,
-    this.music,
-    this.smoke,
-    this.funny,
-    this.petAllow,
-    this.rides,
-    this.vehicle
+    required this.age,
+    required this.rating,
+    required this.memberDate,
+    required this.music,
+    required this.smoke,
+    required this.funny,
+    required this.petAllow,
+    required this.rides,
+    required this.vehicle
   });
 
   int id;
   String displayName;
-  String profilePicture;
+  String? profilePicture;
   int age;
   double rating;
   String memberDate;
@@ -42,17 +40,18 @@ class DriverModel {
   Vehicle vehicle;
 
   factory DriverModel.fromJson(Map<String, dynamic> json) => DriverModel(
-        id: json["id"],
+        id: json["_id"],
         displayName: json["display_name"],
-        profilePicture: json["profile_picture"],
-        age: json["age"],
-        rating: json["rating"],
+        profilePicture: json["profile_picture"] ?? '',
+        age: json["age"] ?? 0,
+        rating: json["rating"]?? 3,
         memberDate: json["member_date"],
-        music: json["music"],
-        smoke: json["smoke"],
-        funny: json["funny"],
-        petAllow: json["pet_allow"],
-        rides: json["rides"],
+        music: json["music"] ?? true,
+        smoke: json["smoke"] ?? false,
+        funny: json["funny"] ?? true,
+        petAllow: json["pet_allow"] ?? false,
+        rides: json["rides"] ?? 0,
+        vehicle: json['vehile']
       );
 
   Map<String, dynamic> toJson() => {
@@ -74,5 +73,5 @@ class Vehicle {
   TranportType type;
   String name;
   String vehicleid;
-  Vehicle({this.type, this.name, this.vehicleid});
+  Vehicle({required this.type, required this.name, required this.vehicleid});
 }

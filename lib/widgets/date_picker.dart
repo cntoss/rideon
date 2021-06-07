@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomDatePicker {
-  Future<DateTime> selectDate(
-      BuildContext context, DateTime selectedDate, {bool fromCarPooling = true}) async {
-    DateTime newSelectedDate = await showDatePicker(
+  Future<DateTime?> selectDate(
+      BuildContext context, DateTime? selectedDate, {bool fromCarPooling = true}) async {
+    DateTime? newSelectedDate = await showDatePicker(
         context: context,
         initialDate: selectedDate != null ? selectedDate : DateTime.now(),
         firstDate: fromCarPooling ? DateTime.now() : DateTime(1910),
         lastDate: fromCarPooling ? DateTime.now().add(Duration(days: 30)) : DateTime.now(),
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.dark().copyWith(
               colorScheme: ColorScheme.dark(
@@ -30,7 +30,7 @@ class CustomDatePicker {
               ),
               dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: child,
+            child: child!,
           );
         });
 

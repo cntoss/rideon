@@ -27,7 +27,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               ConfirmTextWidget('Starting place',
                   _helicopterBookingModel.fromAddress.formattedAddress ?? ''),
               ConfirmTextWidget('Ending place',
-                  _helicopterBookingModel.toAddress.formattedAddress),
+                  _helicopterBookingModel.toAddress.formattedAddress!),
               ConfirmTextWidget(
                   "Plan Type",
                   _helicopterBookingModel.type == HeliType.Charter
@@ -40,18 +40,18 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               if (_helicopterBookingModel.type == HeliType.Charter &&
                   _helicopterBookingModel.noOfAdults != null)
                 ConfirmTextWidget(
-                    'No of Adults', _helicopterBookingModel.noOfAdults),
+                    'No of Adults', _helicopterBookingModel.noOfAdults!),
               if (_helicopterBookingModel.type == HeliType.Charter &&
                   _helicopterBookingModel.noOfChild != null)
                 ConfirmTextWidget(
-                    'No of Child', _helicopterBookingModel.noOfChild),
+                    'No of Child', _helicopterBookingModel.noOfChild!),
               if (_helicopterBookingModel.type == HeliType.Tour &&
                   _helicopterBookingModel.tourPlane != null)
                 ConfirmTextWidget(
-                    "Tour Plan", _helicopterBookingModel.tourPlane),
+                    "Tour Plan", _helicopterBookingModel.tourPlane!),
               if (_helicopterBookingModel.details != null)
                 ConfirmTextWidget(
-                    "Extra Details", _helicopterBookingModel.details),
+                    "Extra Details", _helicopterBookingModel.details!),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Container(

@@ -14,7 +14,8 @@ import 'package:rideon/services/helper/savedAddressService.dart';
 enum CurrentLocation { fromLocation, toLocation }
 
 class LocationSetScreen extends StatefulWidget {
-  LocationSetScreen(this.locationDetail, {this.tranportType = TranportType.None});
+  LocationSetScreen(this.locationDetail,
+      {this.tranportType = TranportType.None});
   final LocationDetail locationDetail;
   final TranportType tranportType;
 
@@ -25,14 +26,14 @@ class LocationSetScreen extends StatefulWidget {
 
 class _LocationSetScreenState extends State<LocationSetScreen> {
   _LocationSetScreenState(this.fromLocationModel);
-  TextEditingController _fromController;
+  late TextEditingController _fromController;
   TextEditingController _toController = TextEditingController();
   LocationDetail fromLocationModel = LocationDetail();
   LocationDetail toLocationModel = LocationDetail();
-  PlaceApiProvider apiClient;
+  late PlaceApiProvider apiClient;
   String query = '';
-  CurrentLocation currentLocation;
-  bool _fromCLear;
+  CurrentLocation? currentLocation;
+  bool _fromCLear = false; //v2
   bool _toClear = false;
   List<SavedAddressModel> _saveAddress =
       SavedAddressService().getOtherAddress();
@@ -55,7 +56,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
@@ -179,111 +180,115 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                             ? null
                             : apiClient.fetchSuggestions(query,
                                 Localizations.localeOf(context).languageCode),
-                        builder: (context, snapshot) => query == ''
-                            ? ListView.separated(
-                                itemCount: _saveAddress.length,
+                        builder: (context,
+                            AsyncSnapshot<List<Suggestion>> snapshot) {
+                          if (query == '') {
+                            return ListView.separated(
+                              itemCount: _saveAddress.length,
+                              physics: ClampingScrollPhysics(),
+                              shrinkWrap: true,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      Divider(height: 1),
+                              itemBuilder: (BuildContext context, int x) {
+                                return ListTile(
+                                  leading: CircularIcon(icon: Icon(Icons.star)),
+                                  title: Text(
+                                    _saveAddress[x].detail ?? '',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  subtitle: Text(
+                                    _saveAddress[x].locationName ?? '',
+                                  ),
+                                  onTap: () async {
+                                    final placeDetails =
+                                        await PlaceApiProvider(UniqueKey())
+                                            .getPlaceDetailFromId(
+                                                _saveAddress[x].placeId!);
+                                    if (currentLocation ==
+                                            CurrentLocation.toLocation ||
+                                        fromLocationModel.formattedAddress !=
+                                            null) {
+                                      setState(() {
+                                        _toController.text =
+                                            _saveAddress[x].locationName!;
+                                        toLocationModel = placeDetails;
+                                        query = '';
+                                      });
+                                    } else {
+                                      setState(() {
+                                        _fromController.text =
+                                            _saveAddress[x].locationName!;
+                                        fromLocationModel = placeDetails;
+                                        query = '';
+                                      });
+                                    }
+
+                                    _navigateToProceed();
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            if (snapshot.hasData) {
+                              return ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
                                 physics: ClampingScrollPhysics(),
                                 shrinkWrap: true,
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        Divider(height: 1),
-                                itemBuilder: (BuildContext context, int x) {
-                                  return ListTile(
-                                    leading:
-                                        CircularIcon(icon: Icon(Icons.star)),
-                                    title: Text(
-                                      _saveAddress[x].detail ?? '',
-                                      style: TextStyle(fontSize: 18),
+                                itemBuilder: (context, index) => ListTile(
+                                  contentPadding: EdgeInsets.all(0),
+                                  leading: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: CircularIcon(
+                                      icon: Icon(
+                                        Icons.location_on,
+                                        size: 20,
+                                      ),
                                     ),
-                                    subtitle: Text(
-                                      _saveAddress[x].locationName ?? '',
-                                    ),
-                                    onTap: () async {
+                                  ),
+                                  title: Transform.translate(
+                                    offset: Offset(-10, 0),
+                                    child: Text(
+                                        (snapshot.data![index])
+                                            .description),
+                                  ),
+                                  onTap: () async {
+                                    if (snapshot.data![index] != null) {
+                                      var result =
+                                          snapshot.data![index];
                                       final placeDetails =
                                           await PlaceApiProvider(UniqueKey())
                                               .getPlaceDetailFromId(
-                                                  _saveAddress[x].placeId);
+                                                  result.placeId);
                                       if (currentLocation ==
-                                              CurrentLocation.toLocation ||
-                                          fromLocationModel.formattedAddress !=
-                                              null) {
+                                          CurrentLocation.fromLocation) {
                                         setState(() {
-                                          _toController.text =
-                                              _saveAddress[x].locationName;
-                                          toLocationModel = placeDetails;
+                                          _fromController.text =
+                                              result.description;
+                                          fromLocationModel = placeDetails;
                                           query = '';
                                         });
                                       } else {
                                         setState(() {
-                                          _fromController.text =
-                                              _saveAddress[x].locationName;
-                                          fromLocationModel = placeDetails;
+                                          _toController.text =
+                                              result.description;
+                                          toLocationModel = placeDetails;
                                           query = '';
                                         });
                                       }
-
-                                      _navigateToProceed();
-                                    },
-                                  );
-                                },
-                              )
-                            : snapshot.hasData
-                                ? ListView.separated(
-                                    separatorBuilder: (context, index) {
-                                      return Divider();
-                                    },
-                                    physics: ClampingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) => ListTile(
-                                      contentPadding: EdgeInsets.all(0),
-                                      leading: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: CircularIcon(
-                                          icon: Icon(
-                                            Icons.location_on,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      title: Transform.translate(
-                                        offset: Offset(-10, 0),
-                                        child: Text(
-                                            (snapshot.data[index] as Suggestion)
-                                                .description),
-                                      ),
-                                      onTap: () async {
-                                        if (snapshot.data[index] != null) {
-                                          var result = snapshot.data[index]
-                                              as Suggestion;
-                                          final placeDetails =
-                                              await PlaceApiProvider(
-                                                      UniqueKey())
-                                                  .getPlaceDetailFromId(
-                                                      result.placeId);
-                                          if (currentLocation ==
-                                              CurrentLocation.fromLocation) {
-                                            setState(() {
-                                              _fromController.text =
-                                                  result.description;
-                                              fromLocationModel = placeDetails;
-                                              query = '';
-                                            });
-                                          } else {
-                                            setState(() {
-                                              _toController.text =
-                                                  result.description;
-                                              toLocationModel = placeDetails;
-                                              query = '';
-                                            });
-                                          }
-                                        }
-                                        _navigateToProceed();
-                                      },
-                                    ),
-                                    itemCount: snapshot.data.length,
-                                  )
-                                : Text('Loading')),
+                                    }
+                                    _navigateToProceed();
+                                  },
+                                ),
+                                itemCount: snapshot.data!.length,
+                              );
+                            } else {
+                              return Text('Loading');
+                            }
+                          }
+                        }),
                     Divider(),
                     ListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -305,12 +310,14 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                               builder: (context) => PlacePicker(
                                 //autocompleteComponents: [Component('country', 'np')],
                                 usePlaceDetailSearch: true,
-                                initialPosition: fromLocationModel.geometry !=
-                                        null
-                                    ? LatLng(
-                                        fromLocationModel.geometry.location.lat,
-                                        fromLocationModel.geometry.location.lng)
-                                    : SOURCE_LOCATION,
+                                initialPosition:
+                                    fromLocationModel.geometry != null
+                                        ? LatLng(
+                                            fromLocationModel
+                                                .geometry!.location.lat,
+                                            fromLocationModel
+                                                .geometry!.location.lng)
+                                        : SOURCE_LOCATION,
                                 useCurrentLocation:
                                     false, //todo:make it true white real test
                                 onPlacePicked: (PickResult selectedPlace) {
@@ -321,7 +328,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                           CurrentLocation.fromLocation)
                                     setState(() {
                                       _fromController.text =
-                                          selectedPlace.formattedAddress;
+                                          selectedPlace.formattedAddress!;
                                       fromLocationModel =
                                           LocationDetail.fromPickResult(
                                               selectedPlace);
@@ -330,7 +337,7 @@ class _LocationSetScreenState extends State<LocationSetScreen> {
                                     });
                                   else
                                     setState(() {
-                                      _toController.text = selectedPlace.name;
+                                      _toController.text = selectedPlace.name!;
                                       toLocationModel =
                                           LocationDetail.fromPickResult(
                                               selectedPlace);

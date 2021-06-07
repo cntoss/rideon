@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
-  ProfileScreen({this.user, Key key}) : super(key: key);
+  ProfileScreen({required this.user, Key? key}) : super(key: key);
   @override
   _ProfileScreenState createState() => _ProfileScreenState(this.user);
 }
@@ -19,13 +19,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileScreenState(this._user);
   User _user;
   bool _enable = false;
-  TextEditingController _phoneNumberCOntroller,
+  late TextEditingController _phoneNumberCOntroller,
       _econtact,
       _nameCotroler,
       _emailController;
   Icon icon = Icon(Icons.edit_outlined);
   final _formKey = GlobalKey<FormState>();
-  DateTime _selectedDate;
+  DateTime? _selectedDate;
   TextEditingController _dateController = TextEditingController();
 
   @override
@@ -47,8 +47,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextButton.icon(
               onPressed: () {
                 if (_enable) {}
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
                   UserService().addUser(user: _user);
                 }
                 setState(() {
@@ -73,9 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CustomCard(
               child: Stack(children: [
                 CircleAvatar(
-                  backgroundImage: _user.image.isNullOrEmpty()
-                      ? AssetImage('assets/avatar.png')
-                      : NetworkImage(_user.image),
+                  backgroundImage: _user.image == null 
+                      ? AssetImage('assets/avatar.png') as ImageProvider
+                      : NetworkImage(_user.image!),
                   radius: 50,
                 ),
                 /*  child: _user.image.isNullOrEmpty()
@@ -99,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     controller: _nameCotroler,
                     enabled: _enable,
                     validator: (value) {
-                      if (value.isEmpty)
+                      if (value ==  null)
                         return 'Enter Full Name';
                       else if (value.length < 5 && !value.contains(' '))
                         return "Enter Valid Name";
@@ -151,6 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }, */
                       keyboardType: TextInputType.phone,
                       validator: (s) {
+                        if (s==null) return null;
                         if (s.trim().length < 6)
                           return 'Phone number must have exactly 10 digits';
                         else
@@ -172,6 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     keyboardType: TextInputType.emailAddress,
                     enabled: _enable,
                     validator: (s) {
+                      if (s == null) return null;
                       return s.isValidEmail()
                           ? null
                           : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid email address.";
@@ -201,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                        */
                       validator: (s) {
-                        if (s.isEmpty)
+                        if (s == null)
                           return 'Please select date of birth';
                         else
                           return null;
@@ -225,12 +227,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _selectDate(BuildContext context) async {
-    DateTime newSelectedDate = await showDatePicker(
+    DateTime? newSelectedDate = await showDatePicker(
         context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
+        initialDate: _selectedDate != null ? _selectedDate! : DateTime.now(),
         firstDate: DateTime(1910),
         lastDate: DateTime.now(),
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.dark().copyWith(
               colorScheme: ColorScheme.dark(
@@ -242,14 +244,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               textTheme: TextTheme(bodyText2: TextStyle(color: Colors.blue)),
               dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: child,
+            child: child!,
           );
         });
 
     if (newSelectedDate != null) {
       _selectedDate = newSelectedDate;
       _dateController
-        ..text = DateFormat.yMMMd().format(_selectedDate)
+        ..text = DateFormat.yMMMd().format(_selectedDate!)
         ..selection = TextSelection.fromPosition(TextPosition(
             offset: _dateController.text.length,
             affinity: TextAffinity.upstream));

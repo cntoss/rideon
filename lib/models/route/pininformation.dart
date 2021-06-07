@@ -9,9 +9,9 @@ class PinInformation {
   Color labelColor;
 
   PinInformation(
-      {this.pinPath,
-      this.avatarPath,
-      this.location,
-      this.locationName,
-      this.labelColor});
+      {required this.pinPath,
+      required this.avatarPath,
+      required this.location,
+      required this.locationName,
+      required this.labelColor});
 }

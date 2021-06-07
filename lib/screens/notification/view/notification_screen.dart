@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+//import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/models/notification/notification.dart';
@@ -18,7 +18,7 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  List<OfflineNotification> originalNotification = <OfflineNotification>[];
+  List<OfflineNotification?> originalNotification = <OfflineNotification>[];
   @override
   void initState() {
     super.initState();
@@ -29,16 +29,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Notification')),
-      body:  originalNotification == null
-            ? ErrorEmptyWidget(message: "Failed to Fetch Notification")
-            :  originalNotification.isEmpty
-                ? ErrorEmptyWidget(message: "No Notification")
-                : Container(child: _listView(originalNotification)
+      body: originalNotification == null
+          ? ErrorEmptyWidget(message: "Failed to Fetch Notification")
+          : originalNotification.isEmpty
+              ? ErrorEmptyWidget(message: "No Notification")
+              : Container(child: _listView(originalNotification)
 
-          /*  child: originalNotification.length > 0
+                  /*  child: originalNotification.length > 0
               ? _listView(originalNotification)
               : _listView(notifications) */
-          ),
+                  ),
     );
   }
 
@@ -87,7 +87,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         alignment: Alignment.center,
                         child: Hero(
                           tag: index,
-                          child: OptimizedCacheImage(
+                          child: Image.network(
+                            notifications[index].image ?? ' ',
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, url, error) => Container(),
+                          ), /* OptimizedCacheImage(
                             imageUrl: notifications[index].image ?? ' ',
                             height: 150,
                             width: MediaQuery.of(context).size.width,
@@ -106,15 +125,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
-                                /*  width: 60.0,
-                                height: 60.0,
-                                color: Colors.grey.shade400,
-                                child: Icon(
-                                  Icons.image,
-                                  color: Colors.white,
-                                ), */
                                 ),
-                          ),
+                          ), */
                         ),
                       ),
                       Row(

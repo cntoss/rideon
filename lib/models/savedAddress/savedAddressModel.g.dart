@@ -17,12 +17,12 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SavedAddressModel(
-      id: fields[0] as String,
+      id: fields[0] as String?,
       type: fields[1] as AddressType,
       placeId: fields[2] as String,
       location: fields[3] as LnModel,
       locationName: fields[4] as String,
-      addrComponent: (fields[6] as List)?.cast<AddrComponent>(),
+      addrComponent: (fields[6] as List).cast<AddrComponent>(),
       detail: fields[5] as String,
     );
   }
@@ -106,7 +106,7 @@ class AddrComponentAdapter extends TypeAdapter<AddrComponent> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AddrComponent(
-      (fields[0] as List)?.cast<String>(),
+      (fields[0] as List).cast<String>(),
       fields[1] as String,
       fields[2] as String,
     );

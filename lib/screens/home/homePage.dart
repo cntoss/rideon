@@ -22,7 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Position currentLocation;
+  late Position currentLocation;
   LocationDetail locationDetail = LocationDetail();
   bool _initialized = false;
   @override
@@ -48,8 +48,8 @@ class _HomePageState extends State<HomePage> {
 
   String getName(LocationDetail locationDetail) {
     List locationNames = [];
-    for (int i = 0; i < locationDetail.addressComponents.length; i++) {
-      locationNames.add(locationDetail.addressComponents[i].longName);
+    for (int i = 0; i < locationDetail.addressComponents!.length; i++) {
+      locationNames.add(locationDetail.addressComponents![i].longName);
     }
     return locationNames.toString();
   }
@@ -282,10 +282,10 @@ class _HomePageState extends State<HomePage> {
 
 class VehichleOption extends StatelessWidget {
   const VehichleOption({
-    Key key,
-    @required this.width,
-    @required this.image,
-    @required this.title,
+    Key? key,
+    required this.width,
+    required this.image,
+    required this.title,
   }) : super(key: key);
 
   final double width;

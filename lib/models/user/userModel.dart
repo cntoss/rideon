@@ -27,29 +27,29 @@ class User  extends HiveObject{
     String phone;
   
     @HiveField(3)
-    String email;
+    String? email;
 
     @HiveField(4)
     String gender;
   
     @HiveField(5)
-    String dob;
+    String? dob;
   
     @HiveField(6)
-    String image;
+    String? image;
   
     @HiveField(7)
-    int paymentId;
+    int? paymentId;
 
  User({
-        this.id,
-        this.name,
-        this.phone,
-        this.email,
-        this.gender,
-        this.dob,
-        this.image,
-        this.paymentId,
+       required this.id,
+       required this.name,
+       required this.phone,
+       this.email,
+       required this.gender,
+       this.dob,
+       this.image,
+       this.paymentId,
     });
 
     factory User.fromJson(Map<String, dynamic> json) => User(

@@ -15,7 +15,7 @@ class GeocodingService {
       final result = GeocodingModel.fromJson(responseDate);
       print(result);
       if (result.status == 'OK') {
-        return result.results[0];
+        return result.results![0];
       }
       throw Exception(responseDate['error_message']);
     } else {

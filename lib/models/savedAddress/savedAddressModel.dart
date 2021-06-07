@@ -1,8 +1,7 @@
-// To parse this JSON data, do
+// To parse required this JSON data, do
 //
 //     final savedAddressModel = savedAddressModelFromJson(jsonString);
 
-import 'dart:convert';
 
 import 'package:hive/hive.dart';
 import 'package:rideon/config/appConfig.dart';
@@ -11,62 +10,71 @@ import 'package:rideon/models/savedAddress/addressType.dart';
 
 part 'savedAddressModel.g.dart';
 
-List<SavedAddressModel> savedAddressModelFromJson(String str) =>
-    List<SavedAddressModel>.from(
-        json.decode(str).map((x) => SavedAddressModel.fromJson(x)));
 
-String savedAddressModelToJson(List<SavedAddressModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+String getLocationType(AddressType type) {
+  if (type == AddressType.Home) return 'home';
+  if (type == AddressType.Work) return 'work';
+  return 'other';
+}
+
+AddressType setLocationType(String type) {
+  if (type == 'home') return AddressType.Home;
+  if (type == 'work') return AddressType.Work;
+  return AddressType.Other;
+}
 
 @HiveType(typeId: htSavedAddress)
 class SavedAddressModel extends HiveObject {
   SavedAddressModel(
-      {this.id,
-      this.type,
-      this.placeId,
-      this.location,
-      this.locationName,
-      this.addrComponent,
-      this.detail});
+      { this.id,
+       this.type,
+       this.placeId,
+       this.location,
+       this.locationName,
+       this.addrComponent,
+       this.detail});
 
   @HiveField(0)
-  String id;
+  String? id;
 
   @HiveField(1)
-  AddressType type;
+  AddressType? type;
 
   @HiveField(2)
-  String placeId;
+  String? placeId;
 
   @HiveField(3)
-  LnModel location;
+  LnModel? location;
 
   @HiveField(4)
-  String locationName;
+  String? locationName;
 
   @HiveField(5)
-  String detail;
+  String? detail;
 
   @HiveField(6)
-  List<AddrComponent> addrComponent;
+  List<AddrComponent>? addrComponent;
 
-  factory SavedAddressModel.fromJson(Map<String, dynamic> json) =>
+ /*  factory SavedAddressModel.fromJson(Map<String, dynamic> json) =>
       SavedAddressModel(
         id: json['id'],
         //type: json["type"],
         //location: LocationModel.fromJson(json["location"]),
         locationName: json["locationName"],
-      );
+      ); */
 
   factory SavedAddressModel.fromPickResult(PickResult result) {
     return SavedAddressModel(
         placeId: result.placeId,
         location: LnModel.fromGeomerty(
-            result.geometry.location.lat, result.geometry.location.lng),
+            result.geometry!.location.lat, result.geometry!.location.lng),
         locationName: result.name,
-        addrComponent: List<AddrComponent>.from(result.addressComponents
-            .map((x) => AddrComponent.fromResult(
-                x.types, x.longName, x.shortName)))
+        //added after v2
+        detail: '',
+        type: AddressType.Other,
+        addrComponent: List<AddrComponent>.from(result.addressComponents!.map(
+            (x) => AddrComponent.fromResult(x.types, x.longName, x.shortName)))
 
         ///todo:formated address
         //types: result.types,
@@ -77,17 +85,26 @@ class SavedAddressModel extends HiveObject {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "type": type,
-        "location": location,
-        "locationName": locationName,
+        "type": getLocationType(type!),
+        "location": {
+          "address_components":
+              List<dynamic>.from(addrComponent!.map((x) => x.toJson())),
+          "formatted_address": locationName,
+          "location": {
+            "type": "Point",
+            "coordinates": [location!.lng, location!.lat]
+          },
+          "place_id": placeId,
+        },
+        "locationName": detail,
       };
 }
 
 @HiveType(typeId: htlnModel)
 class LnModel extends HiveObject {
   LnModel({
-    this.lat,
-    this.lng,
+    required this.lat,
+    required this.lng,
   });
   @HiveField(0)
   double lat;
@@ -115,7 +132,6 @@ class LnModel extends HiveObject {
 
 @HiveType(typeId: htAddressComponents)
 class AddrComponent extends HiveObject {
-  
   @HiveField(0)
   final List<String> types;
 
@@ -133,10 +149,11 @@ class AddrComponent extends HiveObject {
     this.shortName,
   );
 
-  factory AddrComponent.fromJson(Map json) => json != null
-      ? AddrComponent((json['types'] as List)?.cast<String>(),
+//changed on v2 also remove case for null hnadling
+  factory AddrComponent.fromJson(Map json) => 
+       AddrComponent( json["types"] == null ? <String>[] : List<String>.from(json["types"].map((x) => x)),
           json['long_name'], json['short_name'])
-      : null;
+      ;
 
   factory AddrComponent.fromResult(types, longName, shortName) {
     return AddrComponent(types, longName, shortName);

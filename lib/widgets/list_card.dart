@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ListCard extends StatelessWidget {
   final List<Widget> children;
-  final double opacity;
-  ListCard({@required this.children, this.opacity});
+  final double? opacity;
+  ListCard({required this.children, this.opacity});
   @override
   Widget build(BuildContext context) {
     return Column(

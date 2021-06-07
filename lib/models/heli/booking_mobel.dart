@@ -1,29 +1,28 @@
-import 'package:flutter/cupertino.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
 
 enum HeliType { Charter, Tour }
 
 class HelicopterBookingModel {
-  @required HeliType type;
-  @required LocationDetail fromAddress;
-  @required LocationDetail toAddress;
-  @required String name;
-  @required String phone;
-  @required String email;
-  String details;
-  String tourPlane;
-  String noOfAdults;
-  String noOfChild;
+  HeliType type;
+  LocationDetail fromAddress;
+  LocationDetail toAddress;
+  String name;
+  String phone;
+  String email;
+  String? details;
+  String? tourPlane;
+  String? noOfAdults;
+  String? noOfChild;
 
-  HelicopterBookingModel({
-      this.details,
-      this.email,
-      this.fromAddress,
-      this.name,
+  HelicopterBookingModel(
+      {this.details,
+      required this.email,
+      required this.fromAddress,
+      required this.name,
       this.noOfAdults,
       this.noOfChild,
-      this.phone,
-      this.toAddress,
-      this.tourPlane,
-      this.type});
+      required this.phone,
+      required this.toAddress,
+      required this.tourPlane,
+      required this.type});
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/models/savedAddress/addressType.dart';
 import 'package:rideon/models/savedAddress/savedAddressModel.dart';
@@ -14,7 +15,7 @@ class SavedAddressScreenScreen extends StatefulWidget {
 }
 
 class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
-  List<SavedAddressModel> _saveAddress =
+  List<SavedAddressModel>? _saveAddress =
       SavedAddressService().getSavedAddress();
 
   @override
@@ -23,34 +24,34 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
       appBar: AppBar(title: Text('Saved Address')),
       body:  _saveAddress == null
             ? ErrorEmptyWidget(message: "Failed to Fetch Saved Locations")
-            :  _saveAddress.isEmpty
+            :  _saveAddress!.length == 0
                 ? ErrorEmptyWidget(message: "You did not save location")
                 :  ListView.separated(
         padding: EdgeInsets.all(8),
-        itemCount: _saveAddress.length,
+        itemCount: _saveAddress!.length,
         separatorBuilder: (BuildContext context, int index) =>
             Divider(height: 1),
         itemBuilder: (BuildContext context, int x) {
           return ListTile(
             leading: Column(
               children: [
-                if (_saveAddress[x].type == AddressType.Home)
+                if (_saveAddress![x].type == AddressType.Home)
                   CircularIcon(icon: Icon(Icons.home)),
-                if (_saveAddress[x].type == AddressType.Work)
+                if (_saveAddress![x].type == AddressType.Work)
                   CircularIcon(icon: Icon(Icons.work_outline_sharp)),
-                if (_saveAddress[x].type == AddressType.Other)
+                if (_saveAddress![x].type == AddressType.Other)
                   CircularIcon(icon: Icon(Icons.star)),
               ],
             ),
-            title: (_saveAddress[x].detail ?? '') != ''
+            title: (_saveAddress![x].detail ?? '') != ''
                 ? Text(
-                    _saveAddress[x].detail,
+                    _saveAddress![x].detail!,
                     style: TextStyle(fontSize: 18),
                   )
                 : Container(),
             subtitle: Text(
-              _saveAddress[x].locationName ??
-                  'Set ${_saveAddress[x].type} location',
+              _saveAddress![x].locationName ??
+                  'Set ${_saveAddress![x].type} location',
             ),
             trailing: PopupMenuButton(
               itemBuilder: (context) {
@@ -75,16 +76,16 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
                           builder: (context) => PlacePicker(
                               useCurrentLocation: true,
                               initialPosition: LatLng(
-                                  _saveAddress[x].location.lat,
-                                  _saveAddress[x].location.lng),
+                                  _saveAddress![x].location!.lat,
+                                  _saveAddress![x].location!.lng),
                               //initialSearchString: _saveAddress[x].locationName,
                               forceAndroidLocationManager: false,
                               onPlacePicked: (result) {
                                 SavedAddressModel address =
                                     SavedAddressModel.fromPickResult(result);
-                                address.detail = _saveAddress[x].detail;
-                                address.type = _saveAddress[x].type;
-                                address.id = _saveAddress[x].id;
+                                address.detail = _saveAddress![x].detail;
+                                address.type = _saveAddress![x].type;
+                                address.id = _saveAddress![x].id;
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -102,7 +103,7 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
                   case "delete":
                     {
                       SavedAddressService()
-                          .deleteAddress(savedAddressModel: _saveAddress[x]);
+                          .deleteAddress(savedAddressModel: _saveAddress![x]);
                       setState(() {});
                     }
                     break;
@@ -122,6 +123,8 @@ class _SavedAddressScreenState extends State<SavedAddressScreenScreen> {
           MaterialPageRoute(
             builder: (context) => PlacePicker(
               useCurrentLocation: true,
+              //v2
+              initialPosition: SOURCE_LOCATION,
               onPlacePicked: (result) => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

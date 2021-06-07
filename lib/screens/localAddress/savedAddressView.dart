@@ -13,7 +13,7 @@ import 'addressListScreen.dart';
 
 class SavedAddressView extends StatelessWidget {
   final AddressType addressType;
-  final LocationDetail source;
+  final LocationDetail? source;
   SavedAddressView(this.addressType, {this.source});
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,15 @@ class SavedAddressView extends StatelessWidget {
             : Icon(Icons.home));
     return ValueListenableBuilder(
         valueListenable: Hive.box(hiveBoxName).listenable(),
-        builder: (context, _box, _) {
-          List<SavedAddressModel> _list = List<SavedAddressModel>();
-          List<dynamic> result = _box.get(
+        builder: (BuildContext context, Box<dynamic> _box, Widget? _) {
+          List<SavedAddressModel> _list = <SavedAddressModel>[];
+          List<dynamic> result = <SavedAddressModel>[];
+
+          result = _box.get(
             hkSavedAddress,
-            defaultValue: List<SavedAddressModel>(),
+            defaultValue: <SavedAddressModel>[],
           );
+
           _list = result.cast();
           SavedAddressModel _workAddress =
               _list.where((e) => e.type == addressType).length != 0
@@ -49,7 +52,7 @@ class SavedAddressView extends StatelessWidget {
                 onPressed: () {
                   if (source != null) {
                     NavigateToRoute().navigateFromHome(
-                        source: source,
+                        source: source!,
                         type: addressType,
                         address: _workAddress);
                   } else

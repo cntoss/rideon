@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
 import 'package:rideon/maps/web_service/directions.dart';
@@ -9,7 +10,7 @@ import 'package:rideon/screens/heli/view/booking_details.dart';
 import 'package:rideon/services/utils/extension.dart';
 
 class HelicopterBookingPage extends StatefulWidget {
-  HelicopterBookingPage({Key key}) : super(key: key);
+  HelicopterBookingPage({Key? key}) : super(key: key);
 
   @override
   _HelicopterBookingPageState createState() => _HelicopterBookingPageState();
@@ -24,10 +25,10 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
   LocationDetail _fromAddress = LocationDetail();
   LatLng _tia_coordinate = LatLng(27.6980899, 85.3570344);
 
-  TextEditingController _toController;
-  TextEditingController _fromController;
+  late TextEditingController _toController;
+  late TextEditingController _fromController;
 
-  TextEditingController _note,
+ late TextEditingController _note,
       _name,
       _phone,
       _emailController,
@@ -42,7 +43,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
     'Gosaikunda Helicopter'
   ];
 
-  String _selectedTour;
+  String? _selectedTour;
   @override
   void initState() {
     super.initState();
@@ -59,7 +60,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
     _fromAddress = LocationDetail(
         formattedAddress: 'Tribhuvan International Airport',
         geometry:
-            Geometry(Location(27.6980899, 85.35922309999999), '', null, null),
+            Geometry(location:  Location(lat:27.6980899, lng:85.35922309999999)),
         placeId: "ChIJxSs0ayYa6zkRG6-JmoL6u3M");
   }
 
@@ -121,7 +122,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                                         Navigator.pop(context);
                                         setState(() {
                                           _fromController.text =
-                                              r.formattedAddress;
+                                              r.formattedAddress!;
                                         });
                                         _fromAddress =
                                             LocationDetail.fromPickResult(r);
@@ -133,7 +134,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                           minLines: 1,
                           controller: _fromController,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value == null) {
                               return 'Starting place must not be empty';
                             } else {
                               return null;
@@ -162,11 +163,13 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                                   builder: (context) => PlacePicker(
                                       usePlaceDetailSearch: true,
                                       useCurrentLocation: true,
+                                      //v2
+                                      initialPosition: SOURCE_LOCATION,
                                       onPlacePicked: (r) {
                                         Navigator.pop(context);
                                         setState(() {
                                           _toController.text =
-                                              r.formattedAddress;
+                                              r.formattedAddress!;
                                         });
                                         _toAddress =
                                             LocationDetail.fromPickResult(r);
@@ -179,7 +182,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                           keyboardType: TextInputType.streetAddress,
                           controller: _toController,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value == null ) {
                               return 'End place must not be empty';
                             } else {
                               return null;
@@ -210,7 +213,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                         //focusedBorder: Constant.inputBorder,
                       ),
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value == null) {
                           return 'Name must not be empty';
                         } else {
                           return null;
@@ -232,7 +235,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                       decoration: InputDecoration(
                           hintText: 'Contact No.', counterText: ''),
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value == null ) {
                           return 'Contact no must not be empty';
                         } else if (value.length < 7) {
                           return 'Enter valid contact no.';
@@ -250,6 +253,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       validator: (s) {
+                        if(s == null) return null;
                         return s.isValidEmail()
                             ? null
                             : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid email address.";
@@ -350,7 +354,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 color:
-                                    Theme.of(context).textTheme.bodyText2.color,
+                                    Theme.of(context).textTheme.bodyText2!.color,
                               ),
                               isExpanded: true,
                               // isDense: true,
@@ -362,12 +366,13 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyText2!
                                               .color,
                                           fontSize: 15)),
                                 );
                               }).toList(),
                               onChanged: (newValue) {
+                                if(newValue != null)
                                 setState(() {
                                   _selectedTour = newValue;
                                 });
@@ -403,7 +408,7 @@ class _HelicopterBookingPageState extends State<HelicopterBookingPage> {
                           child: Text('Continue', style: bottonStyle),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
+                          if (_formKey.currentState!.validate()) {
                             // _formKey.currentState.save();
                             Navigator.push(
                               context,

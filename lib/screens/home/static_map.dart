@@ -18,8 +18,8 @@ class StaticMap extends StatefulWidget {
 }
 
 class _StaticMapState extends State<StaticMap> {
-  Future<PlaceProvider> _futureProvider;
-  PlaceProvider provider;
+  late Future<PlaceProvider> _futureProvider;
+  late PlaceProvider provider;
  final LatLng initialPosition = SOURCE_LOCATION;
   bool useCurrentLocation = true;
 
@@ -37,8 +37,8 @@ class _StaticMapState extends State<StaticMap> {
 
   Future<PlaceProvider> _initPlaceProvider() async {
     final headers = await GoogleApiHeaders().getHeaders();
-    BaseClient httpClient;
-    String proxyBaseUrl;
+    BaseClient? httpClient;
+    String? proxyBaseUrl;
 
     final provider = PlaceProvider(
       googleAPIKey,
@@ -59,7 +59,7 @@ class _StaticMapState extends State<StaticMap> {
       future: _futureProvider,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          provider = snapshot.data;
+          provider = snapshot.data as PlaceProvider;
 
           return ChangeNotifierProvider.value(
             value: provider,
@@ -109,8 +109,8 @@ class _StaticMapState extends State<StaticMap> {
               if (provider.currentPosition == null) {
                 return _buildMap(initialPosition);
               } else {
-                return _buildMap(LatLng(provider.currentPosition.latitude,
-                    provider.currentPosition.longitude));
+                return _buildMap(LatLng(provider.currentPosition!.latitude,
+                    provider.currentPosition!.longitude));
               }
             }
           });

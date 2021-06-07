@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/config/constant.dart';
 import 'package:rideon/maps/google_maps_place_picker.dart';
-import 'package:rideon/maps/web_service/distance.dart';
+import 'package:rideon/maps/web_service/distance.dart' as distance;
 import 'package:rideon/models/driver/driverModel.dart';
 import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/googleModel/GeocodingModel.dart';
@@ -20,8 +20,8 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
   LocationDetail _toAddress = LocationDetail();
   LocationDetail _fromAddress = LocationDetail();
 
-  TextEditingController _toController;
-  TextEditingController _fromController;
+  late TextEditingController _toController;
+  late TextEditingController _fromController;
 
   TextEditingController _note = TextEditingController();
   TextEditingController _name = TextEditingController();
@@ -31,7 +31,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
   bool _isLoading = false;
 
   bool _showConfirmation = false;
-  DistanceResponse distanceResponse;
+  late distance.DistanceResponse distanceResponse;
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
     TextStyle _textStyle = TextStyle(fontSize: 16);
     return Scaffold(
       appBar: AppBar(title: Text('Request Delivery')),
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,// changed from padding to inset
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
@@ -91,7 +91,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                                           setState(() {
                                                             _fromController
                                                                     .text =
-                                                                r.formattedAddress;
+                                                                r.formattedAddress as String;
                                                           });
                                                           _fromAddress =
                                                               LocationDetail
@@ -105,7 +105,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                         minLines: 1,
                                         controller: _fromController,
                                         validator: (value) {
-                                          if (value.isEmpty) {
+                                          if (value == null) {
                                             return 'Pick loction must not be empty';
                                           } else {
                                             return null;
@@ -145,7 +145,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                                               context);
                                                           setState(() {
                                                             _toController.text =
-                                                                r.formattedAddress;
+                                                                r.formattedAddress as String;
                                                           });
                                                           _toAddress =
                                                               LocationDetail
@@ -161,7 +161,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                             TextInputType.streetAddress,
                                         controller: _toController,
                                         validator: (value) {
-                                          if (value.isEmpty) {
+                                          if (value == null) {
                                             return 'Drop location must not be empty';
                                           } else {
                                             return null;
@@ -193,7 +193,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                       //focusedBorder: Constant.inputBorder,
                                     ),
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value == null) {
                                         return 'Name must not be empty';
                                       } else {
                                         return null;
@@ -218,7 +218,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                         counterText: ''
                                        ),
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value ==  null) {
                                         return 'Contact no must not be empty';
                                       } else if (value.length < 7) {
                                         return 'Enter valid contact no.';
@@ -307,7 +307,7 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                                             style: _textStyle),
                                         TextSpan(
                                           text:
-                                              '${distanceResponse.results.first.elements.first.distance.text}',
+                                              '${distanceResponse.rows.first.elements.first.distance.text}',
                                           style: _textStyle.copyWith(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -344,16 +344,16 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
   }
 
   _continueToDelivery() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      distanceResponse = await GoogleDistanceMatrix(apiKey: googleAPIKey)
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      distanceResponse = await distance.GoogleDistanceMatrix(apiKey: googleAPIKey)
           .distanceWithLocation(
-              [_fromAddress.geometry.location], [_toAddress.geometry.location]);
-      if (distanceResponse != null) {
+              [_fromAddress.geometry!.location], [_toAddress.geometry!.location]);
+      //if (distanceResponse != null) {
         setState(() {
           _showConfirmation = true;
         });
-      }
+      //}
     }
   }
 
@@ -375,6 +375,14 @@ class PackageDeliveryCreateState extends State<PackageDeliveryCreatePage> {
                   driverDetail: DriverModel(
                       displayName: "Baby Driver",
                       rating: 3.5,
+                      rides: 0,
+                      age:20,
+                      funny: true,
+                      id: 0,
+                      petAllow: false,
+                      music: true,
+                      smoke: false,
+                      memberDate: DateTime.now().toString(),
                       vehicle: Vehicle(
                           name: "White BMW",
                           vehicleid: 'Bagmati B AA 7706',

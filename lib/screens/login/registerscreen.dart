@@ -11,18 +11,20 @@ enum Gender { male, female, other }
 
 class Registration extends StatefulWidget {
   final String phone;
-  Registration({@required this.phone});
+  Registration({required this.phone});
   @override
   _RegistrationState createState() => _RegistrationState();
 }
 
 class _RegistrationState extends State<Registration> {
-  TextEditingController _phoneNumberCOntroller;
-  TextEditingController _passwordCOntroller, _nameCotroler, _emailController;
-  String gender;
+  late TextEditingController _phoneNumberCOntroller;
+  late TextEditingController _passwordCOntroller,
+      _nameCotroler,
+      _emailController;
+  String? gender;
   final _formKey = GlobalKey<FormState>();
-  FocusNode _phoneFocus;
-  FocusNode _emailFocus;
+  late FocusNode _phoneFocus;
+  late FocusNode _emailFocus;
 
   @override
   void initState() {
@@ -68,7 +70,7 @@ class _RegistrationState extends State<Registration> {
                             _phoneFocus.requestFocus();
                           },
                           validator: (value) {
-                            if (value.isEmpty)
+                            if (value == null)
                               return 'Enter Full Name';
                             else if (value.length < 5 && !value.contains(' '))
                               return "Enter Valid Name";
@@ -116,7 +118,7 @@ class _RegistrationState extends State<Registration> {
                           controller: _emailController,
                           focusNode: _emailFocus,
                           validator: (value) {
-                            if (value.isNotEmpty) {
+                            if (value != null) {
                               if (value.length < 5)
                                 return "Enter Valid Name";
                               else
@@ -157,7 +159,7 @@ class _RegistrationState extends State<Registration> {
                               activeColor: Colors.black,
                               onChanged: (x) {
                                 setState(() {
-                                  _gender = x;
+                                  _gender = x as Gender;
                                 });
                               }),
                           new Text(
@@ -170,7 +172,7 @@ class _RegistrationState extends State<Registration> {
                               groupValue: _gender,
                               onChanged: (x) {
                                 setState(() {
-                                  _gender = x;
+                                  _gender = x as Gender;
                                 });
                               }),
                           new Text(
@@ -185,7 +187,7 @@ class _RegistrationState extends State<Registration> {
                             groupValue: _gender,
                             onChanged: (x) {
                               setState(() {
-                                _gender = x;
+                                _gender = x as Gender;
                               });
                             },
                           ),
@@ -222,8 +224,8 @@ class _RegistrationState extends State<Registration> {
                                 text: "Continue",
                                 onTap: () async {
                                   FocusScope.of(context).unfocus();
-                                  if (_formKey.currentState.validate()) {
-                                    _formKey.currentState.save();
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
                                     _manager
                                         .register(User(
                                             id: 1,

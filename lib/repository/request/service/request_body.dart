@@ -26,10 +26,11 @@ class RequestBody {
   }
 
   driveRequestBody(
-      {LocationDetail fromLocation,
-      LocationDetail toLocation,
-      String distance,
-      String time}) {
+      {
+       required LocationDetail fromLocation,
+       required LocationDetail toLocation,
+      String? distance,
+      String? time}) {
     return {
       "to": clientId,
       "notification": {

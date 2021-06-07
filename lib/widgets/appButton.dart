@@ -3,10 +3,10 @@ import 'package:rideon/config/constant.dart';
 class AppButton{
 
 Widget appButton(
-      {@required String text,
-      @required Function() onTap,
+      {required String text,
+      required Function() onTap,
       bool small = false,
-      Color color}) {
+      Color? color}) {
     return MaterialButton(
       elevation: 1,
       focusElevation: 1,

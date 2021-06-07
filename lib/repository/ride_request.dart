@@ -13,7 +13,7 @@ class RideRequest {
       return (response.data)['results'];
     } on DioError catch (error) {
       if (error.response != null) {
-        print((error.response.data));
+        print((error.response!.data));
         return null;
       } else {
         return null;
@@ -22,10 +22,10 @@ class RideRequest {
   }
 
   request(
-      {@required LocationDetail fromLocation,
-      @required LocationDetail toLocation,
-      @required String distance,
-      @required String time}) async {
+      {required LocationDetail fromLocation,
+      required LocationDetail toLocation,
+      required String distance,
+      required String time}) async {
     try {
       print(RequestBody().driveRequestBody(
               fromLocation: fromLocation,
@@ -42,7 +42,7 @@ class RideRequest {
       return (response.data)['results'];
     } on DioError catch (error) {
       if (error.response != null) {
-        print((error.response.data));
+        print((error.response!.data));
         return null;
       } else {
         return null;

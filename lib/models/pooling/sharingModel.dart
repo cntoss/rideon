@@ -12,15 +12,15 @@ String sharingModelToJson(List<SharingModel> data) => json.encode(List<dynamic>.
 
 class SharingModel {
     SharingModel({
-        this.id,
-        this.fromLocation,
-        this.toLocation,
-        this.passenger,
-        this.cost,
-        this.date,
-        this.time,
-        this.phoneNumber,
-        this.email,
+       required this.id,
+       required this.fromLocation,
+       required this.toLocation,
+       required this.passenger,
+       required this.cost,
+       required this.date,
+       required this.time,
+       required this.phoneNumber,
+       required this.email,
     });
 
     int id;

@@ -19,7 +19,7 @@ import 'package:tuple/tuple.dart';
 
 typedef SelectedPlaceWidgetBuilder = Widget Function(
   BuildContext context,
-  PickResult selectedPlace,
+  PickResult? selectedPlace,
   SearchingState state,
   bool isSearchBarFocused,
 );
@@ -31,9 +31,9 @@ typedef PinBuilder = Widget Function(
 
 class GoogleMapPlacePicker extends StatelessWidget {
   const GoogleMapPlacePicker({
-    Key key,
-    @required this.initialTarget,
-    @required this.appBarKey,
+    Key? key,
+    required this.initialTarget,
+    required this.appBarKey,
     this.selectedPlaceWidgetBuilder,
     this.pinBuilder,
     this.onSearchFailed,
@@ -56,35 +56,35 @@ class GoogleMapPlacePicker extends StatelessWidget {
   final LatLng initialTarget;
   final GlobalKey appBarKey;
 
-  final SelectedPlaceWidgetBuilder selectedPlaceWidgetBuilder;
-  final PinBuilder pinBuilder;
+  final SelectedPlaceWidgetBuilder? selectedPlaceWidgetBuilder;
+  final PinBuilder? pinBuilder;
 
-  final ValueChanged<String> onSearchFailed;
-  final VoidCallback onMoveStart;
-  final MapCreatedCallback onMapCreated;
-  final VoidCallback onToggleMapType;
-  final VoidCallback onMyLocation;
-  final ValueChanged<PickResult> onPlacePicked;
+  final ValueChanged<String>? onSearchFailed;
+  final VoidCallback? onMoveStart;
+  final MapCreatedCallback? onMapCreated;
+  final VoidCallback? onToggleMapType;
+  final VoidCallback? onMyLocation;
+  final ValueChanged<PickResult>? onPlacePicked;
 
-  final int debounceMilliseconds;
-  final bool enableMapTypeButton;
-  final bool enableMyLocationButton;
+  final int? debounceMilliseconds;
+  final bool? enableMapTypeButton;
+  final bool? enableMyLocationButton;
 
-  final bool usePinPointingSearch;
-  final bool usePlaceDetailSearch;
+  final bool? usePinPointingSearch;
+  final bool? usePlaceDetailSearch;
 
-  final bool selectInitialPosition;
+  final bool? selectInitialPosition;
 
-  final String language;
+  final String? language;
 
-  final bool forceSearchOnZoomChanged;
-  final bool hidePlaceDetailsWhenDraggingPin;
+  final bool? forceSearchOnZoomChanged;
+  final bool? hidePlaceDetailsWhenDraggingPin;
 
   _searchByCameraLocation(PlaceProvider provider) async {
     // We don't want to search location again if camera location is changed by zooming in/out.
     bool hasZoomChanged = provider.cameraPosition != null &&
         provider.prevCameraPosition != null &&
-        provider.cameraPosition.zoom != provider.prevCameraPosition.zoom;
+        provider.cameraPosition!.zoom != provider.prevCameraPosition!.zoom;
 
     if (forceSearchOnZoomChanged == false && hasZoomChanged) {
       provider.placeSearchingState = SearchingState.Idle;
@@ -95,22 +95,23 @@ class GoogleMapPlacePicker extends StatelessWidget {
 
     final GeocodingResponse response =
         await provider.geocoding.searchByLocation(
-      Location(provider.cameraPosition.target.latitude,
-          provider.cameraPosition.target.longitude),
+      Location(
+          lat: provider.cameraPosition!.target.latitude,
+          lng: provider.cameraPosition!.target.longitude),
       language: language,
     );
 
     if (response.errorMessage?.isNotEmpty == true ||
         response.status == "REQUEST_DENIED") {
-      print("Camera Location Search Error: " + response.errorMessage);
+      print("Camera Location Search Error: " + response.errorMessage!);
       if (onSearchFailed != null) {
-        onSearchFailed(response.status);
+        onSearchFailed!(response.status);
       }
       provider.placeSearchingState = SearchingState.Idle;
       return;
     }
 
-    if (usePlaceDetailSearch) {
+    if (usePlaceDetailSearch!) {
       final PlacesDetailsResponse detailResponse =
           await provider.places.getDetailsByPlaceId(
         response.results[0].placeId,
@@ -120,9 +121,9 @@ class GoogleMapPlacePicker extends StatelessWidget {
       if (detailResponse.errorMessage?.isNotEmpty == true ||
           detailResponse.status == "REQUEST_DENIED") {
         print("Fetching details by placeId Error: " +
-            detailResponse.errorMessage);
+            detailResponse.errorMessage!);
         if (onSearchFailed != null) {
-          onSearchFailed(detailResponse.status);
+          onSearchFailed!(detailResponse.status);
         }
         provider.placeSearchingState = SearchingState.Idle;
         return;
@@ -181,7 +182,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
                 ),
               ); */
               // When select initialPosition set to true.
-              if (selectInitialPosition) {
+              if (selectInitialPosition!) {
                 provider.setCameraPosition(initialCameraPosition);
                 _searchByCameraLocation(provider);
               }
@@ -194,15 +195,15 @@ class GoogleMapPlacePicker extends StatelessWidget {
               }
 
               // Perform search only if the setting is to true.
-              if (usePinPointingSearch) {
+              if (usePinPointingSearch!) {
                 // Search current camera location only if camera has moved (dragged) before.
                 if (provider.pinState == PinState.Dragging) {
                   // Cancel previous timer.
                   if (provider.debounceTimer?.isActive ?? false) {
-                    provider.debounceTimer.cancel();
+                    provider.debounceTimer!.cancel();
                   }
                   provider.debounceTimer =
-                      Timer(Duration(milliseconds: debounceMilliseconds), () {
+                      Timer(Duration(milliseconds: debounceMilliseconds!), () {
                     _searchByCameraLocation(provider);
                   });
                 }
@@ -220,11 +221,11 @@ class GoogleMapPlacePicker extends StatelessWidget {
               provider.pinState = PinState.Dragging;
 
               // Begins the search state if the hide details is enabled
-              if (this.hidePlaceDetailsWhenDraggingPin) {
+              if (this.hidePlaceDetailsWhenDraggingPin!) {
                 provider.placeSearchingState = SearchingState.Searching;
               }
 
-              onMoveStart();
+              onMoveStart!();
             },
             onCameraMove: (CameraPosition position) {
               provider.setCameraPosition(position);
@@ -245,7 +246,8 @@ class GoogleMapPlacePicker extends StatelessWidget {
             return _defaultPinBuilder(context, state);
           } else {
             return Builder(
-                builder: (builderContext) => pinBuilder(builderContext, state));
+                builder: (builderContext) =>
+                    pinBuilder!(builderContext, state));
           }
         },
       ),
@@ -309,7 +311,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
 
   Widget _buildFloatingCard() {
     return Selector<PlaceProvider,
-        Tuple4<PickResult, SearchingState, bool, PinState>>(
+        Tuple4<PickResult?, SearchingState, bool, PinState>>(
       selector: (_, provider) => Tuple4(
           provider.selectedPlace,
           provider.placeSearchingState,
@@ -319,14 +321,14 @@ class GoogleMapPlacePicker extends StatelessWidget {
         if ((data.item1 == null && data.item2 == SearchingState.Idle) ||
             data.item3 == true ||
             data.item4 == PinState.Dragging &&
-                this.hidePlaceDetailsWhenDraggingPin) {
+                this.hidePlaceDetailsWhenDraggingPin!) {
           return Container();
         } else {
           if (selectedPlaceWidgetBuilder == null) {
             return _defaultPlaceWidgetBuilder(context, data.item1, data.item2);
           } else {
             return Builder(
-                builder: (builderContext) => selectedPlaceWidgetBuilder(
+                builder: (builderContext) => selectedPlaceWidgetBuilder!(
                     builderContext, data.item1, data.item2, data.item3));
           }
         }
@@ -335,7 +337,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
   }
 
   Widget _defaultPlaceWidgetBuilder(
-      BuildContext context, PickResult data, SearchingState state) {
+      BuildContext context, PickResult? data, SearchingState state) {
     return FloatingCard(
       bottomPosition: MediaQuery.of(context).size.height * 0.05,
       leftPosition: MediaQuery.of(context).size.width * 0.025,
@@ -343,10 +345,10 @@ class GoogleMapPlacePicker extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.9,
       borderRadius: BorderRadius.circular(12.0),
       elevation: 4.0,
-      color: cardColor,
+      color: Theme.of(context).cardColor,
       child: state == SearchingState.Searching
           ? _buildLoadingIndicator()
-          : _buildSelectionDetails(context, data),
+          : _buildSelectionDetails(context, data!),
     );
   }
 
@@ -392,8 +394,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 1.3,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(cardColor)),
+                  backgroundColor: MaterialStateProperty.all(cardColor)),
               child: Container(
                 //padding: const EdgeInsets.all(8.0),
                 width: MediaQuery.of(context).size.width,
@@ -404,7 +405,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
                 )),
               ),
               onPressed: () {
-                onPlacePicked(result);
+                onPlacePicked!(result);
               },
             ),
           ),
@@ -413,17 +414,18 @@ class GoogleMapPlacePicker extends StatelessWidget {
     );
   }
 
+  //TODO: v2 changed test need
   String getName(PickResult locationDetail) {
     List locationNames = [];
     for (int i = 0; i < 4; i++) {
       if (i == 3) {
-        if (locationDetail.addressComponents[3].types[0] == 'locality') {
-          locationNames.add(locationDetail.addressComponents[i].longName);
+        if (locationDetail.addressComponents![3].types[0] == 'locality') {
+          locationNames.add(locationDetail.addressComponents![i].longName);
         }
-      } else if (locationDetail.addressComponents[i].longName !=
+      } else if (locationDetail.addressComponents![i].longName !=
               'Unnamed Road' &&
-          locationDetail.addressComponents[i].types[0] != 'country')
-        locationNames.add(locationDetail.addressComponents[i].longName);
+          locationDetail.addressComponents![i].types[0] != 'country')
+        locationNames.add(locationDetail.addressComponents![i].longName);
     }
     return locationNames.toSet().toList().join(', ');
   }

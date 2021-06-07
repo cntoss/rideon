@@ -90,9 +90,9 @@ class _SettingScreenState extends State<SettingScreen> {
           )),
           customCard(
               child: InkWell(
-                  onTap: () async{
-                  var  result =  LoginManger().login(phone: "9829326110");
-                  print(result);
+                  onTap: () async {
+                    var result = LoginManger().login(phone: "9829326110");
+                    print(result);
                   },
                   child: customRow(
                     icon: Icon(Icons.privacy_tip),
@@ -114,7 +114,8 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  customRow({Icon icon, String title, String subtitle}) {
+  customRow(
+      {required Icon icon, required String title,  String? subtitle}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -136,7 +137,7 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  customCard({Widget child}) {
+  customCard({required Widget child}) {
     return Card(
         color: cardColor,
         elevation: 2,
@@ -151,8 +152,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
 class CustomDOgTAg extends StatelessWidget {
   const CustomDOgTAg({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
   }) : super(key: key);
 
   final User user;
@@ -173,13 +174,13 @@ class CustomDOgTAg extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                backgroundImage: user.image.isNullOrEmpty()
-                    ? AssetImage('assets/avatar.png')
-                    : NetworkImage(user.image),
+                backgroundImage: user.image == null
+                    ? AssetImage('assets/avatar.png') as ImageProvider
+                    : NetworkImage(user.image!),
                 radius: 30,
               ),
             ),
-            Flexible(child: Text(user.name ?? '')),
+            Flexible(child: Text(user.name)),
           ],
         ));
   }

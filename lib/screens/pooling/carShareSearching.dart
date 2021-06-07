@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rideon/config/appConfig.dart';
 import 'package:rideon/models/driver/driverModel.dart';
+import 'package:rideon/models/enum_mode/transport_type.dart';
 import 'package:rideon/models/pooling/sharingModel.dart';
 import 'package:rideon/screens/pooling/driver/driverProfile.dart';
 import 'package:rideon/widgets/customCard.dart';
@@ -39,7 +40,6 @@ class _CarShareSearchingState extends State<CarShareSearching> {
       appBar: AppBar(title: Text('Search Result')),
       body: SafeArea(
         child: Stack(
-
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -125,15 +125,14 @@ class SharingResult extends StatefulWidget {
 class _SharingResultState extends State<SharingResult> {
   List<Model> list = [];
   int rate = 2;
-  String driverImage;
   @override
   void initState() {
     super.initState();
     list.add(Model(
-        widget.sharingModel.fromLocation.formattedAddress, Color(0xff6b0236)));
+        widget.sharingModel.fromLocation.formattedAddress!, Color(0xff6b0236)));
     //list.add(Model("Visakhapatnam", Colors.green));
     list.add(Model(
-        widget.sharingModel.toLocation.formattedAddress, Color(0xff570357)));
+        widget.sharingModel.toLocation.formattedAddress!, Color(0xff570357)));
   }
 
   @override
@@ -160,7 +159,7 @@ class _SharingResultState extends State<SharingResult> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top:20.0),
+              padding: const EdgeInsets.only(top: 20.0),
               child: ListView.builder(
                   itemCount: list.length,
                   itemBuilder: (con, ind) {
@@ -265,9 +264,11 @@ class _SharingResultState extends State<SharingResult> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: driverImage == null
+                                      /*  backgroundImage: widget.sharingModel. == null
                                           ? AssetImage('assets/avatar.png')
-                                          : NetworkImage('_user.image'),
+                                          : NetworkImage('_user.image'), */
+                                      backgroundImage:
+                                          AssetImage('assets/avatar.png'),
                                       radius: 20,
                                     ),
                                     Padding(
@@ -280,15 +281,13 @@ class _SharingResultState extends State<SharingResult> {
                                           ),
                                           Row(
                                             children: [
-                                              Icon(Icons.star,
-                                                  size: 12),
+                                              Icon(Icons.star, size: 12),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 8.0),
                                                 child: Text('4.5',
                                                     style: TextStyle(
-                                                        fontSize: 12
-                                                       )),
+                                                        fontSize: 12)),
                                               )
                                             ],
                                           )
@@ -331,15 +330,18 @@ class _SharingResultState extends State<SharingResult> {
                 music: true,
                 smoke: false,
                 funny: true,
+                petAllow: false,
                 memberDate: "2077-09-11",
+                vehicle: Vehicle(
+                    name: 'Honda', type: TranportType.Bike, vehicleid: '0'),
                 rides: 29))));
   }
 }
 
 class Model {
   String address;
-  double lat;
-  double long;
+  /*  double lat;
+  double long; */
   Color color;
   //Other fields if needed....
   Model(this.address, this.color);

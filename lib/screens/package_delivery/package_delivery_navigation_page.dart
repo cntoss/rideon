@@ -12,7 +12,7 @@ import 'package:rideon/services/helper/zoomCalculate.dart';
 
 class PackageDeliveryNavigationPage extends StatefulWidget {
   PackageDeliveryNavigationPage(
-      {this.sourceDetail, this.driverDetail, this.destinationDetail});
+      {required this.sourceDetail, required this.driverDetail, required this.destinationDetail});
   final LocationDetail sourceDetail;
   final DriverModel driverDetail;
   final LocationDetail destinationDetail;
@@ -24,27 +24,27 @@ class PackageDeliveryNavigationPage extends StatefulWidget {
 class PackageDeliveryNavigationState
     extends State<PackageDeliveryNavigationPage> {
   PackageDeliveryNavigationState(this.sourceDetail, this.destinationDetail);
-  LocationDetail sourceDetail;
-  LocationDetail destinationDetail;
+  late LocationDetail sourceDetail;
+  late LocationDetail destinationDetail;
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set<Marker>();
   // for my drawn routes on the map
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
-  PolylinePoints polylinePoints;
-  BitmapDescriptor sourceIcon;
-  BitmapDescriptor destinationIcon;
-  Position currentLocation;
-  Position destinationLocation;
-  PinInformation sourcePinInfo;
-  PinInformation destinationPinInfo;
+  late PolylinePoints polylinePoints;
+  late BitmapDescriptor sourceIcon;
+  late BitmapDescriptor destinationIcon;
+  late Position currentLocation;
+  late Position destinationLocation;
+  late PinInformation sourcePinInfo;
+  late PinInformation destinationPinInfo;
 
   @override
   void initState() {
     super.initState();
     currentLocation = Position.fromMap({
-      "latitude": sourceDetail.geometry.location.lat,
-      "longitude": sourceDetail.geometry.location.lng
+      "latitude": sourceDetail.geometry!.location.lat,
+      "longitude": sourceDetail.geometry!.location.lng
     });
 
     setSourceAndDestinationIcons();
@@ -68,8 +68,8 @@ class PackageDeliveryNavigationState
 
   void setInitialLocation() async {
     destinationLocation = Position.fromMap({
-      "latitude": widget.destinationDetail.geometry.location.lat,
-      "longitude": widget.destinationDetail.geometry.location.lng
+      "latitude": widget.destinationDetail.geometry!.location.lat,
+      "longitude": widget.destinationDetail.geometry!.location.lng
     });
   }
 
@@ -77,17 +77,17 @@ class PackageDeliveryNavigationState
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = CameraPosition(
         target: LatLng(
-            (sourceDetail.geometry.location.lat +
-                    destinationDetail.geometry.location.lat) /
+            (sourceDetail.geometry!.location.lat +
+                    destinationDetail.geometry!.location.lat) /
                 2,
-            (sourceDetail.geometry.location.lng +
-                    destinationDetail.geometry.location.lng) /
+            (sourceDetail.geometry!.location.lng +
+                    destinationDetail.geometry!.location.lng) /
                 2),
         zoom: ZoomCalculate().getZoom(
-            sourceDetail.geometry.location.lat,
-            sourceDetail.geometry.location.lng,
-            destinationDetail.geometry.location.lat,
-            destinationDetail.geometry.location.lng),
+            sourceDetail.geometry!.location.lat,
+            sourceDetail.geometry!.location.lng,
+            destinationDetail.geometry!.location.lat,
+            destinationDetail.geometry!.location.lng),
         tilt: CAMERA_TILT,
         bearing: CAMERA_BEARING);
 
@@ -144,9 +144,9 @@ class PackageDeliveryNavigationState
 
   void showPinsOnMap() {
     var pinPosition = LatLng(
-        sourceDetail.geometry.location.lat, sourceDetail.geometry.location.lng);
-    var destPosition = LatLng(destinationDetail.geometry.location.lat,
-        destinationDetail.geometry.location.lng);
+        sourceDetail.geometry!.location.lat, sourceDetail.geometry!.location.lng);
+    var destPosition = LatLng(destinationDetail.geometry!.location.lat,
+        destinationDetail.geometry!.location.lng);
 
     // add the initial source location pin
     _markers.add(Marker(
@@ -164,7 +164,7 @@ class PackageDeliveryNavigationState
 
 class MapPinPillComponent extends StatelessWidget {
   final DriverModel driverModel;
-  MapPinPillComponent({this.driverModel});
+  MapPinPillComponent({required this.driverModel});
   @override
   Widget build(BuildContext context) {
     var boxWidth = MediaQuery.of(context).size.width;
@@ -211,8 +211,8 @@ class MapPinPillComponent extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     backgroundImage: driverModel.profilePicture == null
-                        ? AssetImage('assets/avatar.png')
-                        : NetworkImage(driverModel.profilePicture),
+                        ? AssetImage('assets/avatar.png') as ImageProvider
+                        : NetworkImage(driverModel.profilePicture!),
                     radius: 30,
                   ),
                   Padding(
@@ -221,11 +221,11 @@ class MapPinPillComponent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          driverModel.displayName ?? '',
+                          driverModel.displayName ,
                           style: TextStyle(fontSize: 14),
                         ),
                         Text(
-                          driverModel.vehicle.name ?? '',
+                          driverModel.vehicle.name,
                           style: TextStyle(fontSize: 16, color: Colors.white70),
                         ),
                         Row(

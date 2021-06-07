@@ -8,18 +8,20 @@ import 'package:rideon/services/helper/userService.dart';
 enum LoginStates { loggedIn, loggedOut, loading, error }
 
 class LoginManger {
-  ValueNotifier<LoginStates> _notifier;
-  String _errorMessage;
+  late ValueNotifier<LoginStates> _notifier;
+  String? _errorMessage;
 
-  String get errorText => _errorMessage;
+  String get errorText => _errorMessage!;
 
   ValueNotifier<LoginStates> get currentState {
-    LoginStates state;
+    LoginStates state = LoginStates.loggedOut;
     if (UserService().isLogin)
       state = LoginStates.loggedIn;
     else
       state = LoginStates.loggedOut;
-    _notifier ??= ValueNotifier(state);
+    // _notifier ??= ValueNotifier(state);
+    //v2
+    _notifier = ValueNotifier(state);
     return _notifier;
   }
 
@@ -52,11 +54,12 @@ class LoginManger {
     }
   } */
 
-  Future<bool> login({@required String phone}) async {
-    LoginResponse result = await LoginRequest().loginRequest(phone);
+  Future<bool> login({required String phone}) async {
+    LoginResponse? result = await LoginRequest().loginRequest(phone);
     if (result == null) {
-      return null;
-    } else if (!result.valid) {
+      return false;
+    } else if (!result.valid!) {
+      //V2
       return false;
     } else {
       UserService().setLogin(setLoginTo: true);
@@ -87,7 +90,7 @@ class LoginManger {
       return false;
     } else {
       UserService().setLogin(setLoginTo: true);
-      UserService().addUser(user: user); 
+      UserService().addUser(user: user);
       _notifier.value = LoginStates.loggedIn;
       return true;
     }

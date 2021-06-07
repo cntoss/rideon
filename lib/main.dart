@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:rideon/common/theme.dart';
+import 'package:rideon/maps/providers/place_provider.dart';
 import 'package:rideon/models/pooling/counterModel.dart';
 import 'package:rideon/screens/home/homePageWarper.dart';
 import 'package:rideon/screens/login/loginwrapper.dart';
@@ -22,8 +23,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   FirebaseService().initFirebase();
-  Firebase.initializeApp();
 
   ///todo: remove if status bar is default transparent
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -34,6 +35,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        //ChangeNotifierProvider(create: (_) => PlaceProvider()),
         ChangeNotifierProvider(
           create: (context) => PassengerCounter(),
         ),
@@ -52,7 +54,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
- 
   @override
   void dispose() {
     Hive.close();
@@ -62,24 +63,27 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<ConnectivityStatus>(
+      //added on v2
+      initialData: ConnectivityStatus.Offline,
       create: (context) =>
           ConnectivityService().connectionStatusController.stream,
-          child: MaterialApp(
-      navigatorKey: AppConfig.navigatorKey,
-      title: 'Ride On',
-      debugShowCheckedModeBanner: false,
-      theme: appTheme,
-      //home: LoginPage(),
-      //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
+      child: MaterialApp(
+        navigatorKey: AppConfig.navigatorKey,
+        title: 'Ride On',
+        debugShowCheckedModeBanner: false,
+        theme: appTheme,
+        //home: LoginPage(),
+        //home: UserService().isLogin ? HomePageWrapper() : SplashScreen(),
 
-      initialRoute: UserService().isLogin ? '/login' : '/splash',
-      //initialRoute: '/splash',
-      routes: {
-        // '/': (context) => SplashScreen(),
-        '/splash': (context) => SplashScreen(),
-        '/login': (context) => LoginWrapper(),
-        '/home': (context) => HomePageWrapper(),
-      },
-    ),);
+        initialRoute: UserService().isLogin ? '/login' : '/splash',
+        //initialRoute: '/splash',
+        routes: {
+          // '/': (context) => SplashScreen(),
+          '/splash': (context) => SplashScreen(),
+          '/login': (context) => LoginWrapper(),
+          '/home': (context) => HomePageWrapper(),
+        },
+      ),
+    );
   }
 }

@@ -44,6 +44,7 @@ class AddSingleField extends StatelessWidget {
                         keyboardType: TextInputType.phone,
                         maxLength: 10,
                         validator: (s) {
+                          if (s == null) return null;
                           return s.isValidPhone()
                               ? null
                               : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid phone number.";

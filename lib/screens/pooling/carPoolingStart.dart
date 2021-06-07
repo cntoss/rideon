@@ -20,10 +20,10 @@ class CarPoolingFirst extends StatefulWidget {
 class _CarPoolingFirstState extends State<CarPoolingFirst> {
   LocationDetail _fromAddress = LocationDetail();
   LocationDetail _toAddress = LocationDetail();
-  TextEditingController _fromController;
-  TextEditingController _toController;
+  late TextEditingController _fromController;
+  late TextEditingController _toController;
 
-  DateTime _selectedDate;
+  DateTime? _selectedDate;
   TextEditingController _dateController = TextEditingController();
 
   List<bool> _isFilled = [true, true, false];
@@ -62,7 +62,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                                 onPlacePicked: (r) {
                                   Navigator.pop(context);
                                   setState(() {
-                                    _fromController.text = r.formattedAddress;
+                                    _fromController.text = r.formattedAddress!;
                                     _fromAddress =
                                         LocationDetail.fromPickResult(r);
                                   });
@@ -96,8 +96,8 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                   _toAddress = _fromAddress;
                   _fromAddress = _temp;
                   setState(() {
-                    _fromController.text = _fromAddress.formattedAddress;
-                    _toController.text = _toAddress.formattedAddress;
+                    _fromController.text = _fromAddress.formattedAddress!;
+                    _toController.text = _toAddress.formattedAddress!;
                   });
                 }),
             Container(
@@ -115,7 +115,7 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                                 onPlacePicked: (r) {
                                   Navigator.pop(context);
                                   setState(() {
-                                    _toController.text = r.formattedAddress;
+                                    _toController.text = r.formattedAddress!;
                                     _toAddress =
                                         LocationDetail.fromPickResult(r);
                                   });
@@ -156,12 +156,12 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                           .selectDate(context, _selectedDate);
                       if (_selectedDate != null) {
                         _dateController
-                          ..text = DateFormat.yMMMd().format(_selectedDate)
+                          ..text = DateFormat.yMMMd().format(_selectedDate!)
                           ..selection = TextSelection.fromPosition(TextPosition(
                               offset: _dateController.text.length,
                               affinity: TextAffinity.upstream));
                         setState(() {
-                          _isFilled[2] = true;//to enable search button
+                          _isFilled[2] = true; //to enable search button
                         });
                       }
                     }),
@@ -207,10 +207,15 @@ class _CarPoolingFirstState extends State<CarPoolingFirst> {
                                   MaterialPageRoute(
                                       builder: (context) => CarShareSearching(
                                           SharingModel(
+                                              id: 0,
+                                              email: '',
+                                              cost: 89,
+                                              phoneNumber: 988,
+                                              time: '10:30',
                                               fromLocation: _fromAddress,
                                               toLocation: _toAddress,
                                               passenger: passenger.value,
-                                              date: _selectedDate))));
+                                              date: _selectedDate!))));
                             },
                           )
                         : Text('No Data selected'))

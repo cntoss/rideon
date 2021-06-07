@@ -17,18 +17,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _phoneController;
-  TextEditingController _passwordCOntroller;
+  late TextEditingController _phoneController;
+  late TextEditingController _passwordCOntroller;
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool _showLoading = false;
   bool _showOtp = false;
-  String _otpValue;
+  String _otpValue = '';
   FirebaseAuth _auth = FirebaseAuth.instance;
-  String verificationId;
-  TextEditingController otp1, otp2, otp3, otp4, otp5, otp6;
-  List<TextEditingController> _otp =
+  String? verificationId;
+  late TextEditingController otp1, otp2, otp3, otp4, otp5, otp6;
+  late List<TextEditingController> _otp =
       List.generate(6, (i) => TextEditingController());
   List<FocusNode> _focus = List.generate(6, (i) => FocusNode());
 
@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _phoneController = TextEditingController(text: "");
     _passwordCOntroller = TextEditingController(text: "");
-    _otpValue = '';
   }
 
   @override
@@ -65,10 +64,10 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _showLoading = false;
       });
-      if (authCredential?.user != null) {
+      if (authCredential.user != null) {
         bool _loginSuccess = await _manager.login(phone: _phoneController.text);
-        if(_loginSuccess == null) return;
-        else if (_loginSuccess)
+        
+         if (_loginSuccess)
           Navigator.pushReplacementNamed(context, '/home');
         else {
           Navigator.push(
@@ -82,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _showLoading = false;
       });
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      print(e);
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to sign in with phone number")));
     }
   }
 
@@ -105,8 +104,11 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _showLoading = false;
         });
-        _scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(verificationFailed.message)));
+              print(verificationFailed.message);
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verification failed with phone number")));
+
+       /*  _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text(verificationFailed.message))); */
       },
       codeSent: (verificationId, resendingToken) async {
         setState(() {
@@ -166,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.phone,
               maxLength: 10,
               validator: (s) {
+                if(s == null ) return null;
                 return s.isValidPhone()
                     ? null
                     : "${s.trim().length > 0 ? s + " is not a" : "Please enter a"} valid phone number.";
@@ -204,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.redAccent,
                             onTap: () async {
                               FocusScope.of(context).unfocus();
-                              if (_formKey.currentState.validate()) {
+                              if (_formKey.currentState!.validate()) {
                                 verification(context);
                               }
                             },
@@ -268,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.redAccent,
                               onTap: () async {
                                 FocusScope.of(context).unfocus();
-                                if (_formKey.currentState.validate()) {
+                                if (_formKey.currentState!.validate()) {
                                   verification(context);
                                 }
                               },
@@ -316,7 +319,7 @@ class _LoginPageState extends State<LoginPage> {
                           List _finalOtp = [];
                           FocusScope.of(context).unfocus();
                           for (int i = 0; i < _otp.length; i++) {
-                            if (_otp[i].text != null)
+                            if (_otp[i].text.isNotEmpty)//v2 changed
                               _finalOtp.add(_otp[i].text.trim());
                           }
                           _otpValue = _finalOtp.join('').trim();
@@ -324,7 +327,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (_otpValue.length == 6) {
                             PhoneAuthCredential phoneAuthCredential =
                                 PhoneAuthProvider.credential(
-                                    verificationId: verificationId,
+                                    verificationId: verificationId!,
                                     smsCode: _otpValue);
                             signInWithPhoneAuthCredential(
                                 phoneAuthCredential, _manager);
@@ -352,7 +355,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _box(TextEditingController otpController, FocusNode currentFocus,
-      FocusNode nextFocus) {
+      FocusNode? nextFocus) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       alignment: Alignment.center,
@@ -384,7 +387,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void showLoginFailMessage(context, errorMessage) {
     Future.delayed(Duration(seconds: 1), () {
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage ?? defaultloginError)));
     });
   }

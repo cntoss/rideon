@@ -14,7 +14,7 @@ class RegisterRequest {
       return (response.data)['token'];
     } on DioError catch (error) {
       if (error.response != null) {
-        print((error.response.data));
+        print((error.response!.data));
         return null;
       } else {
         return null;

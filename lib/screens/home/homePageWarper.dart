@@ -10,10 +10,10 @@ class HomePageWrapper extends StatefulWidget {
 
 class _HomePageWrapperState extends State<HomePageWrapper>
     with SingleTickerProviderStateMixin {
-  AnimationController animController;
-  Animation<double> scale;
-  Animation<double> scaleReverce;
-  Animation<Offset> slide;
+  late AnimationController animController;
+  late Animation<double> scale;
+  late Animation<double> scaleReverce;
+  late Animation<Offset> slide;
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,7 @@ class _HomePageWrapperState extends State<HomePageWrapper>
           AnimatedBuilder(
             animation: animController,
             builder: (c, child) {
-              return drawerTransition(child);
+              return drawerTransition(child!);
             },
             child: Scaffold(
               appBar: buildAppBar(),
@@ -61,10 +61,10 @@ class _HomePageWrapperState extends State<HomePageWrapper>
                           child: ValueListenableBuilder(
                             valueListenable: isTouchable,
                             builder: (BuildContext context,
-                                bool isDashboardTouchable, Widget child) {
+                                bool isDashboardTouchable, Widget? child) {
                               return Stack(
                                 children: [
-                                  child,
+                                  child!,
                                   if (!isDashboardTouchable) untouchableFilter()
                                 ],
                               );
@@ -148,10 +148,10 @@ class _HomePageWrapperState extends State<HomePageWrapper>
           color: Colors.white,
           width: MediaQuery.of(context).size.width,
           child: AnimatedBuilder(
-            builder: (BuildContext context, Widget child) {
+            builder: (BuildContext context, Widget? child) {
               return ScaleTransition(
                 scale: scaleReverce,
-                child: child,
+                child: child!,
               );
             },
             child: Align(

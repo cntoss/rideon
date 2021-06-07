@@ -7,15 +7,15 @@ class NotificationService {
   Box _box = HiveService().getHiveBox();
 
   void saveNotification(OfflineNotification notification) {
-    List<OfflineNotification> notifications = getSavedNotifications();
+    List<OfflineNotification?> notifications = getSavedNotifications();
     notifications.insert(0, notification);
     _box.put(hkNotification, notifications);
   }
 
-  List<OfflineNotification> getSavedNotifications() {
-    List<OfflineNotification> notifications = List<OfflineNotification>();
+  List<OfflineNotification?> getSavedNotifications() {
+    List<OfflineNotification> notifications = <OfflineNotification>[];
     List<dynamic> result =
-        _box.get(hkNotification, defaultValue: List<OfflineNotification>());
+        _box.get(hkNotification, defaultValue: <OfflineNotification>[]);
     notifications = result.cast();
     return notifications.take(50).toList();
   }
