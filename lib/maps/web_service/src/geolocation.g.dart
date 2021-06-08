@@ -64,41 +64,41 @@ Map<String, dynamic> _$GeolocationResponseToJson(
 
 CellTower _$CellTowerFromJson(Map<String, dynamic> json) {
   return CellTower(
-    cellId: json['cell_id'] as num,
-    locationAreaCode: json['location_area_code'] as num,
-    mobileCountryCode: json['mobile_country_code'] as num,
-    mobileNetworkCode: json['mobile_network_code'] as num,
-    timingAdvance: json['timing_advance'] as num?,
+    cellId: json['cellId'] as num,
+    locationAreaCode: json['locationAreaCode'] as num,
+    mobileCountryCode: json['mobileCountryCode'] as num,
+    mobileNetworkCode: json['mobileNetworkCode'] as num,
+    timingAdvance: json['timingAdvance'] as num?,
     age: json['age'] as num?,
-    signalStrength: json['signal_strength'] as num?,
+    signalStrength: json['signalStrength'] as num?,
   );
 }
 
 Map<String, dynamic> _$CellTowerToJson(CellTower instance) => <String, dynamic>{
       'age': instance.age,
-      'signal_strength': instance.signalStrength,
-      'cell_id': instance.cellId,
-      'location_area_code': instance.locationAreaCode,
-      'mobile_country_code': instance.mobileCountryCode,
-      'mobile_network_code': instance.mobileNetworkCode,
-      'timing_advance': instance.timingAdvance,
+      'signalStrength': instance.signalStrength,
+      'cellId': instance.cellId,
+      'locationAreaCode': instance.locationAreaCode,
+      'mobileCountryCode': instance.mobileCountryCode,
+      'mobileNetworkCode': instance.mobileNetworkCode,
+      'timingAdvance': instance.timingAdvance,
     };
 
 WifiAccessPoint _$WifiAccessPointFromJson(Map<String, dynamic> json) {
   return WifiAccessPoint(
     age: json['age'] as num?,
-    signalStrength: json['signal_strength'] as num?,
-    macAddress: json['mac_address'] as String?,
+    signalStrength: json['signalStrength'] as num?,
+    macAddress: json['macAddress'] as String?,
     channel: json['channel'],
-    signalToNoiseRatio: json['signal_to_noise_ratio'] as num?,
+    signalToNoiseRatio: json['signalToNoiseRatio'] as num?,
   );
 }
 
 Map<String, dynamic> _$WifiAccessPointToJson(WifiAccessPoint instance) =>
     <String, dynamic>{
       'age': instance.age,
-      'signal_strength': instance.signalStrength,
-      'mac_address': instance.macAddress,
+      'signalStrength': instance.signalStrength,
+      'macAddress': instance.macAddress,
       'channel': instance.channel,
-      'signal_to_noise_ratio': instance.signalToNoiseRatio,
+      'signalToNoiseRatio': instance.signalToNoiseRatio,
     };

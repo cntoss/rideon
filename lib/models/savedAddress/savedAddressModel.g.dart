@@ -18,12 +18,12 @@ class SavedAddressModelAdapter extends TypeAdapter<SavedAddressModel> {
     };
     return SavedAddressModel(
       id: fields[0] as String?,
-      type: fields[1] as AddressType,
-      placeId: fields[2] as String,
-      location: fields[3] as LnModel,
-      locationName: fields[4] as String,
-      addrComponent: (fields[6] as List).cast<AddrComponent>(),
-      detail: fields[5] as String,
+      type: fields[1] as AddressType?,
+      placeId: fields[2] as String?,
+      location: fields[3] as LnModel?,
+      locationName: fields[4] as String?,
+      addrComponent: (fields[6] as List?)?.cast<AddrComponent>(),
+      detail: fields[5] as String?,
     );
   }
 

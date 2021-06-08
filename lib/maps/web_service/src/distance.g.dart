@@ -9,12 +9,12 @@ part of 'distance.dart';
 DistanceResponse _$DistanceResponseFromJson(Map<String, dynamic> json) {
   return DistanceResponse(
     status: json['status'] as String,
-    errorMessage: json['error_message'] as String?,
-    originAddresses: (json['origin_addresses'] as List<dynamic>?)
+    errorMessage: json['errorMessage'] as String?,
+    originAddresses: (json['originAddresses'] as List<dynamic>?)
             ?.map((e) => e as String)
             .toList() ??
         [],
-    destinationAddresses: (json['destination_addresses'] as List<dynamic>?)
+    destinationAddresses: (json['destinationAddresses'] as List<dynamic>?)
             ?.map((e) => e as String)
             .toList() ??
         [],
@@ -28,9 +28,9 @@ DistanceResponse _$DistanceResponseFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$DistanceResponseToJson(DistanceResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
-      'error_message': instance.errorMessage,
-      'origin_addresses': instance.originAddresses,
-      'destination_addresses': instance.destinationAddresses,
+      'errorMessage': instance.errorMessage,
+      'originAddresses': instance.originAddresses,
+      'destinationAddresses': instance.destinationAddresses,
       'rows': instance.rows,
     };
 
@@ -51,14 +51,14 @@ Element _$ElementFromJson(Map<String, dynamic> json) {
   return Element(
     distance: Value.fromJson(json['distance'] as Map<String, dynamic>),
     duration: Value.fromJson(json['duration'] as Map<String, dynamic>),
-    elementStatus: json['element_status'] as String?,
+    elementStatus: json['elementStatus'] as String?,
   );
 }
 
 Map<String, dynamic> _$ElementToJson(Element instance) => <String, dynamic>{
       'distance': instance.distance,
       'duration': instance.duration,
-      'element_status': instance.elementStatus,
+      'elementStatus': instance.elementStatus,
     };
 
 Value _$ValueFromJson(Map<String, dynamic> json) {

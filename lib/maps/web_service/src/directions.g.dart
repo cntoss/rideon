@@ -9,8 +9,8 @@ part of 'directions.dart';
 DirectionsResponse _$DirectionsResponseFromJson(Map<String, dynamic> json) {
   return DirectionsResponse(
     status: json['status'] as String,
-    errorMessage: json['error_message'] as String?,
-    geocodedWaypoints: (json['geocoded_waypoints'] as List<dynamic>?)
+    errorMessage: json['errorMessage'] as String?,
+    geocodedWaypoints: (json['geocodedWaypoints'] as List<dynamic>?)
             ?.map((e) => GeocodedWaypoint.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
@@ -24,8 +24,8 @@ DirectionsResponse _$DirectionsResponseFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$DirectionsResponseToJson(DirectionsResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
-      'error_message': instance.errorMessage,
-      'geocoded_waypoints': instance.geocodedWaypoints,
+      'errorMessage': instance.errorMessage,
+      'geocodedWaypoints': instance.geocodedWaypoints,
       'routes': instance.routes,
     };
 
@@ -41,21 +41,21 @@ Map<String, dynamic> _$WaypointToJson(Waypoint instance) => <String, dynamic>{
 
 GeocodedWaypoint _$GeocodedWaypointFromJson(Map<String, dynamic> json) {
   return GeocodedWaypoint(
-    geocoderStatus: json['geocoder_status'] as String,
-    placeId: json['place_id'] as String,
+    geocoderStatus: json['geocoderStatus'] as String,
+    placeId: json['placeId'] as String,
     types:
         (json['types'] as List<dynamic>?)?.map((e) => e as String).toList() ??
             [],
-    partialMatch: json['partial_match'] as bool? ?? false,
+    partialMatch: json['partialMatch'] as bool? ?? false,
   );
 }
 
 Map<String, dynamic> _$GeocodedWaypointToJson(GeocodedWaypoint instance) =>
     <String, dynamic>{
-      'geocoder_status': instance.geocoderStatus,
-      'place_id': instance.placeId,
+      'geocoderStatus': instance.geocoderStatus,
+      'placeId': instance.placeId,
       'types': instance.types,
-      'partial_match': instance.partialMatch,
+      'partialMatch': instance.partialMatch,
     };
 
 Route _$RouteFromJson(Map<String, dynamic> json) {
@@ -67,9 +67,9 @@ Route _$RouteFromJson(Map<String, dynamic> json) {
         [],
     copyrights: json['copyrights'] as String,
     overviewPolyline:
-        Polyline.fromJson(json['overview_polyline'] as Map<String, dynamic>),
+        Polyline.fromJson(json['overviewPolyline'] as Map<String, dynamic>),
     warnings: json['warnings'] as List<dynamic>,
-    waypointOrder: (json['waypoint_order'] as List<dynamic>?)
+    waypointOrder: (json['waypointOrder'] as List<dynamic>?)
             ?.map((e) => e as num)
             .toList() ??
         [],
@@ -84,9 +84,9 @@ Map<String, dynamic> _$RouteToJson(Route instance) => <String, dynamic>{
       'summary': instance.summary,
       'legs': instance.legs,
       'copyrights': instance.copyrights,
-      'overview_polyline': instance.overviewPolyline,
+      'overviewPolyline': instance.overviewPolyline,
       'warnings': instance.warnings,
-      'waypoint_order': instance.waypointOrder,
+      'waypointOrder': instance.waypointOrder,
       'bounds': instance.bounds,
       'fare': instance.fare,
     };
@@ -97,68 +97,66 @@ Leg _$LegFromJson(Map<String, dynamic> json) {
             ?.map((e) => Step.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    startAddress: json['start_address'] as String,
-    endAddress: json['end_address'] as String,
-    durationInTraffic: json['duration_in_traffic'] == null
+    startAddress: json['startAddress'] as String,
+    endAddress: json['endAddress'] as String,
+    durationInTraffic: json['durationInTraffic'] == null
         ? null
-        : Value.fromJson(json['duration_in_traffic'] as Map<String, dynamic>),
-    arrivalTime: json['arrival_time'] == null
+        : Value.fromJson(json['durationInTraffic'] as Map<String, dynamic>),
+    arrivalTime: json['arrivalTime'] == null
         ? null
-        : Time.fromJson(json['arrival_time'] as Map<String, dynamic>),
-    departureTime: json['departure_time'] == null
+        : Time.fromJson(json['arrivalTime'] as Map<String, dynamic>),
+    departureTime: json['departureTime'] == null
         ? null
-        : Time.fromJson(json['departure_time'] as Map<String, dynamic>),
+        : Time.fromJson(json['departureTime'] as Map<String, dynamic>),
     startLocation:
-        Location.fromJson(json['start_location'] as Map<String, dynamic>),
-    endLocation:
-        Location.fromJson(json['end_location'] as Map<String, dynamic>),
+        Location.fromJson(json['startLocation'] as Map<String, dynamic>),
+    endLocation: Location.fromJson(json['endLocation'] as Map<String, dynamic>),
     duration: Value.fromJson(json['duration'] as Map<String, dynamic>),
     distance: Value.fromJson(json['distance'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$LegToJson(Leg instance) => <String, dynamic>{
-      'start_location': instance.startLocation,
-      'end_location': instance.endLocation,
+      'startLocation': instance.startLocation,
+      'endLocation': instance.endLocation,
       'duration': instance.duration,
       'distance': instance.distance,
       'steps': instance.steps,
-      'start_address': instance.startAddress,
-      'end_address': instance.endAddress,
-      'duration_in_traffic': instance.durationInTraffic,
-      'arrival_time': instance.arrivalTime,
-      'departure_time': instance.departureTime,
+      'startAddress': instance.startAddress,
+      'endAddress': instance.endAddress,
+      'durationInTraffic': instance.durationInTraffic,
+      'arrivalTime': instance.arrivalTime,
+      'departureTime': instance.departureTime,
     };
 
 Step _$StepFromJson(Map<String, dynamic> json) {
   return Step(
-    travelMode: _$enumDecode(_$TravelModeEnumMap, json['travel_mode']),
-    htmlInstructions: json['html_instructions'] as String,
+    travelMode: _$enumDecode(_$TravelModeEnumMap, json['travelMode']),
+    htmlInstructions: json['htmlInstructions'] as String,
     polyline: Polyline.fromJson(json['polyline'] as Map<String, dynamic>),
     startLocation:
-        Location.fromJson(json['start_location'] as Map<String, dynamic>),
-    endLocation:
-        Location.fromJson(json['end_location'] as Map<String, dynamic>),
+        Location.fromJson(json['startLocation'] as Map<String, dynamic>),
+    endLocation: Location.fromJson(json['endLocation'] as Map<String, dynamic>),
     duration: Value.fromJson(json['duration'] as Map<String, dynamic>),
     distance: Value.fromJson(json['distance'] as Map<String, dynamic>),
-    transitDetails: json['transit_details'] == null
+    transitDetails: json['transitDetails'] == null
         ? null
         : TransitDetails.fromJson(
-            json['transit_details'] as Map<String, dynamic>),
+            json['transitDetails'] as Map<String, dynamic>),
     maneuver: json['maneuver'] as String?,
   );
 }
 
 Map<String, dynamic> _$StepToJson(Step instance) => <String, dynamic>{
-      'start_location': instance.startLocation,
-      'end_location': instance.endLocation,
+      'startLocation': instance.startLocation,
+      'endLocation': instance.endLocation,
       'duration': instance.duration,
       'distance': instance.distance,
-      'travel_mode': _$TravelModeEnumMap[instance.travelMode],
-      'html_instructions': instance.htmlInstructions,
+      'travelMode': _$TravelModeEnumMap[instance.travelMode],
+      'htmlInstructions': instance.htmlInstructions,
       'maneuver': instance.maneuver,
       'polyline': instance.polyline,
-      'transit_details': instance.transitDetails,
+      'transitDetails': instance.transitDetails,
     };
 
 K _$enumDecode<K, V>(
@@ -232,7 +230,7 @@ Map<String, dynamic> _$FareToJson(Fare instance) => <String, dynamic>{
 
 Time _$TimeFromJson(Map<String, dynamic> json) {
   return Time(
-    timeZone: json['time_zone'] as String,
+    timeZone: json['timeZone'] as String,
     value: json['value'] as num,
     text: json['text'] as String,
   );
@@ -241,32 +239,30 @@ Time _$TimeFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$TimeToJson(Time instance) => <String, dynamic>{
       'value': instance.value,
       'text': instance.text,
-      'time_zone': instance.timeZone,
+      'timeZone': instance.timeZone,
     };
 
 TransitDetails _$TransitDetailsFromJson(Map<String, dynamic> json) {
   return TransitDetails(
-    arrivalStop: Stop.fromJson(json['arrival_stop'] as Map<String, dynamic>),
-    departureStop:
-        Stop.fromJson(json['departure_stop'] as Map<String, dynamic>),
-    arrivalTime: Time.fromJson(json['arrival_time'] as Map<String, dynamic>),
-    departureTime:
-        Time.fromJson(json['departure_time'] as Map<String, dynamic>),
+    arrivalStop: Stop.fromJson(json['arrivalStop'] as Map<String, dynamic>),
+    departureStop: Stop.fromJson(json['departureStop'] as Map<String, dynamic>),
+    arrivalTime: Time.fromJson(json['arrivalTime'] as Map<String, dynamic>),
+    departureTime: Time.fromJson(json['departureTime'] as Map<String, dynamic>),
     headsign: json['headsign'] as String,
     headway: json['headway'] as num,
-    numStops: json['num_stops'] as num,
+    numStops: json['numStops'] as num,
   );
 }
 
 Map<String, dynamic> _$TransitDetailsToJson(TransitDetails instance) =>
     <String, dynamic>{
-      'arrival_stop': instance.arrivalStop,
-      'departure_stop': instance.departureStop,
-      'arrival_time': instance.arrivalTime,
-      'departure_time': instance.departureTime,
+      'arrivalStop': instance.arrivalStop,
+      'departureStop': instance.departureStop,
+      'arrivalTime': instance.arrivalTime,
+      'departureTime': instance.departureTime,
       'headsign': instance.headsign,
       'headway': instance.headway,
-      'num_stops': instance.numStops,
+      'numStops': instance.numStops,
     };
 
 Stop _$StopFromJson(Map<String, dynamic> json) {
@@ -284,26 +280,26 @@ Map<String, dynamic> _$StopToJson(Stop instance) => <String, dynamic>{
 Line _$LineFromJson(Map<String, dynamic> json) {
   return Line(
     name: json['name'] as String,
-    shortName: json['short_name'] as String,
+    shortName: json['shortName'] as String,
     color: json['color'] as String,
     agencies: (json['agencies'] as List<dynamic>)
         .map((e) => TransitAgency.fromJson(e as Map<String, dynamic>))
         .toList(),
     url: json['url'] as String,
     icon: json['icon'] as String,
-    textColor: json['text_color'] as String,
+    textColor: json['textColor'] as String,
     vehicle: VehicleType.fromJson(json['vehicle'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$LineToJson(Line instance) => <String, dynamic>{
       'name': instance.name,
-      'short_name': instance.shortName,
+      'shortName': instance.shortName,
       'color': instance.color,
       'agencies': instance.agencies,
       'url': instance.url,
       'icon': instance.icon,
-      'text_color': instance.textColor,
+      'textColor': instance.textColor,
       'vehicle': instance.vehicle,
     };
 
@@ -327,7 +323,7 @@ VehicleType _$VehicleTypeFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     type: json['type'] as String,
     icon: json['icon'] as String,
-    localIcon: json['local_icon'] as String,
+    localIcon: json['localIcon'] as String,
   );
 }
 
@@ -336,5 +332,5 @@ Map<String, dynamic> _$VehicleTypeToJson(VehicleType instance) =>
       'name': instance.name,
       'type': instance.type,
       'icon': instance.icon,
-      'local_icon': instance.localIcon,
+      'localIcon': instance.localIcon,
     };
