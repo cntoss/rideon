@@ -296,6 +296,7 @@ class _PlacePickerState extends State<PlacePicker> {
               searchingText: widget.searchingText,
               debounceMilliseconds: widget.autoCompleteDebounceInMilliseconds,
               onPicked: (prediction) {
+                print(prediction.toJson());
                 _pickPrediction(prediction);
               },
               onSearchFailed: (status) {

@@ -20,7 +20,7 @@ class NotificationService {
     return notifications.take(50).toList();
   }
 
-   void deleteAllNotification() {
+  void deleteAllNotification() {
     _box.delete(hkNotification);
   }
 
